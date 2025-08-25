@@ -3,3 +3,6 @@
 
 # ignore the file used for testing
 test_file/
+
+# obviously all the pycache file 
+__pycache__/

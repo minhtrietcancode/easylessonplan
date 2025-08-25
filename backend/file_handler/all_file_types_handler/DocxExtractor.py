@@ -1,6 +1,6 @@
 from docx import Document
 import os
-from backend.file_handler.all_file_types_handler.extractor import Extractor
+from Extractor import Extractor
 
 class DocxExtractor(Extractor):
     def extract_text(self, relative_path: str) -> dict:

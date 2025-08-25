@@ -1,6 +1,6 @@
 from PyPDF2 import PdfReader
 import os
-from backend.file_handler.all_file_types_handler.extractor import Extractor
+from Extractor import Extractor
 
 class PdfExtractor(Extractor):
     def extract_text(self, relative_path: str) -> dict:
@@ -17,8 +17,8 @@ class PdfExtractor(Extractor):
 
         return extracted_text_by_page
 
-# # uncomment if need to test   
-# if __name__ == "__main__":
-#     handler = PdfExtractor()
-#     text_by_page = handler.extract_text("test_file/pdf/module01-slides-print-5.pdf")
-#     print(text_by_page)
+# uncomment if need to test   
+if __name__ == "__main__":
+    handler = PdfExtractor()
+    text_by_page = handler.extract_text("test_file/pdf/module01-slides-print-5.pdf")
+    print(text_by_page)
