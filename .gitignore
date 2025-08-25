@@ -1,2 +1,5 @@
 # obviously, ignore the environment file with all sensitive details
 .env 
+
+# ignore the file used for testing
+test_file/
