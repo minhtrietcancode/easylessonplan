@@ -3,7 +3,7 @@ import os
 from Extractor import Extractor
 
 class PdfExtractor(Extractor):
-    def extract_text(self, relative_path: str) -> dict:
+    def extractText(self, relative_path: str) -> dict:
         full_path = os.path.abspath(relative_path)
 
         if not os.path.exists(full_path):

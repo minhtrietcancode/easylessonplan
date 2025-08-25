@@ -36,3 +36,12 @@ class FileHandler:
 
         extractor = ExtractorClass()
         return extractor.extract_text(self.file_path)
+    
+'''
+We need these things for the class FileHandler 
+    - With instance variables 
+        + FileHandler class should have an instance for each file type's extractor 
+    
+    - With the methods 
+        + 
+'''
