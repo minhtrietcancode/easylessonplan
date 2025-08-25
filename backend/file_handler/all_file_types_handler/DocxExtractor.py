@@ -1,8 +1,9 @@
 from docx import Document
 import os
+from backend.file_handler.all_file_types_handler.extractor import Extractor
 
-class DocxHandler:
-    def extract_text_from_docx(self, relative_path: str) -> dict:
+class DocxExtractor(Extractor):
+    def extract_text(self, relative_path: str) -> dict:
         full_path = os.path.abspath(relative_path)
 
         if not os.path.exists(full_path):
@@ -16,7 +17,8 @@ class DocxHandler:
 
         return extracted_text_by_paragraph
 
-if __name__ == "__main__":
-    handler = DocxHandler()
-    text_by_paragraph = handler.extract_text_from_docx("test_file/docs/sample.docx")
-    print(text_by_paragraph)
+# # uncomment if need to test 
+# if __name__ == "__main__":
+#     handler = DocxExtractor()
+#     text_by_paragraph = handler.extract_text("test_file/docs/sample.docx")
+#     print(text_by_paragraph)
