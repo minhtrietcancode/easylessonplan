@@ -17,8 +17,8 @@ class DocxExtractor(Extractor):
 
         return extracted_text_by_paragraph
 
-# # uncomment if need to test 
-# if __name__ == "__main__":
-#     handler = DocxExtractor()
-#     text_by_paragraph = handler.extract_text("test_file/docs/sample.docx")
-#     print(text_by_paragraph)
+# uncomment if need to test 
+if __name__ == "__main__":
+    handler = DocxExtractor()
+    text_by_paragraph = handler.extractText("test_file/docx/sample.docx")
+    print(text_by_paragraph)

@@ -20,5 +20,5 @@ class PdfExtractor(Extractor):
 # uncomment if need to test   
 if __name__ == "__main__":
     handler = PdfExtractor()
-    text_by_page = handler.extract_text("test_file/pdf/module01-slides-print-5.pdf")
+    text_by_page = handler.extractText("test_file/pdf/sample.pdf")
     print(text_by_page)
