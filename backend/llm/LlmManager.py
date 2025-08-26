@@ -1,6 +1,7 @@
 from .all_llm_models.Qwen import Qwen
 from .all_llm_models.OpenAI import Openai
 from . import SupportedModels
+from langchain_core.messages import HumanMessage
 
 class LlmManager():
     def __init__(self) -> None:
@@ -41,5 +42,17 @@ class LlmManager():
     def getCurrentModel(self):
         return self.currentModel
     
-    
-    
+    '''
+        Method to invoke the current client model of this LlmManager 
+            - Input: message --> string
+            - Output: response.content --> string
+    '''
+    def invoke(self, message: str):
+        try: 
+            current_client = self.getCurrentModel()
+            current_client_response = current_client.invoke([HumanMessage(content=message)])
+            return current_client_response.content
+        except ValueError as e:
+            print(f"Error setting model: {e}")
+        except Exception as e:
+            print(f"An unexpected error occured with current model : {e}")
