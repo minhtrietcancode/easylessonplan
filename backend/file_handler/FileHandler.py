@@ -7,7 +7,7 @@ import importlib.util
 from pathlib import Path
 
 # configured allowed file + metadata 
-import AllowedFile
+from . import AllowedFile
 
 # all of the classes that handle + extract data for different file types
 from all_file_types_handler.PdfExtractor import PdfExtractor
