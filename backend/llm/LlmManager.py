@@ -1,6 +1,6 @@
-import SupportedModels
-from all_llm_models.Qwen import Qwen
-from all_llm_models.OpenAI import Openai
+from .all_llm_models.Qwen import Qwen
+from .all_llm_models.OpenAI import Openai
+from . import SupportedModels
 
 class LlmManager():
     def __init__(self) -> None:
@@ -25,7 +25,7 @@ class LlmManager():
     def setCurrentModel(self, model_name: str):
         # validate the Model first, if not in the supported_models list then exit + raise error
         if model_name not in self.supported_models:
-            raise ValueError(f"Model '{model_name}' is not supported. Supported models: {list(self.supported_models.keys())}")
+            raise ValueError(f"Model '{model_name}' is not supported. Supported models: {self.supported_models}")
 
         # if valid then set self.currentModel = corresponding model instance
         # Map model_name to the corresponding instance

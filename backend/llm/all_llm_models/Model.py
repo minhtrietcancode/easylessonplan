@@ -24,7 +24,7 @@ class Model(ABC):
             # openrouter passes the model name as part of the base_url, 
             # so the model_name param in ChatOpenAI is ignored. 
             # We pass it explicitly in the headers for clarity and potential future use.
-            model_kwargs={"headers": {"HTTP-Referer": self.base_url}}, 
+            # model_kwargs={"headers": {"HTTP-Referer": self.base_url}}, 
             temperature=0.7 # can be changed later
         )
         return llm
