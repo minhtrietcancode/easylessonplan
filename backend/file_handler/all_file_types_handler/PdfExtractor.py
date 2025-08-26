@@ -3,6 +3,7 @@ import os
 from Extractor import Extractor
 
 class PdfExtractor(Extractor):
+    # Override
     def extractText(self, relative_path: str) -> dict:
         full_path = os.path.abspath(relative_path)
 

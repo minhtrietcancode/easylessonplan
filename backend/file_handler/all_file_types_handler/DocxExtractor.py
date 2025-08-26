@@ -4,6 +4,7 @@ import tempfile
 from Extractor import Extractor
 
 class DocxExtractor(Extractor):
+    # Override
     def extractText(self, relative_path: str) -> dict:
         full_path = os.path.abspath(relative_path)
 
