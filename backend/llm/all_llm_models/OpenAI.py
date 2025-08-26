@@ -19,3 +19,4 @@ class Openai(Model):
         self.base_url = OPENAI_BASE_URL
         self.model_name = OPENAI_MODEL
         self.api_key = OPENROUTER_OPENAI_API
+        self.llm_client = self.initialize_llm_client()

@@ -19,3 +19,4 @@ class Qwen(Model):
         self.base_url = QWEN_BASE_URL
         self.model_name = QWEN_MODEL
         self.api_key = OPENROUTER_QWEN_API
+        self.llm_client = self.initialize_llm_client()
