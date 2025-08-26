@@ -1,7 +1,7 @@
 from openai import OpenAI
 
 # Import your model classes
-from OpenAI import OpenAI as OpenAILLM
+from OpenAI import Openai as OpenAILLM
 from Qwen import Qwen
 
 def test_openai_api():

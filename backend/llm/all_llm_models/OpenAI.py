@@ -13,7 +13,7 @@ try:
 except ImportError:
     from Model import Model
 
-class OpenAI(Model):
+class Openai(Model):
     def __init__(self):
         super().__init__()
         self.base_url = OPENAI_BASE_URL

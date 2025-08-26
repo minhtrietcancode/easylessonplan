@@ -1,4 +1,4 @@
 supported_models = [
     "Qwen",
-    "OpenAI",
+    "Openai",
 ]
