@@ -7,5 +7,10 @@ allowed_file = {
     # docx - ms word file
     "docx" : {
         "class_name" : "DocxExtractor"
+    },
+
+    # txt file
+    "txt" : {
+        "class_name" : "TxtExtractor"
     }
 }

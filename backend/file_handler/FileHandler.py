@@ -15,6 +15,7 @@ except ImportError:
 # all of the classes that handle + extract data for different file types
 from all_file_types_handler.PdfExtractor import PdfExtractor
 from all_file_types_handler.DocxExtractor import DocxExtractor
+from all_file_types_handler.TxtExtractor import TxtExtractor
 
 #######################################################################################################################
                                         # CLASS FOR FILE HANDLER 
@@ -27,6 +28,7 @@ class FileHandler:
         # get an instance of each Extractor classes 
         self.PdfExtractor = PdfExtractor()
         self.DocxExtractor = DocxExtractor()
+        self.TxtExtractor = TxtExtractor()
     
 
     """
