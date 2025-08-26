@@ -1,4 +1,4 @@
-########## for file handler ##############
+########## file_handler/ ##############
 PyPDF2 # pdf file handler 
 python-docx # ms word file handler
 docx2pdf # convert docx to pdf for accurate page extraction
