@@ -13,9 +13,14 @@ except ImportError:
     import AllowedFile
 
 # all of the classes that handle + extract data for different file types
-from all_file_types_handler.PdfExtractor import PdfExtractor
-from all_file_types_handler.DocxExtractor import DocxExtractor
-from all_file_types_handler.TxtExtractor import TxtExtractor
+try:
+    from .all_file_types_handler.PdfExtractor import PdfExtractor
+    from .all_file_types_handler.DocxExtractor import DocxExtractor
+    from .all_file_types_handler.TxtExtractor import TxtExtractor
+except ImportError:
+    from file_handler.all_file_types_handler.PdfExtractor import PdfExtractor
+    from file_handler.all_file_types_handler.DocxExtractor import DocxExtractor
+    from file_handler.all_file_types_handler.TxtExtractor import TxtExtractor
 
 #######################################################################################################################
                                         # CLASS FOR FILE HANDLER 
