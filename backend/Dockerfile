@@ -25,5 +25,4 @@ COPY . .
 EXPOSE 5000
 
 # Command to run when container starts
-# For now, we'll just keep the container running for testing
-CMD ["python", "-c", "print('Backend container is running...'); import time; time.sleep(3600)"]
+CMD ["python", "backend/file_handler/FileHandler.py"]

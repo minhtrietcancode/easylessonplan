@@ -5,8 +5,9 @@ services:
       - "5000:5000"
     volumes:
       # Mount your current directory for development
-      - .:/app
+      - ../:/app
+    working_dir: /app
     environment:
       - PYTHONPATH=/app
     # Override the CMD for development - keeps container running
-    command: tail -f /dev/null
+    # command: tail -f /dev/null
