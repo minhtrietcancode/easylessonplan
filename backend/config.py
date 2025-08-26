@@ -19,10 +19,3 @@ Secondly would be free OpenAI model
 OPENAI_BASE_URL = "https://openrouter.ai/api/v1"
 OPENAI_MODEL = "openai/gpt-oss-20b:free"
 OPENROUTER_OPENAI_API = os.getenv("OPENROUTER_OPENAI_API")
-
-'''
-free Gemini model
-'''
-GEMINI_BASE_URL = "https://openrouter.ai/api/v1"
-GEMINI_MODEL = "google/gemini-2.0-flash-exp:free"
-OPENROUTER_GEMINI_API = os.getenv("OPENROUTER_GEMINI_API")
