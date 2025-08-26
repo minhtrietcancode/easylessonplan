@@ -6,6 +6,3 @@ test_file/
 
 # obviously all the pycache file 
 __pycache__/
-
-# the testing script for backend
-backend/test.py
