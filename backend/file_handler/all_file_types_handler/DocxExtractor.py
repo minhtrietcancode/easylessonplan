@@ -1,7 +1,7 @@
 from docx import Document
 import os
 import tempfile
-from Extractor import Extractor
+from .Extractor import Extractor
 
 class DocxExtractor(Extractor):
     # Override

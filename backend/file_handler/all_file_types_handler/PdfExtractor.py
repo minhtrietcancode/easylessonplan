@@ -1,6 +1,6 @@
 from PyPDF2 import PdfReader
 import os
-from Extractor import Extractor
+from .Extractor import Extractor
 
 class PdfExtractor(Extractor):
     # Override
