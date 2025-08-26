@@ -2,6 +2,7 @@ from docx import Document
 import os
 import tempfile
 
+# avoid disrupting the code by import error 
 try:
     from .Extractor import Extractor
 except ImportError:

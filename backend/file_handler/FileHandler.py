@@ -6,8 +6,11 @@ import os
 import importlib.util
 from pathlib import Path
 
-# configured allowed file + metadata 
-from . import AllowedFile
+# configured AllowedFile
+try:
+    from . import AllowedFile
+except ImportError:
+    import AllowedFile
 
 # all of the classes that handle + extract data for different file types
 from all_file_types_handler.PdfExtractor import PdfExtractor
@@ -66,28 +69,28 @@ class FileHandler:
 
     
 # Uncomment if need to test 
-# if __name__ == "__main__":
-#     file_handler = FileHandler()
+if __name__ == "__main__":
+    file_handler = FileHandler()
 
-#     test_files = [
-#         "test_file/unsupported.txt",
-#         "test_file/docx/demo.docx",
-#         "test_file/pdf/sample.pdf",
-#     ]
+    test_files = [
+        "test_file/unsupported.txt",
+        "test_file/docx/demo.docx",
+        "test_file/pdf/sample.pdf",
+    ]
 
-#     for file_path in test_files:
-#         print(f"\n--- Testing {file_path} ---")
-#         try:
-#             extracted_data = file_handler.extractText(file_path)
-#             print(f"Successfully extracted data from {file_path}:")
-#             for page_num, content in extracted_data.items():
-#                 print(f"Page {page_num}:\n{content[:200]}...") # Print first 200 chars for brevity
-#         except ValueError as e:
-#             print(f"Error for {file_path}: {e}")
-#         except FileNotFoundError as e:
-#             print(f"Error for {file_path}: {e}")
-#         except Exception as e:
-#             print(f"An unexpected error occurred for {file_path}: {e}")
+    for file_path in test_files:
+        print(f"\n--- Testing {file_path} ---")
+        try:
+            extracted_data = file_handler.extractText(file_path)
+            print(f"Successfully extracted data from {file_path}:")
+            for page_num, content in extracted_data.items():
+                print(f"Page {page_num}:\n{content[:200]}...") # Print first 200 chars for brevity
+        except ValueError as e:
+            print(f"Error for {file_path}: {e}")
+        except FileNotFoundError as e:
+            print(f"Error for {file_path}: {e}")
+        except Exception as e:
+            print(f"An unexpected error occurred for {file_path}: {e}")
     
 
     
