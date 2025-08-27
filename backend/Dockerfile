@@ -25,4 +25,4 @@ COPY . .
 EXPOSE 5000
 
 # Command to run when container starts
-CMD ["python", "backend/file_handler/FileHandler.py"]
+CMD ["python", "backend/test.py"]
