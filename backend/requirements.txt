@@ -3,3 +3,14 @@ PyPDF2 # pdf file handler
 python-docx # ms word file handler
 docx2pdf # convert docx to pdf for accurate page extraction
 PyMuPDF # pdf text extraction (fitz)
+
+##########      llm/       ##############
+langchain-core
+langchain-openai
+
+##########      os_handler/       ##############
+langchain-openai>=0.1.0
+langchain-core>=0.1.0
+
+##########      config.py       ##############
+python-dotenv>=1.0.0
