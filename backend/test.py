@@ -46,3 +46,36 @@
 '''
     TESTING OS HANDLER
 '''
+from os_handler.OsHandler import OsHandler
+# Initialize the handler
+handler = OsHandler()
+
+print("=== System Info ===")
+info = handler.get_system_info()
+for key, value in info.items():
+    print(f"{key}: {value}")
+
+print("\n=== Creating EasyLessonPlan Directory ===")
+success, message, path = handler.makeEasyLessonDir()
+print(f"Success: {success}")
+print(f"Message: {message}")
+print(f"Path: {path}")
+
+# Test creating a subdirectory
+if success and path:
+    print("\n=== Creating Test Subdirectory ===")
+    sub_success, sub_message, sub_path = handler.makeDir("Math_Lessons", path)
+    print(f"Success: {sub_success}")
+    print(f"Message: {sub_message}")
+    print(f"Path: {sub_path}")
+    
+# Test copying a file
+if success and path:
+    print("\n=== Testing File Copy ===")
+    # You can test this by creating a dummy file first or using an existing file
+    # For demo purposes, let's show how it would work:
+    test_file = r"C:\Users\ADMIN\Downloads\Assignment 1 Stats.pdf"  # Replace with actual file path
+    copy_success, copy_message, copy_path = handler.copy_to(test_file, path)
+    print(f"Copy Success: {copy_success}")
+    print(f"Copy Message: {copy_message}")
+    print(f"New File Path: {copy_path}")
