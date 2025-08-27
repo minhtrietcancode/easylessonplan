@@ -445,7 +445,7 @@
     </section>
 
     <!-- Features Section -->
-    <section class="features">
+    <section class="features" id="features">
         <div class="container">
             <h2 class="section-title">Features</h2>
             <div class="features-grid">
@@ -469,7 +469,7 @@
     </section>
 
     <!-- About Section -->
-    <section class="about">
+    <section class="about" id="about">
         <div class="container">
             <h2 class="section-title">About Us</h2>
             <div class="about-content">
@@ -535,6 +535,17 @@
                 setTimeout(() => {
                     this.style.transform = 'translateY(-2px) scale(1)';
                 }, 150);
+            });
+
+            // Smooth scrolling for navigation links
+            document.querySelectorAll('.nav-links a').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+
+                    document.querySelector(this.hash).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
             });
 
             // Add parallax effect to hero section
