@@ -101,7 +101,7 @@ class OsHandler:
         """Get the full path to the EasyLessonPlan directory"""
         return self.easy_lesson_dir
     
-    def copy_to(self, copied_file_path, aimed_folder):
+    def copy_file_to(self, copied_file_path, aimed_folder):
         """
         Copy a file from source location to a destination folder within EasyLessonPlan structure
         
@@ -172,6 +172,79 @@ class OsHandler:
         except Exception as e:
             return False, f"Error copying file: {str(e)}", None
     
+    def copy_folder_to(self, copied_folder_path, aimed_folder):
+        """
+        Copy an entire folder (including all its contents) from source location to a destination folder
+        
+        Args:
+            copied_folder_path (str): Full path to the folder that needs to be copied
+            aimed_folder (str): Destination folder where the folder should be copied to
+            
+        Returns: tuple (success: bool, message: str, new_folder_path: str)
+        """
+        try:
+            # Validate inputs
+            if not copied_folder_path or not copied_folder_path.strip():
+                return False, "Source folder path cannot be empty", None
+                
+            if not aimed_folder or not aimed_folder.strip():
+                return False, "Destination folder path cannot be empty", None
+            
+            # Clean up paths
+            source_path = copied_folder_path.strip()
+            dest_folder = aimed_folder.strip()
+            
+            # Check if source folder exists
+            if not os.path.exists(source_path):
+                return False, f"Source folder does not exist: {source_path}", None
+                
+            if not os.path.isdir(source_path):
+                return False, f"Source path is not a directory: {source_path}", None
+            
+            # Check if destination folder exists
+            if not os.path.exists(dest_folder):
+                return False, f"Destination folder does not exist: {dest_folder}", None
+                
+            if not os.path.isdir(dest_folder):
+                return False, f"Destination path is not a directory: {dest_folder}", None
+            
+            # Get the folder name from source path
+            folder_name = os.path.basename(source_path.rstrip(os.path.sep))
+            
+            # Create full destination path
+            dest_folder_path = os.path.join(dest_folder, folder_name)
+            
+            # Check if folder already exists at destination
+            if os.path.exists(dest_folder_path):
+                # Generate a unique folder name by adding a number
+                counter = 1
+                original_dest_path = dest_folder_path
+                
+                while os.path.exists(dest_folder_path):
+                    new_folder_name = f"{folder_name}_{counter}"
+                    dest_folder_path = os.path.join(dest_folder, new_folder_name)
+                    counter += 1
+                
+                folder_name = os.path.basename(dest_folder_path)  # Update folder name for the message
+            
+            # Copy the entire folder tree
+            shutil.copytree(source_path, dest_folder_path)
+            
+            # Verify the copy was successful
+            if os.path.exists(dest_folder_path) and os.path.isdir(dest_folder_path):
+                # Count items copied (optional, for informative message)
+                item_count = sum([len(files) + len(dirs) for _, dirs, files in os.walk(dest_folder_path)])
+                return True, f"Folder '{folder_name}' copied successfully with {item_count} items", dest_folder_path
+            else:
+                return False, "Folder copy failed - destination folder not found after copy", None
+                
+        except PermissionError:
+            return False, f"Permission denied. Cannot copy folder to '{aimed_folder}'", None
+        except shutil.Error as e:
+            return False, f"Error copying folder contents: {str(e)}", None
+        except Exception as e:
+            return False, f"Error copying folder: {str(e)}", None
+    
     def get_system_info(self):
         """Get system information for debugging"""
         return {
@@ -212,15 +285,24 @@ if __name__ == "__main__":
         # You can test this by creating a dummy file first or using an existing file
         # For demo purposes, let's show how it would work:
         test_file = r"C:\Users\ADMIN\Downloads\Assignment 1 Stats.pdf"  # Replace with actual file path
-        copy_success, copy_message, copy_path = handler.copy_to(test_file, path)
+        copy_success, copy_message, copy_path = handler.copy_file_to(test_file, path)
         print(f"Copy Success: {copy_success}")
         print(f"Copy Message: {copy_message}")
         print(f"New File Path: {copy_path}")
         
-        # # Test copying to a subdirectory
-        # if sub_success and sub_path:
-        #     print("\n=== Testing Copy to Subdirectory ===")
-        #     copy_success2, copy_message2, copy_path2 = handler.copy_to(test_file, sub_path)
-        #     print(f"Copy Success: {copy_success2}")
-        #     print(f"Copy Message: {copy_message2}")
-        #     print(f"New File Path: {copy_path2}")
+        # Test copying to a subdirectory
+        if sub_success and sub_path:
+            print("\n=== Testing Copy to Subdirectory ===")
+            copy_success2, copy_message2, copy_path2 = handler.copy_file_to(test_file, sub_path)
+            print(f"Copy Success: {copy_success2}")
+            print(f"Copy Message: {copy_message2}")
+            print(f"New File Path: {copy_path2}")
+
+        # Testing copying a folder
+        print("\n=== Testing Folder Copy ===")
+
+        test_source_folder = r"C:\Users\ADMIN\Documents\University Study Materials\vector calculus"
+        copy_folder_success, copy_folder_message, new_folder_path = handler.copy_folder_to(test_source_folder, path)
+        print(f"Folder Copy Success: {copy_folder_success}")
+        print(f"Folder Copy Message: {copy_folder_message}")
+        print(f"New Folder Path: {new_folder_path}")

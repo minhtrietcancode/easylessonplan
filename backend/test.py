@@ -75,7 +75,24 @@ if success and path:
     # You can test this by creating a dummy file first or using an existing file
     # For demo purposes, let's show how it would work:
     test_file = r"C:\Users\ADMIN\Downloads\Assignment 1 Stats.pdf"  # Replace with actual file path
-    copy_success, copy_message, copy_path = handler.copy_to(test_file, path)
+    copy_success, copy_message, copy_path = handler.copy_file_to(test_file, path)
     print(f"Copy Success: {copy_success}")
     print(f"Copy Message: {copy_message}")
     print(f"New File Path: {copy_path}")
+    
+    # Test copying to a subdirectory
+    if sub_success and sub_path:
+        print("\n=== Testing Copy to Subdirectory ===")
+        copy_success2, copy_message2, copy_path2 = handler.copy_file_to(test_file, sub_path)
+        print(f"Copy Success: {copy_success2}")
+        print(f"Copy Message: {copy_message2}")
+        print(f"New File Path: {copy_path2}")
+
+    # Testing copying a folder
+    print("\n=== Testing Folder Copy ===")
+
+    test_source_folder = r"C:\Users\ADMIN\Documents\University Study Materials\vector calculus"
+    copy_folder_success, copy_folder_message, new_folder_path = handler.copy_folder_to(test_source_folder, path)
+    print(f"Folder Copy Success: {copy_folder_success}")
+    print(f"Folder Copy Message: {copy_folder_message}")
+    print(f"New Folder Path: {new_folder_path}")
