@@ -1,6 +1,6 @@
 # avoid disrupting the code by import error, importing the config
 try:
-    from ...config import QWEN_BASE_URL, QWEN_MODEL, OPENROUTER_QWEN_API
+    from ..config import QWEN_BASE_URL, QWEN_MODEL, OPENROUTER_QWEN_API
 except ImportError:
     import sys
     import os

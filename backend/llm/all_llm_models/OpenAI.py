@@ -1,6 +1,6 @@
 # avoid disrupting the code by import error, importing the config
 try:
-    from ...config import OPENAI_BASE_URL, OPENAI_MODEL, OPENROUTER_OPENAI_API
+    from ..config import OPENAI_BASE_URL, OPENAI_MODEL, OPENROUTER_OPENAI_API
 except ImportError:
     import sys
     import os
