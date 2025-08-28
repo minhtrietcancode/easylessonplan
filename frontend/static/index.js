@@ -23,14 +23,15 @@ document.addEventListener('DOMContentLoaded', function() {
         observer.observe(card);
     });
 
-    // Add click effect to CTA button
-    const ctaButton = document.querySelector('.cta-button');
-    ctaButton.addEventListener('click', function(e) {
-        e.preventDefault();
-        this.style.transform = 'translateY(-2px) scale(0.98)';
-        setTimeout(() => {
-            this.style.transform = 'translateY(-2px) scale(1)';
-        }, 150);
+    // Placeholder for Google Auth button click effect
+    document.querySelectorAll('[id^="google-auth-button"]').forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            // This is where you would integrate with your Python backend for Google authentication
+            console.log('Continue with Google button clicked!');
+            alert('Google authentication will be integrated here!');
+            // Example: window.location.href = '/auth/google';
+        });
     });
 
     // Smooth scrolling for navigation links
