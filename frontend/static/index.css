@@ -6,16 +6,17 @@
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    line-height: 1.6;
+    line-height: 1.5;
     color: #000000;
     background: #f8f9fc;
     min-height: 100vh;
+    font-size: 15px; /* Added for overall text size adjustment */
 }
 
 .container {
-    max-width: 1200px;
+    max-width: 1100px; /* Reduced max-width for a more compact layout */
     margin: 0 auto;
-    padding: 0 20px;
+    padding: 0 15px; /* Adjusted padding */
 }
 
 /* Header */
@@ -32,18 +33,18 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1rem 0;
+    padding: 0.8rem 0; /* Reduced padding */
 }
 
 .nav-section {
     display: flex;
     align-items: center;
-    gap: 3rem;
+    gap: 1.5rem; /* Reduced gap between links */
 }
 
 .nav-links {
     display: flex;
-    gap: 2rem;
+    gap: 1.5rem; /* Reduced gap between links */
     list-style: none;
 }
 
@@ -52,6 +53,7 @@ header {
     text-decoration: none;
     font-weight: 500;
     transition: color 0.3s ease;
+    font-size: 0.95rem; /* Slightly reduced font size */
 }
 
 .nav-links a:hover {
@@ -61,7 +63,7 @@ header {
 .auth-section {
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: 0.8rem; /* Reduced gap */
 }
 
 .login-link {
@@ -69,6 +71,7 @@ header {
     text-decoration: none;
     font-weight: 500;
     transition: color 0.3s ease;
+    font-size: 0.95rem; /* Slightly reduced font size */
 }
 
 .login-link:hover {
@@ -76,7 +79,7 @@ header {
 }
 
 .logo {
-    font-size: 2rem;
+    font-size: 1.8rem; /* Reduced logo size */
     font-weight: 700;
     color: #4C50CC;
     text-decoration: none;
@@ -91,10 +94,10 @@ header {
 .cta-button {
     background: #4C50CC;
     color: white;
-    padding: 12px 24px;
+    padding: 10px 20px; /* Reduced padding */
     border: none;
     border-radius: 8px;
-    font-size: 16px;
+    font-size: 15px; /* Slightly reduced font size */
     font-weight: 600;
     cursor: pointer;
     text-decoration: none;
@@ -112,12 +115,12 @@ header {
 /* Hero Section */
 .hero {
     text-align: center;
-    padding: 100px 0 120px 0;
+    padding: 80px 0 100px 0; /* Reduced padding */
     background: #f8f9fc;
 }
 
 .hero h1 {
-    font-size: 3.5rem;
+    font-size: 3rem; /* Reduced font size */
     font-weight: 600; /* Made thinner */
     margin-bottom: 1.5rem;
     color: #000000;
@@ -129,9 +132,9 @@ header {
 }
 
 .hero-description {
-    font-size: 1.2rem;
+    font-size: 1.1rem; /* Reduced font size */
     color: #6b7280;
-    margin-bottom: 3rem;
+    margin-bottom: 2.5rem; /* Reduced margin */
     line-height: 1.6;
     max-width: 700px;
     margin-left: auto;
@@ -149,10 +152,10 @@ header {
 .primary-button {
     background: #4C50CC;
     color: white;
-    padding: 14px 28px;
+    padding: 12px 24px; /* Reduced padding */
     border: none;
     border-radius: 8px;
-    font-size: 16px;
+    font-size: 15px; /* Reduced font size */
     font-weight: 600;
     cursor: pointer;
     text-decoration: none;
@@ -168,8 +171,8 @@ header {
     color: #4C50CC;
     text-decoration: none;
     font-weight: 600;
-    font-size: 16px;
-    padding: 14px 20px;
+    font-size: 15px; /* Reduced font size */
+    padding: 12px 18px; /* Reduced padding */
     transition: all 0.3s ease;
 }
 
@@ -179,7 +182,7 @@ header {
 
 /* Features Section */
 .features {
-    padding: 80px 0;
+    padding: 70px 0; /* Reduced padding */
     background: #4C50CC;
     color: white;
 }
@@ -190,21 +193,21 @@ header {
 
 .section-title {
     text-align: center;
-    font-size: 2.5rem;
+    font-size: 2.2rem; /* Reduced font size */
     font-weight: 700;
-    margin-bottom: 3rem;
+    margin-bottom: 2.5rem; /* Reduced margin */
     color: #000000;
 }
 
 .features-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 2rem;
-    margin-top: 3rem;
+    gap: 1.5rem; /* Reduced gap */
+    margin-top: 2.5rem; /* Reduced margin */
 }
 
 .feature-card {
-    padding: 2.5rem 2rem;
+    padding: 2rem 1.5rem; /* Reduced padding */
     text-align: center;
     transition: all 0.3s ease;
     background: rgba(255, 255, 255, 0.1);
@@ -219,21 +222,21 @@ header {
 }
 
 .feature-icon {
-    font-size: 3rem;
+    font-size: 2.5rem; /* Reduced icon size */
     color: rgba(255, 255, 255, 0.9);
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem; /* Reduced margin */
     display: block;
 }
 
 .feature-card h3 {
-    font-size: 1.5rem;
+    font-size: 1.3rem; /* Reduced font size */
     font-weight: 600;
-    margin-bottom: 1rem;
+    margin-bottom: 0.8rem; /* Reduced margin */
     color: white;
 }
 
 .feature-card p {
-    font-size: 16px;
+    font-size: 15px; /* Reduced font size */
     color: rgba(255, 255, 255, 0.9);
     line-height: 1.6;
 }
@@ -241,21 +244,21 @@ header {
 /* About Section */
 .about {
     background: #f1f5f9;
-    padding: 80px 0;
+    padding: 70px 0; /* Reduced padding */
 }
 
 .about-content {
     display: grid;
-    grid-template-columns: 200px 1fr;
-    gap: 3rem;
+    grid-template-columns: 180px 1fr; /* Reduced avatar column size */
+    gap: 2.5rem; /* Reduced gap */
     align-items: center;
     max-width: 800px;
     margin: 0 auto;
 }
 
 .avatar {
-    width: 200px;
-    height: 200px;
+    width: 180px; /* Reduced avatar size */
+    height: 180px; /* Reduced avatar size */
     border-radius: 50%;
     object-fit: cover;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
@@ -263,8 +266,8 @@ header {
 }
 
 .avatar-placeholder {
-    width: 200px;
-    height: 200px;
+    width: 180px; /* Reduced avatar size */
+    height: 180px; /* Reduced avatar size */
     border-radius: 50%;
     background: #4C50CC;
     display: flex;
@@ -277,7 +280,7 @@ header {
 }
 
 .about-text {
-    font-size: 18px;
+    font-size: 17px; /* Reduced font size */
     line-height: 1.7;
     color: #000000;
 }
@@ -286,27 +289,27 @@ header {
 footer {
     background: #1f2937;
     color: white;
-    padding: 3rem 0;
+    padding: 2.5rem 0; /* Reduced padding */
     text-align: center;
 }
 
 .social-links {
     display: flex;
     justify-content: center;
-    gap: 2rem;
-    margin-top: 2rem;
+    gap: 1.5rem; /* Reduced gap */
+    margin-top: 1.5rem; /* Reduced margin */
 }
 
 .social-icon {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 50px;
-    height: 50px;
+    width: 45px; /* Reduced icon size */
+    height: 45px; /* Reduced icon size */
     background: rgba(255, 255, 255, 0.1);
     color: white;
     border-radius: 50%;
-    font-size: 1.2rem;
+    font-size: 1.1rem; /* Reduced icon font size */
     text-decoration: none;
     transition: all 0.3s ease;
     backdrop-filter: blur(10px);
