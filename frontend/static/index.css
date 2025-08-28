@@ -140,7 +140,7 @@ header {
 
 /* Hero Section */
 .hero {
-    text-align: center;
+    text-align: justify;
     padding: 80px 0 100px 0; /* Reduced padding */
     background: #f8f9fc;
 }
@@ -151,7 +151,7 @@ header {
     margin-bottom: 1.5rem;
     color: #000000;
     line-height: 1.1;
-    max-width: 900px;
+    max-width: 750px;
     margin-left: auto;
     margin-right: auto;
     text-align: center; /* Explicitly center align for consistency */
@@ -355,7 +355,7 @@ footer {
 
     .about-content {
         grid-template-columns: 1fr;
-        text-align: center;
+        text-align: left;
         gap: 2rem;
     }
 
