@@ -1,5 +1,8 @@
 // Add smooth scrolling and interactive effects
 document.addEventListener('DOMContentLoaded', function() {
+    // Check if user is already logged in
+    checkAuthStatus();
+    
     // Smooth reveal animation for feature cards
     const observerOptions = {
         threshold: 0.1,
@@ -23,14 +26,12 @@ document.addEventListener('DOMContentLoaded', function() {
         observer.observe(card);
     });
 
-    // Placeholder for Google Auth button click effect
+    // Google Auth button click handlers
     document.querySelectorAll('[id^="google-auth-button"]').forEach(button => {
         button.addEventListener('click', function(e) {
             e.preventDefault();
-            // This is where you would integrate with your Python backend for Google authentication
-            console.log('Continue with Google button clicked!');
-            alert('Google authentication will be integrated here!');
-            // Example: window.location.href = '/auth/google';
+            // Redirect to Flask backend authentication route
+            window.location.href = '/auth/login';
         });
     });
 
@@ -38,10 +39,14 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('.nav-links a').forEach(anchor => {
         anchor.addEventListener('click', function(e) {
             e.preventDefault();
-
-            document.querySelector(this.hash).scrollIntoView({
-                behavior: 'smooth'
-            });
+            const targetId = this.hash;
+            const targetElement = document.querySelector(targetId);
+            
+            if (targetElement) {
+                targetElement.scrollIntoView({
+                    behavior: 'smooth'
+                });
+            }
         });
     });
 
@@ -54,3 +59,33 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
+
+// Check authentication status
+async function checkAuthStatus() {
+    try {
+        const response = await fetch('/auth/user');
+        const data = await response.json();
+        
+        if (data.user) {
+            // User is logged in, update UI accordingly
+            updateUIForLoggedInUser(data.user);
+        }
+    } catch (error) {
+        console.log('Auth check failed:', error);
+    }
+}
+
+// Update UI for logged-in user
+function updateUIForLoggedInUser(user) {
+    // Update Google auth buttons to show user info or dashboard link
+    document.querySelectorAll('[id^="google-auth-button"]').forEach(button => {
+        button.innerHTML = `
+            <i class="fas fa-user-circle"></i> 
+            Welcome, ${user.name.split(' ')[0]}
+        `;
+        button.onclick = function(e) {
+            e.preventDefault();
+            window.location.href = '/dashboard';
+        };
+    });
+}
