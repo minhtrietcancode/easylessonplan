@@ -1,6 +1,5 @@
 import os
 from flask import Flask, render_template, session, redirect, url_for
-from flask_session import Session
 from loginauth import auth_bp, login_required, Config
 
 def create_app():
@@ -11,9 +10,6 @@ def create_app():
     
     # Load configuration
     app.config.from_object(Config)
-    
-    # Initialize session
-    Session(app)
     
     # Register blueprints
     app.register_blueprint(auth_bp)

@@ -1,11 +1,15 @@
 import json
 import requests
+import os
 from flask import Blueprint, request, redirect, session, url_for, jsonify
 from google.auth.transport import requests as google_requests
 from google.oauth2 import id_token
 from google_auth_oauthlib.flow import Flow
 import google.auth.exceptions
 from .config import Config
+
+# This allows insecure transport for development (HTTP instead of HTTPS)
+os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
 
 # Create Blueprint for authentication routes
 auth_bp = Blueprint('auth', __name__, url_prefix='/auth')

@@ -12,8 +12,3 @@ class Config:
     
     # OAuth 2.0 settings
     GOOGLE_DISCOVERY_URL = "https://accounts.google.com/.well-known/openid_configuration"
-    
-    # Session configuration
-    SESSION_TYPE = 'filesystem'
-    SESSION_PERMANENT = False
-    SESSION_USE_SIGNER = True
