@@ -5,22 +5,281 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EasyLesson - AI-Powered Lesson Planning</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="../static/easylesson.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f4f7f6;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        .easylesson-container {
+            display: flex;
+            height: 100vh;
+            width: 100vw;
+            gap: 0;
+            overflow: hidden;
+        }
+
+        .column {
+            display: flex;
+            flex-direction: column;
+            padding: 24px;
+            background-color: #ffffff;
+            overflow-y: auto;
+            position: relative;
+            border-right: 1px solid #e5e7eb;
+        }
+
+        .column:last-child {
+            border-right: none;
+        }
+
+        /* Resizer styling */
+        .resizer {
+            position: absolute;
+            right: -2px;
+            top: 0;
+            width: 4px;
+            height: 100%;
+            background-color: transparent;
+            cursor: col-resize;
+            z-index: 10;
+            transition: background-color 0.2s ease;
+        }
+
+        .resizer:hover {
+            background-color: #4C50CC;
+            width: 4px;
+        }
+
+        .resizer:active {
+            background-color: #4247B0;
+        }
+
+        /* Left Column */
+        .left-column {
+            width: 300px;
+            min-width: 250px;
+            flex-shrink: 0;
+            flex-grow: 0;
+        }
+
+        .left-column .column-header {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #4C50CC;
+            margin: 0 0 32px 0;
+            text-align: center;
+            letter-spacing: -0.5px;
+        }
+
+        .upload-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .upload-box {
+            border: 2px dashed #d1d5db;
+            border-radius: 12px;
+            padding: 40px 20px;
+            text-align: center;
+            background-color: #f9fafb;
+            width: 100%;
+            max-width: 280px;
+            transition: all 0.3s ease;
+        }
+
+        .upload-box:hover {
+            border-color: #4C50CC;
+            background-color: #f8f9ff;
+        }
+
+        .upload-button {
+            background: #4C50CC;
+            color: white;
+            padding: 10px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .upload-button:hover {
+            background: #4247B0;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(76, 80, 204, 0.3);
+        }
+
+        /* Middle Column */
+        .middle-column {
+            flex: 1;
+            min-width: 300px;
+            background-color: #fafafa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #9ca3af;
+            font-style: italic;
+        }
+
+        /* Right Column */
+        .right-column {
+            width: 350px;
+            min-width: 300px;
+            flex-shrink: 0;
+            flex-grow: 0;
+        }
+
+        .right-column .column-header {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #4C50CC;
+            margin: 0 0 24px 0;
+            text-align: center;
+            letter-spacing: -0.3px;
+        }
+
+        .chat-interface {
+            display: flex;
+            flex-direction: column;
+            height: calc(100% - 80px);
+        }
+
+        .chat-messages {
+            flex: 1;
+            background-color: #ffffff;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+            overflow-y: auto;
+            border: 1px solid #e5e7eb;
+            min-height: 200px;
+        }
+
+        .chat-input-container {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .chat-input-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 1px solid #d1d5db;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            background-color: #f9fafb;
+            transition: all 0.2s ease;
+        }
+
+        .chat-input:focus {
+            outline: none;
+            border-color: #4C50CC;
+            background-color: #ffffff;
+            box-shadow: 0 0 0 3px rgba(76, 80, 204, 0.1);
+        }
+
+        .send-button {
+            background: #4C50CC;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .send-button:hover {
+            background: #4247B0;
+            transform: scale(1.05);
+        }
+
+        .ai-model-indicator {
+            background-color: #6b7280;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            align-self: flex-end;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .easylesson-container {
+                flex-direction: column;
+                height: auto;
+            }
+
+            .column {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid #e5e7eb;
+                height: auto;
+                min-height: 300px;
+            }
+
+            .column:last-child {
+                border-bottom: none;
+            }
+
+            .resizer {
+                display: none;
+            }
+        }
+
+        /* Prevent text selection during resize */
+        .resizing {
+            user-select: none;
+            cursor: col-resize;
+        }
+
+        .resizing * {
+            pointer-events: none;
+        }
+    </style>
 </head>
 <body>
     <div class="easylesson-container">
         <!-- Left Column - File Upload Section -->
         <div class="column left-column">
             <h2 class="column-header">EasyLesson</h2>
-            <div class="upload-box">
-                <button class="upload-button">Upload File</button>
+            <div class="upload-section">
+                <div class="upload-box">
+                    <button class="upload-button">
+                        <i class="fas fa-upload"></i>
+                        Upload File
+                    </button>
+                </div>
             </div>
             <div class="resizer"></div>
         </div>
 
         <!-- Middle Column - File Display Area -->
         <div class="column middle-column">
-            <!-- Content will be displayed here -->
+            <div>File content will appear here...</div>
             <div class="resizer"></div>
         </div>
 
@@ -31,14 +290,103 @@
                 <div class="chat-messages">
                     <!-- Chat messages will appear here -->
                 </div>
-                <div class="chat-input-area">
-                    <input type="text" placeholder="Message your AI assistant..." class="chat-input">
+                <div class="chat-input-container">
+                    <div class="chat-input-wrapper">
+                        <input type="text" placeholder="Message your AI assistant..." class="chat-input">
+                        <button class="send-button">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
                     <div class="ai-model-indicator">Model: GPT-4</div>
                 </div>
             </div>
         </div>
     </div>
 
-    <script src="../static/easylesson.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const container = document.querySelector('.easylesson-container');
+            const resizers = document.querySelectorAll('.resizer');
+            
+            let isResizing = false;
+            let currentResizer = null;
+            let startX = 0;
+            let startWidths = [];
+
+            resizers.forEach((resizer, index) => {
+                resizer.addEventListener('mousedown', function(e) {
+                    e.preventDefault();
+                    isResizing = true;
+                    currentResizer = resizer;
+                    startX = e.clientX;
+
+                    // Get all columns and their current widths
+                    const columns = Array.from(container.children);
+                    startWidths = columns.map(col => col.offsetWidth);
+
+                    // Add resizing class to prevent text selection
+                    document.body.classList.add('resizing');
+                    
+                    // Add event listeners for mouse move and up
+                    document.addEventListener('mousemove', handleMouseMove);
+                    document.addEventListener('mouseup', handleMouseUp);
+                });
+            });
+
+            function handleMouseMove(e) {
+                if (!isResizing || !currentResizer) return;
+
+                const deltaX = e.clientX - startX;
+                const columns = Array.from(container.children);
+                const resizerIndex = Array.from(resizers).indexOf(currentResizer);
+                
+                const leftColumn = columns[resizerIndex];
+                const rightColumn = columns[resizerIndex + 1];
+                
+                if (!leftColumn || !rightColumn) return;
+
+                const containerWidth = container.offsetWidth;
+                const newLeftWidth = startWidths[resizerIndex] + deltaX;
+                const newRightWidth = startWidths[resizerIndex + 1] - deltaX;
+
+                // Check minimum widths
+                const minWidth = 250;
+                if (newLeftWidth < minWidth || newRightWidth < minWidth) return;
+
+                // Update column widths
+                const leftPercentage = (newLeftWidth / containerWidth) * 100;
+                const rightPercentage = (newRightWidth / containerWidth) * 100;
+
+                leftColumn.style.flex = `0 0 ${leftPercentage}%`;
+                rightColumn.style.flex = `0 0 ${rightPercentage}%`;
+            }
+
+            function handleMouseUp() {
+                if (!isResizing) return;
+
+                isResizing = false;
+                currentResizer = null;
+                document.body.classList.remove('resizing');
+                
+                // Remove event listeners
+                document.removeEventListener('mousemove', handleMouseMove);
+                document.removeEventListener('mouseup', handleMouseUp);
+            }
+
+            // Handle window resize to maintain proportions
+            window.addEventListener('resize', function() {
+                const columns = Array.from(container.children);
+                columns.forEach(column => {
+                    if (column.style.flex) {
+                        // Recalculate based on current container width
+                        const currentWidth = column.offsetWidth;
+                        const containerWidth = container.offsetWidth;
+                        const percentage = (currentWidth / containerWidth) * 100;
+                        column.style.flex = `0 0 ${percentage}%`;
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>
