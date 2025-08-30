@@ -66,10 +66,10 @@
             min-width: 250px;
             flex-shrink: 0;
             flex-grow: 0;
-            position: relative; /* Added for positioning the button */
+            position: relative;
             display: flex;
             flex-direction: column;
-            justify-content: space-between; /* To push content apart */
+            justify-content: space-between;
         }
 
         .left-column .column-header {
@@ -95,9 +95,9 @@
             align-items: center;
             gap: 8px;
             position: absolute;
-            bottom: 24px; /* Adjust as needed */
-            right: 24px;  /* Adjust as needed */
-            margin: 0; /* Remove default button margin */
+            bottom: 24px;
+            right: 24px;
+            margin: 0;
         }
 
         .upload-button:hover {
@@ -118,91 +118,127 @@
             font-style: italic;
         }
 
-        /* Right Column */
+        /* RIGHT COLUMN - COMPLETELY REWRITTEN */
         .right-column {
-            width: 350px;
-            min-width: 300px;
+            width: 400px;
+            min-width: 350px;
             flex-shrink: 0;
-            flex-grow: 0;
+            background-color: #ffffff;
+            padding: 20px;
+            overflow: hidden; /* Prevent column itself from scrolling */
         }
 
-        .right-column .column-header {
+        /* Chat Header */
+        .chat-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .chat-title {
             font-size: 1.4rem;
             font-weight: 600;
             color: #4C50CC;
-            margin: 0 0 24px 0;
-            text-align: center;
+            margin: 0;
             letter-spacing: -0.3px;
         }
 
-        .chat-interface {
+        /* Chat Container - Main wrapper */
+        .chat-container {
+            height: calc(100vh - 120px); /* Full height minus header and padding */
             display: flex;
             flex-direction: column;
-            height: calc(100% - 80px);
+            gap: 16px;
         }
 
-        .chat-messages {
-            flex: 1;
-            background-color: #ffffff;
-            border-radius: 8px;
+        /* Messages Area */
+        .messages-area {
+            flex: 1; /* Takes all available space */
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
             padding: 16px;
-            margin-bottom: 16px;
             overflow-y: auto;
-            border: 1px solid #e5e7eb;
-            min-height: 200px;
+            min-height: 0; /* Important for flex shrinking */
         }
 
-        .chat-input-container {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
+        .message {
+            margin-bottom: 12px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            max-width: 80%;
         }
 
-        .chat-input-wrapper {
-            display: flex;
-            flex-direction: column; /* Changed to column to stack elements */
-            gap: 8px; /* Gap between input and buttons */
-            border: 1px solid #d1d5db; /* Add border to wrapper */
-            border-radius: 20px; /* Match input border radius */
-            background-color: #f9fafb; /* Match input background */
-            padding: 8px 16px; /* Adjust padding as needed */
-            position: relative; /* For absolute positioning of buttons */
-            align-items: stretch; /* Stretch input horizontally */
+        .user-message {
+            background: #4C50CC;
+            color: white;
+            margin-left: auto;
         }
 
-        .chat-input {
-            flex: 1; /* Allow input to grow */
-            padding: 4px 0; /* Adjust padding within the wrapper */
-            border: none; /* Remove individual input border */
-            border-radius: 0; /* Remove individual input border radius */
-            background-color: transparent; /* Make input background transparent */
-            font-size: 0.9rem;
+        .ai-message {
+            background: #e2e8f0;
+            color: #374151;
+        }
+
+        /* Input Area - Clean and Simple */
+        .input-area {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 12px;
             transition: all 0.2s ease;
         }
 
-        .chat-input:focus {
-            outline: none;
-            border-color: transparent; /* No border color change on focus for input itself */
-            background-color: transparent;
-            box-shadow: none; /* No box shadow on focus for input itself */
+        .input-area:focus-within {
+            border-color: #4C50CC;
+            box-shadow: 0 0 0 3px rgba(76, 80, 204, 0.1);
         }
 
-        .chat-buttons-wrapper {
+        /* Auto-expanding textarea */
+        .message-input {
+            width: 100%;
+            min-height: 20px;
+            max-height: 120px; /* About 6 lines */
+            padding: 0;
+            border: none;
+            outline: none;
+            resize: none;
+            font-family: inherit;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            background: transparent;
+            overflow-y: auto;
+        }
+
+        .message-input::placeholder {
+            color: #9ca3af;
+        }
+
+        /* Bottom row with model indicator and send button */
+        .input-bottom {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            gap: 12px;
-            padding-top: 8px; /* Space between input and buttons */
-            border-top: 1px solid #e5e7eb; /* Separator line */
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px solid #f1f5f9;
         }
 
-        .send-button {
+        .model-tag {
+            background: #64748b;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .send-btn {
             background: #4C50CC;
             color: white;
             border: none;
             border-radius: 50%;
-            width: 40px;
-            height: 40px;
+            width: 36px;
+            height: 36px;
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -210,19 +246,13 @@
             transition: all 0.2s ease;
         }
 
-        .send-button:hover {
+        .send-btn:hover {
             background: #4247B0;
             transform: scale(1.05);
         }
 
-        .ai-model-indicator {
-            background-color: #6b7280;
-            color: white;
-            padding: 4px 12px;
-            border-radius: 12px;
-            font-size: 0.75rem;
-            font-weight: 500;
-            /* align-self: flex-end; Remove this as it's now in a flex container */
+        .send-btn:active {
+            transform: scale(0.95);
         }
 
         /* Responsive Design */
@@ -246,6 +276,10 @@
 
             .resizer {
                 display: none;
+            }
+
+            .chat-container {
+                height: 400px; /* Fixed height for mobile */
             }
         }
 
@@ -278,22 +312,39 @@
             <div class="resizer"></div>
         </div>
 
-        <!-- Right Column - AI Chat Interface -->
+        <!-- RIGHT COLUMN - COMPLETELY REWRITTEN -->
         <div class="column right-column">
-            <h2 class="column-header">AI Lesson Assistant</h2>
-            <div class="chat-interface">
-                <div class="chat-messages">
-                    <!-- Chat messages will appear here -->
+            <!-- Header -->
+            <div class="chat-header">
+                <h2 class="chat-title">AI Lesson Assistant</h2>
+            </div>
+
+            <!-- Main Chat Container -->
+            <div class="chat-container">
+                <!-- Messages Area -->
+                <div class="messages-area" id="messagesArea">
+                    <div class="message ai-message">
+                        <i class="fas fa-robot" style="margin-right: 8px;"></i>
+                        Hello! I'm your AI lesson assistant. How can I help you create amazing lessons today?
+                    </div>
                 </div>
-                <div class="chat-input-container">
-                    <div class="chat-input-wrapper">
-                        <input type="text" placeholder="Message your AI assistant..." class="chat-input">
-                        <div class="chat-buttons-wrapper">
-                            <div class="ai-model-indicator">Model: GPT-4</div>
-                            <button class="send-button">
-                                <i class="fas fa-paper-plane"></i>
-                            </button>
+
+                <!-- Input Area -->
+                <div class="input-area">
+                    <textarea 
+                        id="messageInput"
+                        class="message-input" 
+                        placeholder="Type your message here... Press Enter to send!"
+                        rows="1"></textarea>
+                    
+                    <div class="input-bottom">
+                        <div class="model-tag">
+                            <i class="fas fa-brain" style="margin-right: 4px;"></i>
+                            GPT-4
                         </div>
+                        <button class="send-btn" id="sendButton">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -304,12 +355,82 @@
         document.addEventListener('DOMContentLoaded', function() {
             const container = document.querySelector('.easylesson-container');
             const resizers = document.querySelectorAll('.resizer');
+            const messageInput = document.getElementById('messageInput');
+            const messagesArea = document.getElementById('messagesArea');
+            const sendButton = document.getElementById('sendButton');
             
             let isResizing = false;
             let currentResizer = null;
             let startX = 0;
             let startWidths = [];
 
+            // ===== AUTO-EXPANDING TEXTAREA - CLEAN VERSION =====
+            function autoResize() {
+                // Reset height to get accurate scrollHeight
+                messageInput.style.height = 'auto';
+                
+                const scrollHeight = messageInput.scrollHeight;
+                const maxHeight = 120; // Max height (about 6 lines)
+                const minHeight = 20;  // Min height (1 line)
+                
+                // Set new height within limits
+                const newHeight = Math.min(Math.max(scrollHeight, minHeight), maxHeight);
+                messageInput.style.height = newHeight + 'px';
+                
+                // Enable/disable scrolling based on content
+                if (scrollHeight > maxHeight) {
+                    messageInput.style.overflowY = 'auto';
+                } else {
+                    messageInput.style.overflowY = 'hidden';
+                }
+            }
+
+            // ===== SEND MESSAGE FUNCTIONALITY =====
+            function sendMessage() {
+                const text = messageInput.value.trim();
+                if (!text) return;
+
+                // Add user message
+                const userMsg = document.createElement('div');
+                userMsg.className = 'message user-message';
+                userMsg.innerHTML = `<i class="fas fa-user" style="margin-right: 8px;"></i>${text}`;
+                messagesArea.appendChild(userMsg);
+
+                // Clear input and reset height
+                messageInput.value = '';
+                autoResize();
+
+                // Add AI response (simulate)
+                setTimeout(() => {
+                    const aiMsg = document.createElement('div');
+                    aiMsg.className = 'message ai-message';
+                    aiMsg.innerHTML = `<i class="fas fa-robot" style="margin-right: 8px;"></i>I received your message: "${text}". How can I help you with your lesson planning?`;
+                    messagesArea.appendChild(aiMsg);
+                    
+                    // Scroll to bottom
+                    messagesArea.scrollTop = messagesArea.scrollHeight;
+                }, 500);
+
+                // Scroll to bottom
+                messagesArea.scrollTop = messagesArea.scrollHeight;
+            }
+
+            // ===== EVENT LISTENERS =====
+            messageInput.addEventListener('input', autoResize);
+            
+            messageInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    sendMessage();
+                }
+            });
+
+            sendButton.addEventListener('click', sendMessage);
+
+            // Initial setup
+            autoResize();
+
+            // ===== COLUMN RESIZING (KEEP EXISTING) =====
             resizers.forEach((resizer, index) => {
                 resizer.addEventListener('mousedown', function(e) {
                     e.preventDefault();
@@ -317,14 +438,10 @@
                     currentResizer = resizer;
                     startX = e.clientX;
 
-                    // Get all columns and their current widths
                     const columns = Array.from(container.children);
                     startWidths = columns.map(col => col.offsetWidth);
 
-                    // Add resizing class to prevent text selection
                     document.body.classList.add('resizing');
-                    
-                    // Add event listeners for mouse move and up
                     document.addEventListener('mousemove', handleMouseMove);
                     document.addEventListener('mouseup', handleMouseUp);
                 });
@@ -346,11 +463,9 @@
                 const newLeftWidth = startWidths[resizerIndex] + deltaX;
                 const newRightWidth = startWidths[resizerIndex + 1] - deltaX;
 
-                // Check minimum widths
                 const minWidth = 250;
                 if (newLeftWidth < minWidth || newRightWidth < minWidth) return;
 
-                // Update column widths
                 const leftPercentage = (newLeftWidth / containerWidth) * 100;
                 const rightPercentage = (newRightWidth / containerWidth) * 100;
 
@@ -365,17 +480,14 @@
                 currentResizer = null;
                 document.body.classList.remove('resizing');
                 
-                // Remove event listeners
                 document.removeEventListener('mousemove', handleMouseMove);
                 document.removeEventListener('mouseup', handleMouseUp);
             }
 
-            // Handle window resize to maintain proportions
             window.addEventListener('resize', function() {
                 const columns = Array.from(container.children);
                 columns.forEach(column => {
                     if (column.style.flex) {
-                        // Recalculate based on current container width
                         const currentWidth = column.offsetWidth;
                         const containerWidth = container.offsetWidth;
                         const percentage = (currentWidth / containerWidth) * 100;
