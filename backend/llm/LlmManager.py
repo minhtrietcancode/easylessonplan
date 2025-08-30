@@ -1,4 +1,4 @@
-# Updated LlmManager.py - Dynamic model loading
+# Updated LlmManager.py - Dynamic model loading with Model instance as currentModel
 import importlib
 import os
 from .LlmConfig import LlmConfig
@@ -6,16 +6,16 @@ from langchain_core.messages import HumanMessage
 
 class LlmManager:
     def __init__(self) -> None:
-        # Get supported models dynamically from config
+        # Get supported models dynamically from config --> type: list[model_name : string]
         self.supported_models = LlmConfig.get_supported_models()
         
         # Dynamically load all model instances
-        self.model_instances = {}
+        self.model_instances = {} # --> type: dict {"model_name" : Model(), ...}
         self._load_all_models()
         
         # Set default model (first in the list or specify)
         default_model = "Qwen" if "Qwen" in self.supported_models else self.supported_models[0]
-        self.setCurrentModel(default_model)
+        self.setCurrentModel(default_model) # type of currentModel: Model()
 
     def _load_all_models(self):
         """Dynamically loads all model classes and creates instances"""
@@ -56,15 +56,33 @@ class LlmManager:
         if model_name not in self.model_instances:
             raise ValueError(f"Model '{model_name}' is supported but not loaded.")
             
-        self.currentModel = self.model_instances[model_name].llm_client
+        # Now currentModel is a Model instance, not the llm_client
+        self.currentModel = self.model_instances[model_name]
         print(f"🔄 Switched to {model_name} model")
 
     def getCurrentModel(self):
-        """Returns the current model client"""
+        """
+        Returns the current Model instance (not the client).
+        To get the actual LLM client, use getCurrentModelClient().
+        """
         return self.currentModel
     
+    def getCurrentModelClient(self):
+        """
+        Returns the current model's LLM client (ChatOpenAI instance).
+        This is what you use to actually invoke the model.
+        """
+        return self.currentModel.llm_client
+    
+    def getCurrentModelName(self):
+        """Returns the name of the current model"""
+        for model_name, instance in self.model_instances.items():
+            if instance == self.currentModel:
+                return model_name
+        return None
+    
     def get_available_models(self):
-        """Returns list of successfully loaded models"""
+        """Returns list of successfully loaded models: List["model_name" : string] """
         return list(self.model_instances.keys())
     
     def invoke(self, message: str):
@@ -74,7 +92,8 @@ class LlmManager:
             - Output: response.content --> string
         """
         try: 
-            current_client = self.getCurrentModel()
+            # Use the new getCurrentModelClient() method
+            current_client = self.getCurrentModelClient()
             current_client_response = current_client.invoke([HumanMessage(content=message)])
             return current_client_response.content
         except ValueError as e:
