@@ -1,4 +1,4 @@
 from .auth import auth_bp, login_required
-from .config import Config
+from .AuthConfig import AuthConfig
 
-__all__ = ['auth_bp', 'login_required', 'Config']
+__all__ = ['auth_bp', 'login_required', 'AuthConfig']

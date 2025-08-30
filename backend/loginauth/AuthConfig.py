@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-class Config:
+class AuthConfig:
     """Application configuration settings."""
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'your-secret-key-here'
     

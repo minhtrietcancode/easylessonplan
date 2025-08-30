@@ -1,6 +1,6 @@
 import os
 from flask import Flask, render_template, session, redirect, url_for
-from loginauth import auth_bp, login_required, Config
+from loginauth import auth_bp, login_required, AuthConfig
 
 def create_app():
     """Application factory pattern"""
@@ -9,7 +9,7 @@ def create_app():
                 static_folder='../frontend/static')
     
     # Load configuration
-    app.config.from_object(Config)
+    app.config.from_object(AuthConfig)
     
     # Register blueprints
     app.register_blueprint(auth_bp)
@@ -37,7 +37,7 @@ def health():
 
 if __name__ == '__main__':
     # Check if required environment variables are set
-    if not Config.GOOGLE_CLIENT_ID or not Config.GOOGLE_CLIENT_SECRET:
+    if not AuthConfig.GOOGLE_CLIENT_ID or not AuthConfig.GOOGLE_CLIENT_SECRET:
         print("⚠️  Warning: Google OAuth credentials not found!")
         print("Please set GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET environment variables.")
         print("See setup instructions below.")

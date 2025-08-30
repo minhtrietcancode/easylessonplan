@@ -6,11 +6,11 @@ from google.auth.transport import requests as google_requests
 from google.oauth2 import id_token
 from google_auth_oauthlib.flow import Flow
 import google.auth.exceptions
-from .config import Config
+from .AuthConfig import AuthConfig
 
 # Set OAUTHLIB_INSECURE_TRANSPORT based on Config
 # This allows insecure transport for development (HTTP instead of HTTPS)
-os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1' if Config.OAUTHLIB_INSECURE_TRANSPORT else '0'
+os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1' if AuthConfig.OAUTHLIB_INSECURE_TRANSPORT else '0'
 
 # Create Blueprint for authentication routes
 auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
@@ -25,8 +25,8 @@ class AuthService:
         flow = Flow.from_client_config(
             {
                 "web": {
-                    "client_id": Config.GOOGLE_CLIENT_ID,
-                    "client_secret": Config.GOOGLE_CLIENT_SECRET,
+                    "client_id": AuthConfig.GOOGLE_CLIENT_ID,
+                    "client_secret": AuthConfig.GOOGLE_CLIENT_SECRET,
                     "auth_uri": "https://accounts.google.com/o/oauth2/auth",
                     "token_uri": "https://oauth2.googleapis.com/token",
                     "redirect_uris": ["http://localhost:5000/auth/callback"]
@@ -83,7 +83,7 @@ class AuthRoutes:
 
             # Verify the token
             idinfo = id_token.verify_oauth2_token(
-                credentials.id_token, request_session, Config.GOOGLE_CLIENT_ID
+                credentials.id_token, request_session, AuthConfig.GOOGLE_CLIENT_ID
             )
 
             # Store user info in session
