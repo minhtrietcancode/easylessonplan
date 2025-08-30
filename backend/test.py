@@ -40,7 +40,7 @@ print(llm_manager.invoke("Say hi with me"))
 
 # Test OpenAI
 print("\n--- Testing OpenAI Model ---")
-llm_manager.setCurrentModel("Openai")
+llm_manager.setCurrentModel("OpenAI")
 print(llm_manager.invoke("Say hi with me"))
 
 '''
