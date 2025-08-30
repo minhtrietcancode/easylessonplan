@@ -22,6 +22,9 @@ body {
     background-color: #ffffff;
     overflow-y: auto;
     position: relative;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    border-radius: 8px;
+    margin: 10px;
 }
 
 .column:last-child {
@@ -49,11 +52,13 @@ body {
     min-width: 200px;
 }
 
-.column-header {
-    font-size: 1.5rem;
-    font-weight: 700;
+.left-column .column-header {
+    font-size: 2rem;
+    font-weight: 800;
     color: #4C50CC;
-    margin-bottom: 20px;
+    margin-bottom: 40px;
+    padding-top: 15px;
+    text-align: center;
 }
 
 .upload-box {
@@ -66,18 +71,21 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+    margin-top: auto;
+    margin-bottom: auto;
 }
 
 .upload-button {
     background: #4C50CC;
     color: white;
-    padding: 12px 25px;
+    padding: 12px 30px;
     border: none;
     border-radius: 8px;
-    font-size: 1rem;
+    font-size: 1.1rem;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
+    display: inline-block; /* Make it compact */
 }
 
 .upload-button:hover {
@@ -106,27 +114,30 @@ body {
 
 .chat-messages {
     flex-grow: 1;
-    background-color: #f8f8f8;
+    background-color: transparent;
     border-radius: 8px;
     padding: 15px;
     margin-bottom: 15px;
     overflow-y: auto;
+    border: 1px solid #e0e0e0;
 }
 
 .chat-input-area {
     display: flex;
     align-items: center;
-    border-top: 1px solid #e0e0e0;
-    padding-top: 15px;
+    border-top: none;
+    padding-top: 0;
+    margin-top: 15px;
 }
 
 .chat-input {
     flex-grow: 1;
-    padding: 10px 15px;
+    padding: 12px 18px;
     border: 1px solid #e0e0e0;
-    border-radius: 20px;
+    border-radius: 25px;
     font-size: 0.95rem;
     margin-right: 10px;
+    background-color: #f9f9f9;
 }
 
 .chat-input:focus {
@@ -135,12 +146,21 @@ body {
 }
 
 .ai-model-indicator {
-    background-color: #e0e0e0;
-    color: #555;
-    padding: 5px 10px;
-    border-radius: 15px;
-    font-size: 0.8rem;
+    background-color: #4C50CC;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
     font-weight: 500;
+}
+
+/* General column header adjustments */
+.column-header {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #4C50CC;
+    margin-bottom: 25px;
+    text-align: center;
 }
 
 /* Responsive Design */
