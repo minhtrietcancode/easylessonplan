@@ -1,4 +1,4 @@
-// ===== EASYLESSON APP - MODULAR JAVASCRIPT =====
+// ===== EASYLESSON APP - FLASK INTEGRATED =====
 
 // ===== APP INITIALIZATION =====
 class EasyLessonApp {
@@ -7,6 +7,7 @@ class EasyLessonApp {
         this.resizer = new ColumnResizer(this.elements.container);
         this.chatInterface = new ChatInterface(this.elements.chat);
         this.fileUploader = new FileUploader(this.elements.upload);
+        this.modelSelector = new ModelSelector(this.elements.modelSelector);
         
         this.init();
     }
@@ -27,17 +28,404 @@ class EasyLessonApp {
             upload: {
                 button: document.getElementById('uploadButton'),
                 displayArea: document.getElementById('fileDisplayArea')
+            },
+            modelSelector: {
+                indicator: document.getElementById('modelIndicator'),
+                modelName: document.getElementById('modelName')
             }
         };
     }
 
-    init() {
+    async init() {
         console.log('EasyLesson App Initialized');
+        
+        // Load available models
+        await this.modelSelector.loadAvailableModels();
         
         // Handle window resize
         window.addEventListener('resize', () => {
             this.chatInterface.adjustLayout();
         });
+    }
+}
+
+// ===== MODEL SELECTOR MODULE =====
+class ModelSelector {
+    constructor(elements) {
+        this.elements = elements;
+        this.availableModels = [];
+        this.currentModel = '';
+        this.isDropdownOpen = false;
+        
+        this.init();
+    }
+
+    init() {
+        // Make model indicator clickable
+        this.elements.indicator.style.cursor = 'pointer';
+        this.elements.indicator.addEventListener('click', () => this.toggleDropdown());
+        
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!this.elements.indicator.contains(e.target)) {
+                this.closeDropdown();
+            }
+        });
+    }
+
+    async loadAvailableModels() {
+        try {
+            const response = await API.models.getAvailable();
+            this.availableModels = response.models;
+            this.currentModel = response.current_model;
+            
+            // Update UI
+            this.elements.modelName.textContent = this.currentModel;
+            
+            console.log('Available models loaded:', this.availableModels);
+        } catch (error) {
+            console.error('Error loading models:', error);
+            Utils.showNotification('Failed to load available models', 'error');
+        }
+    }
+
+    toggleDropdown() {
+        if (this.isDropdownOpen) {
+            this.closeDropdown();
+        } else {
+            this.openDropdown();
+        }
+    }
+
+    openDropdown() {
+        this.isDropdownOpen = true;
+        
+        // Create dropdown element
+        const dropdown = document.createElement('div');
+        dropdown.className = 'model-dropdown';
+        dropdown.style.cssText = `
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+            margin-top: 4px;
+            max-height: 200px;
+            overflow-y: auto;
+        `;
+
+        // Add model options
+        this.availableModels.forEach(modelName => {
+            const option = document.createElement('div');
+            option.className = 'model-option';
+            option.style.cssText = `
+                padding: 10px 12px;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                transition: background-color 0.2s ease;
+                ${modelName === this.currentModel ? 'background-color: #f1f5f9; font-weight: 600;' : ''}
+            `;
+            
+            option.innerHTML = `
+                <i class="fas fa-brain" style="color: #4C50CC;"></i>
+                <span>${modelName}</span>
+                ${modelName === this.currentModel ? '<i class="fas fa-check" style="color: #10b981; margin-left: auto;"></i>' : ''}
+            `;
+            
+            option.addEventListener('mouseenter', () => {
+                if (modelName !== this.currentModel) {
+                    option.style.backgroundColor = '#f8fafc';
+                }
+            });
+            
+            option.addEventListener('mouseleave', () => {
+                if (modelName !== this.currentModel) {
+                    option.style.backgroundColor = 'transparent';
+                }
+            });
+            
+            option.addEventListener('click', () => this.selectModel(modelName));
+            
+            dropdown.appendChild(option);
+        });
+
+        // Position dropdown relative to indicator
+        this.elements.indicator.style.position = 'relative';
+        this.elements.indicator.appendChild(dropdown);
+    }
+
+    closeDropdown() {
+        this.isDropdownOpen = false;
+        const dropdown = this.elements.indicator.querySelector('.model-dropdown');
+        if (dropdown) {
+            dropdown.remove();
+        }
+    }
+
+    async selectModel(modelName) {
+        if (modelName === this.currentModel) {
+            this.closeDropdown();
+            return;
+        }
+
+        try {
+            // Show loading state
+            const originalText = this.elements.modelName.textContent;
+            this.elements.modelName.textContent = 'Switching...';
+            this.elements.indicator.style.opacity = '0.6';
+            
+            // Call backend to switch model
+            await API.models.switch(modelName);
+            
+            // Update UI
+            this.currentModel = modelName;
+            this.elements.modelName.textContent = modelName;
+            this.elements.indicator.style.opacity = '1';
+            
+            // Close dropdown
+            this.closeDropdown();
+            
+            // Show success message
+            Utils.showNotification(`Switched to ${modelName}`, 'success');
+            
+        } catch (error) {
+            console.error('Error switching model:', error);
+            this.elements.modelName.textContent = this.currentModel;
+            this.elements.indicator.style.opacity = '1';
+            Utils.showNotification('Failed to switch model', 'error');
+        }
+    }
+}
+
+// ===== CHAT INTERFACE MODULE =====
+class ChatInterface {
+    constructor(elements) {
+        this.elements = elements;
+        this.messageCount = 0;
+        this.isWaitingForResponse = false;
+        
+        this.init();
+    }
+
+    init() {
+        // Auto-expanding textarea
+        this.elements.messageInput.addEventListener('input', () => this.autoResize());
+        
+        // Send message handlers
+        this.elements.messageInput.addEventListener('keydown', (e) => this.handleKeydown(e));
+        this.elements.sendButton.addEventListener('click', () => this.sendMessage());
+
+        // Initial setup
+        this.autoResize();
+    }
+
+    autoResize() {
+        const input = this.elements.messageInput;
+        
+        // Reset height to calculate scroll height
+        input.style.height = 'auto';
+        
+        const scrollHeight = input.scrollHeight;
+        const maxHeight = 120; // Max height (about 6 lines)
+        const minHeight = 20;  // Min height (1 line)
+        
+        // Set new height within limits
+        const newHeight = Math.min(Math.max(scrollHeight, minHeight), maxHeight);
+        input.style.height = newHeight + 'px';
+        
+        // Enable/disable scrolling based on content
+        if (scrollHeight > maxHeight) {
+            input.style.overflowY = 'auto';
+        } else {
+            input.style.overflowY = 'hidden';
+        }
+    }
+
+    handleKeydown(e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            this.sendMessage();
+        }
+        
+        // Adjust height after key events
+        setTimeout(() => this.autoResize(), 0);
+    }
+
+    async sendMessage() {
+        const text = this.elements.messageInput.value.trim();
+        if (!text || this.isWaitingForResponse) return;
+
+        // Disable send button temporarily
+        this.toggleSendButton(false);
+        this.isWaitingForResponse = true;
+
+        // Add user message
+        this.addMessage(text, 'user');
+
+        // Clear input and reset height
+        this.elements.messageInput.value = '';
+        this.autoResize();
+
+        // Add loading message
+        const loadingMsg = this.addMessage('Thinking...', 'ai', true);
+
+        try {
+            // Send to backend
+            const response = await API.chat.send(text);
+            
+            // Remove loading message
+            loadingMsg.remove();
+            
+            // Add AI response
+            this.addMessage(response.response, 'ai');
+            
+        } catch (error) {
+            // Remove loading message
+            loadingMsg.remove();
+            
+            // Show error message
+            this.addMessage('Sorry, there was an error processing your message. Please try again.', 'ai');
+            console.error('Chat error:', error);
+        } finally {
+            // Re-enable send button
+            this.toggleSendButton(true);
+            this.isWaitingForResponse = false;
+        }
+    }
+
+    addMessage(content, type, isLoading = false) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${type}-message ${isLoading ? 'loading-message' : ''}`;
+        messageDiv.setAttribute('data-message-type', type);
+        messageDiv.setAttribute('data-message-id', ++this.messageCount);
+
+        const icon = type === 'user' ? 'fas fa-user' : 'fas fa-robot';
+        
+        messageDiv.innerHTML = `
+            <i class="${icon} ${isLoading ? 'fa-spin' : ''}"></i>
+            <span class="message-content">${this.escapeHtml(content)}</span>
+        `;
+
+        this.elements.messagesArea.appendChild(messageDiv);
+        this.scrollToBottom();
+
+        return messageDiv;
+    }
+
+    toggleSendButton(enabled) {
+        this.elements.sendButton.disabled = !enabled;
+        this.elements.sendButton.style.opacity = enabled ? '1' : '0.6';
+    }
+
+    scrollToBottom() {
+        const messagesArea = this.elements.messagesArea;
+        messagesArea.scrollTop = messagesArea.scrollHeight;
+    }
+
+    escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    adjustLayout() {
+        // Called when window resizes or layout changes
+        this.autoResize();
+    }
+}
+
+// ===== FILE UPLOADER MODULE =====
+class FileUploader {
+    constructor(elements) {
+        this.elements = elements;
+        this.uploadedFile = null;
+        
+        this.init();
+    }
+
+    init() {
+        this.elements.button.addEventListener('click', () => this.handleUpload());
+    }
+
+    handleUpload() {
+        // Create file input
+        const fileInput = document.createElement('input');
+        fileInput.type = 'file';
+        fileInput.accept = '.pdf,.doc,.docx,.txt,.ppt,.pptx';
+        
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                this.processFile(file);
+            }
+        });
+
+        fileInput.click();
+    }
+
+    async processFile(file) {
+        this.uploadedFile = file;
+        
+        // Update UI
+        this.updateUploadButton('Uploading...');
+        
+        try {
+            // Upload to backend
+            const result = await API.files.upload(file);
+            
+            // Display file info in middle column
+            this.displayFileInfo(file, result);
+            
+            // Update button
+            this.updateUploadButton('Upload File');
+            
+            Utils.showNotification('File uploaded successfully!', 'success');
+            
+        } catch (error) {
+            console.error('Upload error:', error);
+            this.updateUploadButton('Upload File');
+            Utils.showNotification('Failed to upload file', 'error');
+        }
+    }
+
+    displayFileInfo(file, uploadResult) {
+        const displayArea = this.elements.displayArea;
+        
+        displayArea.innerHTML = `
+            <div style="text-align: center; padding: 20px;">
+                <i class="fas fa-file-check" style="font-size: 3rem; color: #4C50CC; margin-bottom: 16px;"></i>
+                <h3 style="margin: 0 0 8px 0; color: #374151;">${file.name}</h3>
+                <p style="margin: 0; color: #6b7280;">Size: ${this.formatFileSize(file.size)}</p>
+                <p style="margin: 8px 0 0 0; color: #6b7280;">Type: ${file.type || 'Unknown'}</p>
+                <p style="margin: 8px 0 0 0; color: #10b981; font-weight: 500;">✓ Uploaded successfully</p>
+            </div>
+        `;
+    }
+
+    updateUploadButton(text) {
+        const button = this.elements.button;
+        const isProcessing = text === 'Uploading...' || text === 'Processing...';
+        
+        button.innerHTML = `
+            <i class="fas fa-${isProcessing ? 'spinner fa-spin' : 'upload'}"></i>
+            ${text}
+        `;
+        
+        button.disabled = isProcessing;
+    }
+
+    formatFileSize(bytes) {
+        if (bytes === 0) return '0 Bytes';
+        const k = 1024;
+        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
     }
 }
 
@@ -143,261 +531,6 @@ class ColumnResizer {
     }
 }
 
-// ===== CHAT INTERFACE MODULE =====
-class ChatInterface {
-    constructor(elements) {
-        this.elements = elements;
-        this.messageCount = 0;
-        
-        this.init();
-    }
-
-    init() {
-        // Auto-expanding textarea
-        this.elements.messageInput.addEventListener('input', () => this.autoResize());
-        
-        // Send message handlers
-        this.elements.messageInput.addEventListener('keydown', (e) => this.handleKeydown(e));
-        this.elements.sendButton.addEventListener('click', () => this.sendMessage());
-
-        // Initial setup
-        this.autoResize();
-    }
-
-    autoResize() {
-        const input = this.elements.messageInput;
-        
-        // Reset height to calculate scroll height
-        input.style.height = 'auto';
-        
-        const scrollHeight = input.scrollHeight;
-        const maxHeight = 120; // Max height (about 6 lines)
-        const minHeight = 20;  // Min height (1 line)
-        
-        // Set new height within limits
-        const newHeight = Math.min(Math.max(scrollHeight, minHeight), maxHeight);
-        input.style.height = newHeight + 'px';
-        
-        // Enable/disable scrolling based on content
-        if (scrollHeight > maxHeight) {
-            input.style.overflowY = 'auto';
-        } else {
-            input.style.overflowY = 'hidden';
-        }
-    }
-
-    handleKeydown(e) {
-        if (e.key === 'Enter' && !e.shiftKey) {
-            e.preventDefault();
-            this.sendMessage();
-        }
-        
-        // Adjust height after key events
-        setTimeout(() => this.autoResize(), 0);
-    }
-
-    sendMessage() {
-        const text = this.elements.messageInput.value.trim();
-        if (!text) return;
-
-        // Disable send button temporarily
-        this.toggleSendButton(false);
-
-        // Add user message
-        this.addMessage(text, 'user');
-
-        // Clear input and reset height
-        this.elements.messageInput.value = '';
-        this.autoResize();
-
-        // Simulate AI response (replace with actual backend call)
-        this.simulateAIResponse(text);
-    }
-
-    addMessage(content, type) {
-        const messageDiv = document.createElement('div');
-        messageDiv.className = `message ${type}-message`;
-        messageDiv.setAttribute('data-message-type', type);
-        messageDiv.setAttribute('data-message-id', ++this.messageCount);
-
-        const icon = type === 'user' ? 'fas fa-user' : 'fas fa-robot';
-        
-        messageDiv.innerHTML = `
-            <i class="${icon}"></i>
-            <span class="message-content">${this.escapeHtml(content)}</span>
-        `;
-
-        this.elements.messagesArea.appendChild(messageDiv);
-        this.scrollToBottom();
-
-        return messageDiv;
-    }
-
-    simulateAIResponse(userMessage) {
-        // Add loading indicator
-        const loadingMsg = this.addMessage('Thinking...', 'ai');
-        
-        // Simulate API delay
-        setTimeout(() => {
-            // Remove loading message
-            loadingMsg.remove();
-            
-            // Add actual response
-            const response = `I received your message: "${userMessage}". How can I help you with your lesson planning?`;
-            this.addMessage(response, 'ai');
-            
-            // Re-enable send button
-            this.toggleSendButton(true);
-        }, 800);
-    }
-
-    // BACKEND INTEGRATION READY - Replace simulateAIResponse with this
-    async sendToBackend(message) {
-        try {
-            const response = await fetch('/api/chat', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    message: message,
-                    model: 'gpt-4' // Get from model indicator
-                })
-            });
-
-            const data = await response.json();
-            return data.response;
-        } catch (error) {
-            console.error('Error sending message to backend:', error);
-            return 'Sorry, there was an error processing your message.';
-        }
-    }
-
-    toggleSendButton(enabled) {
-        this.elements.sendButton.disabled = !enabled;
-        this.elements.sendButton.style.opacity = enabled ? '1' : '0.6';
-    }
-
-    scrollToBottom() {
-        const messagesArea = this.elements.messagesArea;
-        messagesArea.scrollTop = messagesArea.scrollHeight;
-    }
-
-    escapeHtml(text) {
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
-    }
-
-    adjustLayout() {
-        // Called when window resizes or layout changes
-        this.autoResize();
-    }
-}
-
-// ===== FILE UPLOADER MODULE =====
-class FileUploader {
-    constructor(elements) {
-        this.elements = elements;
-        this.uploadedFile = null;
-        
-        this.init();
-    }
-
-    init() {
-        this.elements.button.addEventListener('click', () => this.handleUpload());
-    }
-
-    handleUpload() {
-        // Create file input
-        const fileInput = document.createElement('input');
-        fileInput.type = 'file';
-        fileInput.accept = '.pdf,.doc,.docx,.txt,.ppt,.pptx';
-        
-        fileInput.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (file) {
-                this.processFile(file);
-            }
-        });
-
-        fileInput.click();
-    }
-
-    processFile(file) {
-        this.uploadedFile = file;
-        
-        // Update UI
-        this.updateUploadButton('Processing...');
-        
-        // Display file info in middle column
-        this.displayFileInfo(file);
-        
-        // Simulate file processing (replace with actual backend call)
-        this.simulateFileProcessing(file);
-    }
-
-    // BACKEND INTEGRATION READY
-    async uploadToBackend(file) {
-        const formData = new FormData();
-        formData.append('file', file);
-
-        try {
-            const response = await fetch('/api/upload', {
-                method: 'POST',
-                body: formData
-            });
-
-            const data = await response.json();
-            return data;
-        } catch (error) {
-            console.error('Error uploading file:', error);
-            throw error;
-        }
-    }
-
-    simulateFileProcessing(file) {
-        setTimeout(() => {
-            this.updateUploadButton('Upload File');
-            console.log('File processed:', file.name);
-        }, 1500);
-    }
-
-    displayFileInfo(file) {
-        const displayArea = this.elements.displayArea;
-        
-        displayArea.innerHTML = `
-            <div style="text-align: center; padding: 20px;">
-                <i class="fas fa-file-check" style="font-size: 3rem; color: #4C50CC; margin-bottom: 16px;"></i>
-                <h3 style="margin: 0 0 8px 0; color: #374151;">${file.name}</h3>
-                <p style="margin: 0; color: #6b7280;">Size: ${this.formatFileSize(file.size)}</p>
-                <p style="margin: 8px 0 0 0; color: #6b7280;">Type: ${file.type || 'Unknown'}</p>
-            </div>
-        `;
-    }
-
-    updateUploadButton(text) {
-        const button = this.elements.button;
-        const icon = button.querySelector('i');
-        const isProcessing = text === 'Processing...';
-        
-        button.innerHTML = `
-            <i class="fas fa-${isProcessing ? 'spinner fa-spin' : 'upload'}"></i>
-            ${text}
-        `;
-        
-        button.disabled = isProcessing;
-    }
-
-    formatFileSize(bytes) {
-        if (bytes === 0) return '0 Bytes';
-        const k = 1024;
-        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-        const i = Math.floor(Math.log(bytes) / Math.log(k));
-        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-    }
-}
-
 // ===== UTILITY FUNCTIONS =====
 const Utils = {
     // Debounce function for performance
@@ -421,14 +554,39 @@ const Utils = {
         });
     },
 
-    // Show notification (for future use)
+    // Show notification
     showNotification(message, type = 'info') {
         console.log(`[${type.toUpperCase()}] ${message}`);
-        // TODO: Implement actual notification system
+        
+        // Create notification element
+        const notification = document.createElement('div');
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 12px 16px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 500;
+            z-index: 9999;
+            animation: slideInRight 0.3s ease;
+            ${type === 'success' ? 'background-color: #10b981;' : ''}
+            ${type === 'error' ? 'background-color: #ef4444;' : ''}
+            ${type === 'info' ? 'background-color: #3b82f6;' : ''}
+        `;
+        
+        notification.textContent = message;
+        document.body.appendChild(notification);
+        
+        // Auto remove after 3 seconds
+        setTimeout(() => {
+            notification.style.animation = 'slideOutRight 0.3s ease';
+            setTimeout(() => notification.remove(), 300);
+        }, 3000);
     }
 };
 
-// ===== BACKEND API HELPERS =====
+// ===== BACKEND API INTEGRATION =====
 const API = {
     // Base configuration
     baseURL: '/api',
@@ -460,10 +618,24 @@ const API = {
 
     // Chat endpoints
     chat: {
-        send: async (message, model = 'gpt-4') => {
+        send: async (message) => {
             return await API.call('/chat', {
                 method: 'POST',
-                body: JSON.stringify({ message, model })
+                body: JSON.stringify({ message })
+            });
+        }
+    },
+
+    // Model management endpoints
+    models: {
+        getAvailable: async () => {
+            return await API.call('/models');
+        },
+        
+        switch: async (modelName) => {
+            return await API.call('/models/switch', {
+                method: 'POST',
+                body: JSON.stringify({ model_name: modelName })
             });
         }
     },
@@ -474,20 +646,75 @@ const API = {
             const formData = new FormData();
             formData.append('file', file);
             
-            return await fetch(`${API.baseURL}/upload`, {
+            const response = await fetch(`${API.baseURL}/upload`, {
                 method: 'POST',
                 body: formData
-            }).then(res => res.json());
+            });
+            
+            if (!response.ok) {
+                throw new Error(`Upload failed: ${response.status}`);
+            }
+            
+            return await response.json();
+        }
+    },
+
+    // Conversation management
+    conversation: {
+        clear: async () => {
+            return await API.call('/conversation/clear', {
+                method: 'POST'
+            });
         },
         
-        analyze: async (fileId) => {
-            return await API.call(`/files/${fileId}/analyze`);
+        getHistory: async () => {
+            return await API.call('/conversation/history');
         }
     }
 };
 
 // ===== APP STARTUP =====
 document.addEventListener('DOMContentLoaded', () => {
+    // Add notification styles
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        @keyframes slideOutRight {
+            from {
+                opacity: 1;
+                transform: translateX(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+        }
+        
+        .loading-message {
+            opacity: 0.8;
+        }
+        
+        .loading-message .fa-robot {
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+    `;
+    document.head.appendChild(style);
+    
     // Initialize the main application
     window.easyLessonApp = new EasyLessonApp();
     
