@@ -466,8 +466,23 @@
                 const newLeftWidth = startWidths[resizerIndex] + deltaX;
                 const newRightWidth = startWidths[resizerIndex + 1] - deltaX;
 
-                const minWidth = 250;
-                if (newLeftWidth < minWidth || newRightWidth < minWidth) return;
+                // Smart minimum and maximum limits
+                const minWidth = 250; // Minimum width for any column
+                let maxLeftWidth, maxRightWidth;
+                
+                if (resizerIndex === 0) {
+                    // Left edge: left column vs middle column
+                    maxLeftWidth = containerWidth * 0.4; // Max 40% of screen
+                    maxRightWidth = containerWidth * 0.8; // Middle can be max 80%
+                } else {
+                    // Right edge: middle column vs right column  
+                    maxLeftWidth = containerWidth * 0.7; // Middle can be max 70%
+                    maxRightWidth = containerWidth * 0.45; // Right max 45% of screen
+                }
+
+                // Check all limits
+                if (newLeftWidth < minWidth || newLeftWidth > maxLeftWidth) return;
+                if (newRightWidth < minWidth || newRightWidth > maxRightWidth) return;
 
                 // Use width instead of flex for more predictable behavior
                 leftColumn.style.width = newLeftWidth + 'px';
