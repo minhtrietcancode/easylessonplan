@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EasyLesson - AI-Powered Lesson Planning</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../static/easylesson.css">
+</head>
+<body>
+    <div class="easylesson-container">
+        <!-- Left Column - File Upload Section -->
+        <div class="column left-column">
+            <h2 class="column-header">EasyLesson</h2>
+            <div class="upload-box">
+                <button class="upload-button">Upload File</button>
+            </div>
+            <div class="resizer"></div>
+        </div>
+
+        <!-- Middle Column - File Display Area -->
+        <div class="column middle-column">
+            <!-- Content will be displayed here -->
+            <div class="resizer"></div>
+        </div>
+
+        <!-- Right Column - AI Chat Interface -->
+        <div class="column right-column">
+            <h2 class="column-header">Start Preparing Lesson Plan With Your Assistant</h2>
+            <div class="chat-interface">
+                <div class="chat-messages">
+                    <!-- Chat messages will appear here -->
+                </div>
+                <div class="chat-input-area">
+                    <input type="text" placeholder="Message your AI assistant..." class="chat-input">
+                    <div class="ai-model-indicator">Model: GPT-4</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../static/easylesson.js"></script>
+</body>
+</html>
