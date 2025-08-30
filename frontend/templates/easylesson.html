@@ -64,8 +64,7 @@
         .left-column {
             width: 300px;
             min-width: 250px;
-            flex-shrink: 0;
-            flex-grow: 0;
+            flex: none; /* Use flex: none instead of flex-shrink/grow */
             position: relative;
             display: flex;
             flex-direction: column;
@@ -122,10 +121,11 @@
         .right-column {
             width: 400px;
             min-width: 350px;
-            flex-shrink: 0;
+            flex: none; /* Use flex: none for consistent sizing */
             background-color: #ffffff;
             padding: 20px;
             overflow: hidden; /* Prevent column itself from scrolling */
+            box-sizing: border-box; /* Include padding in width calculation */
         }
 
         /* Chat Header */
@@ -186,6 +186,9 @@
             border-radius: 16px;
             padding: 12px;
             transition: all 0.2s ease;
+            box-sizing: border-box; /* Include padding in width calculation */
+            width: 100%; /* Ensure full width */
+            min-width: 0; /* Allow shrinking */
         }
 
         .input-area:focus-within {
@@ -466,11 +469,20 @@
                 const minWidth = 250;
                 if (newLeftWidth < minWidth || newRightWidth < minWidth) return;
 
-                const leftPercentage = (newLeftWidth / containerWidth) * 100;
-                const rightPercentage = (newRightWidth / containerWidth) * 100;
-
-                leftColumn.style.flex = `0 0 ${leftPercentage}%`;
-                rightColumn.style.flex = `0 0 ${rightPercentage}%`;
+                // Use width instead of flex for more predictable behavior
+                leftColumn.style.width = newLeftWidth + 'px';
+                rightColumn.style.width = newRightWidth + 'px';
+                
+                // For middle column, let it flex naturally
+                if (resizerIndex === 0) {
+                    // Resizing left edge - middle column adjusts automatically
+                    const middleColumn = columns[1];
+                    middleColumn.style.width = 'auto';
+                } else if (resizerIndex === 1) {
+                    // Resizing right edge - middle column adjusts automatically  
+                    const middleColumn = columns[1];
+                    middleColumn.style.width = 'auto';
+                }
             }
 
             function handleMouseUp() {
@@ -485,15 +497,8 @@
             }
 
             window.addEventListener('resize', function() {
-                const columns = Array.from(container.children);
-                columns.forEach(column => {
-                    if (column.style.flex) {
-                        const currentWidth = column.offsetWidth;
-                        const containerWidth = container.offsetWidth;
-                        const percentage = (currentWidth / containerWidth) * 100;
-                        column.style.flex = `0 0 ${percentage}%`;
-                    }
-                });
+                // Let flexbox handle window resizing naturally
+                autoResize(); // Just maintain textarea sizing
             });
         });
     </script>
