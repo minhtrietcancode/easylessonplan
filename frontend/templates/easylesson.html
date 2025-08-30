@@ -5,347 +5,70 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EasyLesson - AI-Powered Lesson Planning</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            background-color: #f4f7f6;
-            margin: 0;
-            padding: 0;
-            overflow: hidden;
-        }
-
-        .easylesson-container {
-            display: flex;
-            height: 100vh;
-            width: 100vw;
-            gap: 0;
-            overflow: hidden;
-        }
-
-        .column {
-            display: flex;
-            flex-direction: column;
-            padding: 24px;
-            background-color: #ffffff;
-            overflow-y: auto;
-            position: relative;
-            border-right: 1px solid #e5e7eb;
-        }
-
-        .column:last-child {
-            border-right: none;
-        }
-
-        /* Resizer styling */
-        .resizer {
-            position: absolute;
-            right: -2px;
-            top: 0;
-            width: 4px;
-            height: 100%;
-            background-color: transparent;
-            cursor: col-resize;
-            z-index: 10;
-            transition: background-color 0.2s ease;
-        }
-
-        .resizer:hover {
-            background-color: #4C50CC;
-            width: 4px;
-        }
-
-        .resizer:active {
-            background-color: #4247B0;
-        }
-
-        /* Left Column */
-        .left-column {
-            width: 300px;
-            min-width: 250px;
-            flex: none; /* Use flex: none instead of flex-shrink/grow */
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
-        .left-column .column-header {
-            font-size: 1.75rem;
-            font-weight: 700;
-            color: #4C50CC;
-            margin: 0 0 32px 0;
-            text-align: center;
-            letter-spacing: -0.5px;
-        }
-
-        .upload-button {
-            background: #4C50CC;
-            color: white;
-            padding: 10px 24px;
-            border: none;
-            border-radius: 8px;
-            font-size: 0.95rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            position: absolute;
-            bottom: 24px;
-            right: 24px;
-            margin: 0;
-        }
-
-        .upload-button:hover {
-            background: #4247B0;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(76, 80, 204, 0.3);
-        }
-
-        /* Middle Column */
-        .middle-column {
-            flex: 1;
-            min-width: 300px;
-            background-color: #fafafa;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #9ca3af;
-            font-style: italic;
-        }
-
-        /* RIGHT COLUMN - COMPLETELY REWRITTEN */
-        .right-column {
-            width: 400px;
-            min-width: 350px;
-            flex: none; /* Use flex: none for consistent sizing */
-            background-color: #ffffff;
-            padding: 20px;
-            overflow: hidden; /* Prevent column itself from scrolling */
-            box-sizing: border-box; /* Include padding in width calculation */
-        }
-
-        /* Chat Header */
-        .chat-header {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .chat-title {
-            font-size: 1.4rem;
-            font-weight: 600;
-            color: #4C50CC;
-            margin: 0;
-            letter-spacing: -0.3px;
-        }
-
-        /* Chat Container - Main wrapper */
-        .chat-container {
-            height: calc(100vh - 120px); /* Full height minus header and padding */
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        /* Messages Area */
-        .messages-area {
-            flex: 1; /* Takes all available space */
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 12px;
-            padding: 16px;
-            overflow-y: auto;
-            min-height: 0; /* Important for flex shrinking */
-        }
-
-        .message {
-            margin-bottom: 12px;
-            padding: 8px 12px;
-            border-radius: 8px;
-            max-width: 80%;
-        }
-
-        .user-message {
-            background: #4C50CC;
-            color: white;
-            margin-left: auto;
-        }
-
-        .ai-message {
-            background: #e2e8f0;
-            color: #374151;
-        }
-
-        /* Input Area - Clean and Simple */
-        .input-area {
-            background: white;
-            border: 2px solid #e2e8f0;
-            border-radius: 16px;
-            padding: 12px;
-            transition: all 0.2s ease;
-            box-sizing: border-box; /* Include padding in width calculation */
-            width: 100%; /* Ensure full width */
-            min-width: 0; /* Allow shrinking */
-        }
-
-        .input-area:focus-within {
-            border-color: #4C50CC;
-            box-shadow: 0 0 0 3px rgba(76, 80, 204, 0.1);
-        }
-
-        /* Auto-expanding textarea */
-        .message-input {
-            width: 100%;
-            min-height: 20px;
-            max-height: 120px; /* About 6 lines */
-            padding: 0;
-            border: none;
-            outline: none;
-            resize: none;
-            font-family: inherit;
-            font-size: 0.9rem;
-            line-height: 1.4;
-            background: transparent;
-            overflow-y: auto;
-        }
-
-        .message-input::placeholder {
-            color: #9ca3af;
-        }
-
-        /* Bottom row with model indicator and send button */
-        .input-bottom {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 8px;
-            padding-top: 8px;
-            border-top: 1px solid #f1f5f9;
-        }
-
-        .model-tag {
-            background: #64748b;
-            color: white;
-            padding: 4px 10px;
-            border-radius: 12px;
-            font-size: 0.75rem;
-            font-weight: 500;
-        }
-
-        .send-btn {
-            background: #4C50CC;
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 36px;
-            height: 36px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s ease;
-        }
-
-        .send-btn:hover {
-            background: #4247B0;
-            transform: scale(1.05);
-        }
-
-        .send-btn:active {
-            transform: scale(0.95);
-        }
-
-        /* Responsive Design */
-        @media (max-width: 1024px) {
-            .easylesson-container {
-                flex-direction: column;
-                height: auto;
-            }
-
-            .column {
-                width: 100%;
-                border-right: none;
-                border-bottom: 1px solid #e5e7eb;
-                height: auto;
-                min-height: 300px;
-            }
-
-            .column:last-child {
-                border-bottom: none;
-            }
-
-            .resizer {
-                display: none;
-            }
-
-            .chat-container {
-                height: 400px; /* Fixed height for mobile */
-            }
-        }
-
-        /* Prevent text selection during resize */
-        .resizing {
-            user-select: none;
-            cursor: col-resize;
-        }
-
-        .resizing * {
-            pointer-events: none;
-        }
-    </style>
+    <link rel="stylesheet" href="../static/easylesson.css">
 </head>
 <body>
-    <div class="easylesson-container">
+    <div class="easylesson-container" id="mainContainer">
         <!-- Left Column - File Upload Section -->
-        <div class="column left-column">
-            <h2 class="column-header">EasyLesson</h2>
-            <button class="upload-button">
+        <div class="column left-column" id="leftColumn">
+            <div class="column-content">
+                <h2 class="column-header">EasyLesson</h2>
+                <div class="upload-section">
+                    <!-- File upload area can be expanded here -->
+                </div>
+            </div>
+            
+            <button class="upload-button" id="uploadButton" data-action="upload-file">
                 <i class="fas fa-upload"></i>
                 Upload File
             </button>
-            <div class="resizer"></div>
+            
+            <div class="resizer" data-resize="left"></div>
         </div>
 
         <!-- Middle Column - File Display Area -->
-        <div class="column middle-column">
-            <div>File content will appear here...</div>
-            <div class="resizer"></div>
+        <div class="column middle-column" id="middleColumn">
+            <div class="file-display-area" id="fileDisplayArea">
+                <div class="placeholder-text">
+                    <i class="fas fa-file-alt" style="font-size: 2rem; margin-bottom: 16px; color: #cbd5e0;"></i>
+                    <p>File content will appear here...</p>
+                </div>
+            </div>
+            <div class="resizer" data-resize="right"></div>
         </div>
 
-        <!-- RIGHT COLUMN - COMPLETELY REWRITTEN -->
-        <div class="column right-column">
-            <!-- Header -->
+        <!-- Right Column - AI Chat Interface -->
+        <div class="column right-column" id="rightColumn">
+            <!-- Chat Header -->
             <div class="chat-header">
                 <h2 class="chat-title">AI Lesson Assistant</h2>
             </div>
 
             <!-- Main Chat Container -->
-            <div class="chat-container">
+            <div class="chat-container" id="chatContainer">
                 <!-- Messages Area -->
                 <div class="messages-area" id="messagesArea">
-                    <div class="message ai-message">
-                        <i class="fas fa-robot" style="margin-right: 8px;"></i>
-                        Hello! I'm your AI lesson assistant. How can I help you create amazing lessons today?
+                    <div class="message ai-message" data-message-type="ai">
+                        <i class="fas fa-robot"></i>
+                        <span class="message-content">Hello! I'm your AI lesson assistant. How can I help you create amazing lessons today?</span>
                     </div>
                 </div>
 
                 <!-- Input Area -->
-                <div class="input-area">
+                <div class="input-area" id="inputArea">
                     <textarea 
                         id="messageInput"
                         class="message-input" 
                         placeholder="Type your message here... Press Enter to send!"
-                        rows="1"></textarea>
+                        rows="1"
+                        data-action="chat-input"></textarea>
                     
                     <div class="input-bottom">
-                        <div class="model-tag">
-                            <i class="fas fa-brain" style="margin-right: 4px;"></i>
-                            GPT-4
+                        <div class="model-tag" id="modelIndicator">
+                            <i class="fas fa-brain"></i>
+                            <span id="modelName">GPT-4</span>
                         </div>
-                        <button class="send-btn" id="sendButton">
+                        <button class="send-btn" id="sendButton" data-action="send-message">
                             <i class="fas fa-paper-plane"></i>
                         </button>
                     </div>
@@ -354,168 +77,6 @@
         </div>
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const container = document.querySelector('.easylesson-container');
-            const resizers = document.querySelectorAll('.resizer');
-            const messageInput = document.getElementById('messageInput');
-            const messagesArea = document.getElementById('messagesArea');
-            const sendButton = document.getElementById('sendButton');
-            
-            let isResizing = false;
-            let currentResizer = null;
-            let startX = 0;
-            let startWidths = [];
-
-            // ===== AUTO-EXPANDING TEXTAREA - CLEAN VERSION =====
-            function autoResize() {
-                // Reset height to get accurate scrollHeight
-                messageInput.style.height = 'auto';
-                
-                const scrollHeight = messageInput.scrollHeight;
-                const maxHeight = 120; // Max height (about 6 lines)
-                const minHeight = 20;  // Min height (1 line)
-                
-                // Set new height within limits
-                const newHeight = Math.min(Math.max(scrollHeight, minHeight), maxHeight);
-                messageInput.style.height = newHeight + 'px';
-                
-                // Enable/disable scrolling based on content
-                if (scrollHeight > maxHeight) {
-                    messageInput.style.overflowY = 'auto';
-                } else {
-                    messageInput.style.overflowY = 'hidden';
-                }
-            }
-
-            // ===== SEND MESSAGE FUNCTIONALITY =====
-            function sendMessage() {
-                const text = messageInput.value.trim();
-                if (!text) return;
-
-                // Add user message
-                const userMsg = document.createElement('div');
-                userMsg.className = 'message user-message';
-                userMsg.innerHTML = `<i class="fas fa-user" style="margin-right: 8px;"></i>${text}`;
-                messagesArea.appendChild(userMsg);
-
-                // Clear input and reset height
-                messageInput.value = '';
-                autoResize();
-
-                // Add AI response (simulate)
-                setTimeout(() => {
-                    const aiMsg = document.createElement('div');
-                    aiMsg.className = 'message ai-message';
-                    aiMsg.innerHTML = `<i class="fas fa-robot" style="margin-right: 8px;"></i>I received your message: "${text}". How can I help you with your lesson planning?`;
-                    messagesArea.appendChild(aiMsg);
-                    
-                    // Scroll to bottom
-                    messagesArea.scrollTop = messagesArea.scrollHeight;
-                }, 500);
-
-                // Scroll to bottom
-                messagesArea.scrollTop = messagesArea.scrollHeight;
-            }
-
-            // ===== EVENT LISTENERS =====
-            messageInput.addEventListener('input', autoResize);
-            
-            messageInput.addEventListener('keydown', function(e) {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                    e.preventDefault();
-                    sendMessage();
-                }
-            });
-
-            sendButton.addEventListener('click', sendMessage);
-
-            // Initial setup
-            autoResize();
-
-            // ===== COLUMN RESIZING (KEEP EXISTING) =====
-            resizers.forEach((resizer, index) => {
-                resizer.addEventListener('mousedown', function(e) {
-                    e.preventDefault();
-                    isResizing = true;
-                    currentResizer = resizer;
-                    startX = e.clientX;
-
-                    const columns = Array.from(container.children);
-                    startWidths = columns.map(col => col.offsetWidth);
-
-                    document.body.classList.add('resizing');
-                    document.addEventListener('mousemove', handleMouseMove);
-                    document.addEventListener('mouseup', handleMouseUp);
-                });
-            });
-
-            function handleMouseMove(e) {
-                if (!isResizing || !currentResizer) return;
-
-                const deltaX = e.clientX - startX;
-                const columns = Array.from(container.children);
-                const resizerIndex = Array.from(resizers).indexOf(currentResizer);
-                
-                const leftColumn = columns[resizerIndex];
-                const rightColumn = columns[resizerIndex + 1];
-                
-                if (!leftColumn || !rightColumn) return;
-
-                const containerWidth = container.offsetWidth;
-                const newLeftWidth = startWidths[resizerIndex] + deltaX;
-                const newRightWidth = startWidths[resizerIndex + 1] - deltaX;
-
-                // Smart minimum and maximum limits
-                const minWidth = 250; // Minimum width for any column
-                let maxLeftWidth, maxRightWidth;
-                
-                if (resizerIndex === 0) {
-                    // Left edge: left column vs middle column
-                    maxLeftWidth = containerWidth * 0.4; // Max 40% of screen
-                    maxRightWidth = containerWidth * 0.8; // Middle can be max 80%
-                } else {
-                    // Right edge: middle column vs right column  
-                    maxLeftWidth = containerWidth * 0.7; // Middle can be max 70%
-                    maxRightWidth = containerWidth * 0.45; // Right max 45% of screen
-                }
-
-                // Check all limits
-                if (newLeftWidth < minWidth || newLeftWidth > maxLeftWidth) return;
-                if (newRightWidth < minWidth || newRightWidth > maxRightWidth) return;
-
-                // Use width instead of flex for more predictable behavior
-                leftColumn.style.width = newLeftWidth + 'px';
-                rightColumn.style.width = newRightWidth + 'px';
-                
-                // For middle column, let it flex naturally
-                if (resizerIndex === 0) {
-                    // Resizing left edge - middle column adjusts automatically
-                    const middleColumn = columns[1];
-                    middleColumn.style.width = 'auto';
-                } else if (resizerIndex === 1) {
-                    // Resizing right edge - middle column adjusts automatically  
-                    const middleColumn = columns[1];
-                    middleColumn.style.width = 'auto';
-                }
-            }
-
-            function handleMouseUp() {
-                if (!isResizing) return;
-
-                isResizing = false;
-                currentResizer = null;
-                document.body.classList.remove('resizing');
-                
-                document.removeEventListener('mousemove', handleMouseMove);
-                document.removeEventListener('mouseup', handleMouseUp);
-            }
-
-            window.addEventListener('resize', function() {
-                // Let flexbox handle window resizing naturally
-                autoResize(); // Just maintain textarea sizing
-            });
-        });
-    </script>
+    <script src="../static/easylesson.js"></script>
 </body>
 </html>
