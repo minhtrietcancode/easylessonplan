@@ -27,7 +27,7 @@ def create_flow():
                 "redirect_uris": ["http://localhost:5000/auth/callback"]
             }
         },
-        scopes=["openid", "email", "profile"]
+        scopes=["https://www.googleapis.com/auth/userinfo.profile", "openid", "https://www.googleapis.com/auth/userinfo.email"]
     )
     flow.redirect_uri = "http://localhost:5000/auth/callback"
     return flow
