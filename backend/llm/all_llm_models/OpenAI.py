@@ -1,11 +1,11 @@
 # avoid disrupting the code by import error, importing the config
 try:
-    from ..config import OPENAI_BASE_URL, OPENAI_MODEL, OPENROUTER_OPENAI_API
+    from ..LlmConfig import LlmConfig
 except ImportError:
     import sys
     import os
     sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
-    from config import OPENAI_BASE_URL, OPENAI_MODEL, OPENROUTER_OPENAI_API
+    from backend.llm.LlmConfig import LlmConfig
 
 # avoid disrupting the code by import error, importing the base class
 try:
@@ -16,7 +16,7 @@ except ImportError:
 class Openai(Model):
     def __init__(self):
         super().__init__()
-        self.base_url = OPENAI_BASE_URL
-        self.model_name = OPENAI_MODEL
-        self.api_key = OPENROUTER_OPENAI_API
+        self.base_url = LlmConfig.OPENAI_BASE_URL
+        self.model_name = LlmConfig.OPENAI_MODEL
+        self.api_key = LlmConfig.OPENROUTER_OPENAI_API
         self.llm_client = self.initialize_llm_client()
