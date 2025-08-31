@@ -1,10 +1,7 @@
-from flask import Flask, render_template, request, jsonify, send_from_directory
+from flask import Flask, render_template, request, jsonify
 from flask_cors import CORS
 import os
 import sys
-from werkzeug.utils import secure_filename
-import json
-from typing import Dict, List
 
 # Add the backend directory to Python path for imports
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
@@ -17,17 +14,6 @@ app = Flask(__name__,
            template_folder='../frontend/templates',
            static_folder='../frontend/static')
 CORS(app)
-
-# Configure upload settings
-UPLOAD_FOLDER = 'uploads'
-MAX_FILE_SIZE = 16 * 1024 * 1024  # 16MB max file size
-ALLOWED_EXTENSIONS = {'txt', 'pdf', 'doc', 'docx', 'ppt', 'pptx'}
-
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-app.config['MAX_CONTENT_LENGTH'] = MAX_FILE_SIZE
-
-# Ensure upload directory exists
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 # Global variables for managing state
 llm_manager = None
@@ -42,11 +28,6 @@ def init_llm_manager():
     except Exception as e:
         print(f"❌ Failed to initialize LLM Manager: {e}")
         llm_manager = None
-
-def allowed_file(filename):
-    """Check if uploaded file is allowed"""
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 # ===== ROUTES =====
 
@@ -169,49 +150,6 @@ def build_context_message():
     
     return full_message
 
-@app.route('/api/upload', methods=['POST'])
-def upload_file():
-    """Handle file uploads"""
-    try:
-        # Check if file is present
-        if 'file' not in request.files:
-            return jsonify({'error': 'No file uploaded'}), 400
-            
-        file = request.files['file']
-        
-        if file.filename == '':
-            return jsonify({'error': 'No file selected'}), 400
-            
-        if file and allowed_file(file.filename):
-            # Secure the filename
-            filename = secure_filename(file.filename)
-            
-            # Create unique filename to avoid conflicts
-            import time
-            timestamp = str(int(time.time()))
-            name, ext = os.path.splitext(filename)
-            unique_filename = f"{name}_{timestamp}{ext}"
-            
-            # Save file
-            filepath = os.path.join(app.config['UPLOAD_FOLDER'], unique_filename)
-            file.save(filepath)
-            
-            # Get file info
-            file_size = os.path.getsize(filepath)
-            
-            return jsonify({
-                'status': 'success',
-                'filename': unique_filename,
-                'original_filename': file.filename,
-                'size': file_size,
-                'message': 'File uploaded successfully'
-            })
-        else:
-            return jsonify({'error': 'File type not allowed'}), 400
-            
-    except Exception as e:
-        return jsonify({'error': f'Upload error: {str(e)}'}), 500
-
 @app.route('/api/conversation/clear', methods=['POST'])
 def clear_conversation():
     """Clear conversation history"""
@@ -239,10 +177,6 @@ def health_check():
     })
 
 # ===== ERROR HANDLERS =====
-
-@app.errorhandler(413)
-def file_too_large(e):
-    return jsonify({'error': 'File too large. Maximum size is 16MB.'}), 413
 
 @app.errorhandler(404)
 def not_found(e):

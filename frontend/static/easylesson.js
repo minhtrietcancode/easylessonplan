@@ -6,7 +6,6 @@ class EasyLessonApp {
         this.elements = this.initializeElements();
         this.resizer = new ColumnResizer(this.elements.container);
         this.chatInterface = new ChatInterface(this.elements.chat);
-        this.fileUploader = new FileUploader(this.elements.upload);
         this.modelSelector = new ModelSelector(this.elements.modelSelector);
         
         this.init();
@@ -24,10 +23,6 @@ class EasyLessonApp {
                 messageInput: document.getElementById('messageInput'),
                 sendButton: document.getElementById('sendButton'),
                 inputArea: document.getElementById('inputArea')
-            },
-            upload: {
-                button: document.getElementById('uploadButton'),
-                displayArea: document.getElementById('fileDisplayArea')
             },
             modelSelector: {
                 indicator: document.getElementById('modelIndicator'),
@@ -362,95 +357,6 @@ class ChatInterface {
     }
 }
 
-// ===== FILE UPLOADER MODULE =====
-class FileUploader {
-    constructor(elements) {
-        this.elements = elements;
-        this.uploadedFile = null;
-        
-        this.init();
-    }
-
-    init() {
-        this.elements.button.addEventListener('click', () => this.handleUpload());
-    }
-
-    handleUpload() {
-        // Create file input
-        const fileInput = document.createElement('input');
-        fileInput.type = 'file';
-        fileInput.accept = '.pdf,.doc,.docx,.txt,.ppt,.pptx';
-        
-        fileInput.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (file) {
-                this.processFile(file);
-            }
-        });
-
-        fileInput.click();
-    }
-
-    async processFile(file) {
-        this.uploadedFile = file;
-        
-        // Update UI
-        this.updateUploadButton('Uploading...');
-        
-        try {
-            // Upload to backend
-            const result = await API.files.upload(file);
-            
-            // Display file info in middle column
-            this.displayFileInfo(file, result);
-            
-            // Update button
-            this.updateUploadButton('Upload File');
-            
-            Utils.showNotification('File uploaded successfully!', 'success');
-            
-        } catch (error) {
-            console.error('Upload error:', error);
-            this.updateUploadButton('Upload File');
-            Utils.showNotification('Failed to upload file', 'error');
-        }
-    }
-
-    displayFileInfo(file, uploadResult) {
-        const displayArea = this.elements.displayArea;
-        
-        displayArea.innerHTML = `
-            <div style="text-align: center; padding: 20px;">
-                <i class="fas fa-file-check" style="font-size: 3rem; color: #4C50CC; margin-bottom: 16px;"></i>
-                <h3 style="margin: 0 0 8px 0; color: #374151;">${file.name}</h3>
-                <p style="margin: 0; color: #6b7280;">Size: ${this.formatFileSize(file.size)}</p>
-                <p style="margin: 8px 0 0 0; color: #6b7280;">Type: ${file.type || 'Unknown'}</p>
-                <p style="margin: 8px 0 0 0; color: #10b981; font-weight: 500;">✓ Uploaded successfully</p>
-            </div>
-        `;
-    }
-
-    updateUploadButton(text) {
-        const button = this.elements.button;
-        const isProcessing = text === 'Uploading...' || text === 'Processing...';
-        
-        button.innerHTML = `
-            <i class="fas fa-${isProcessing ? 'spinner fa-spin' : 'upload'}"></i>
-            ${text}
-        `;
-        
-        button.disabled = isProcessing;
-    }
-
-    formatFileSize(bytes) {
-        if (bytes === 0) return '0 Bytes';
-        const k = 1024;
-        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-        const i = Math.floor(Math.log(bytes) / Math.log(k));
-        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-    }
-}
-
 // ===== COLUMN RESIZER MODULE =====
 class ColumnResizer {
     constructor(container) {
@@ -659,25 +565,6 @@ const API = {
                 method: 'POST',
                 body: JSON.stringify({ model_name: modelName })
             });
-        }
-    },
-
-    // File endpoints
-    files: {
-        upload: async (file) => {
-            const formData = new FormData();
-            formData.append('file', file);
-            
-            const response = await fetch(`${API.baseURL}/upload`, {
-                method: 'POST',
-                body: formData
-            });
-            
-            if (!response.ok) {
-                throw new Error(`Upload failed: ${response.status}`);
-            }
-            
-            return await response.json();
         }
     },
 
