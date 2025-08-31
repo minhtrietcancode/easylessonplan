@@ -5,7 +5,397 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EasyLesson - AI-Powered Lesson Planning</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="../static/easylesson.css">
+    <style>
+        /* ===== BASE STYLES ===== */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f4f7f6;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        /* ===== MAIN CONTAINER ===== */
+        .easylesson-container {
+            display: flex;
+            height: 100vh;
+            width: 100vw;
+            gap: 0;
+            overflow: hidden;
+        }
+
+        /* ===== COLUMN BASE STYLES ===== */
+        .column {
+            display: flex;
+            flex-direction: column;
+            padding: 24px;
+            background-color: #ffffff;
+            overflow-y: auto;
+            position: relative;
+            border-right: 1px solid #e5e7eb;
+            box-sizing: border-box;
+        }
+
+        .column:last-child {
+            border-right: none;
+        }
+
+        .column-header {
+            font-weight: 600;
+            color: #4C50CC;
+            margin: 0 0 24px 0;
+            text-align: center;
+        }
+
+        /* ===== RESIZER COMPONENT ===== */
+        .resizer {
+            position: absolute;
+            right: -2px;
+            top: 0;
+            width: 4px;
+            height: 100%;
+            background-color: transparent;
+            cursor: col-resize;
+            z-index: 10;
+            transition: background-color 0.2s ease;
+        }
+
+        .resizer:hover {
+            background-color: #4C50CC;
+            width: 4px;
+        }
+
+        .resizer:active {
+            background-color: #4247B0;
+        }
+
+        /* ===== LEFT COLUMN STYLES ===== */
+        .left-column {
+            width: 300px;
+            min-width: 250px;
+            flex: none;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .left-column .column-header {
+            font-size: 1.75rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            margin-bottom: 32px;
+        }
+
+        .column-content {
+            flex: 1;
+        }
+
+        .upload-section {
+            /* Space for future upload components */
+            min-height: 200px;
+        }
+
+        .upload-button {
+            background: #4C50CC;
+            color: white;
+            padding: 10px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            position: absolute;
+            bottom: 24px;
+            right: 24px;
+            margin: 0;
+        }
+
+        .upload-button:hover {
+            background: #4247B0;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(76, 80, 204, 0.3);
+        }
+
+        .upload-button:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* ===== MIDDLE COLUMN STYLES ===== */
+        .middle-column {
+            flex: 1;
+            min-width: 300px;
+            background-color: #fafafa;
+            overflow-y: auto;
+        }
+
+        .file-display-area {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .placeholder-text {
+            text-align: center;
+            color: #9ca3af;
+            font-style: italic;
+        }
+
+        .placeholder-text p {
+            margin: 0;
+            font-size: 1rem;
+        }
+
+        /* ===== RIGHT COLUMN STYLES ===== */
+        .right-column {
+            width: 400px;
+            min-width: 350px;
+            flex: none;
+            background-color: #ffffff;
+            padding: 20px;
+            overflow: hidden;
+            box-sizing: border-box;
+        }
+
+        /* ===== CHAT INTERFACE STYLES ===== */
+        .chat-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .chat-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #4C50CC;
+            margin: 0;
+            letter-spacing: -0.3px;
+        }
+
+        .chat-container {
+            height: calc(100vh - 120px);
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        /* ===== MESSAGES AREA ===== */
+        .messages-area {
+            flex: 1;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 16px;
+            overflow-y: auto;
+            min-height: 0;
+            transition: height 0.2s ease;
+        }
+
+        .message {
+            margin-bottom: 12px;
+            padding: 10px 14px;
+            border-radius: 12px;
+            max-width: 85%;
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            animation: messageSlideIn 0.3s ease;
+        }
+
+        .message i {
+            margin-top: 2px;
+            flex-shrink: 0;
+        }
+
+        .message-content {
+            flex: 1;
+            word-wrap: break-word;
+        }
+
+        .user-message {
+            background: #4C50CC;
+            color: white;
+            margin-left: auto;
+            flex-direction: row-reverse;
+        }
+
+        .ai-message {
+            background: #e2e8f0;
+            color: #374151;
+        }
+
+        @keyframes messageSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ===== INPUT AREA STYLES ===== */
+        .input-area {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 12px;
+            transition: all 0.2s ease;
+            box-sizing: border-box;
+            width: 100%;
+            min-width: 0;
+        }
+
+        .input-area:focus-within {
+            border-color: #4C50CC;
+            box-shadow: 0 0 0 3px rgba(76, 80, 204, 0.1);
+        }
+
+        /* ===== AUTO-EXPANDING TEXTAREA ===== */
+        .message-input {
+            width: 100%;
+            min-height: 20px;
+            max-height: 120px;
+            padding: 0;
+            border: none;
+            outline: none;
+            resize: none;
+            font-family: inherit;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            background: transparent;
+            overflow-y: auto;
+            transition: height 0.2s ease;
+        }
+
+        .message-input::placeholder {
+            color: #9ca3af;
+        }
+
+        /* ===== INPUT BOTTOM ROW ===== */
+        .input-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px solid #f1f5f9;
+        }
+
+        /* ===== MODEL TAG STYLES ===== */
+        .model-tag {
+            background: #64748b;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+            user-select: none;
+        }
+
+        .model-tag:hover {
+            background: #475569;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(100, 116, 139, 0.3);
+        }
+
+        .send-btn {
+            background: #4C50CC;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .send-btn:hover {
+            background: #4247B0;
+            transform: scale(1.05);
+        }
+
+        .send-btn:active {
+            transform: scale(0.95);
+        }
+
+        .send-btn:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* ===== UTILITY CLASSES ===== */
+        .resizing {
+            user-select: none;
+            cursor: col-resize;
+        }
+
+        .resizing * {
+            pointer-events: none;
+        }
+
+        /* ===== RESPONSIVE DESIGN ===== */
+        @media (max-width: 1024px) {
+            .easylesson-container {
+                flex-direction: column;
+                height: auto;
+            }
+
+            .column {
+                width: 100% !important;
+                border-right: none;
+                border-bottom: 1px solid #e5e7eb;
+                height: auto;
+                min-height: 300px;
+            }
+
+            .column:last-child {
+                border-bottom: none;
+            }
+
+            .resizer {
+                display: none;
+            }
+
+            .chat-container {
+                height: 400px;
+            }
+
+            .left-column {
+                min-height: 200px;
+            }
+
+            .upload-button {
+                position: relative;
+                bottom: auto;
+                right: auto;
+                align-self: center;
+                margin-top: 20px;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="easylesson-container" id="mainContainer">
@@ -18,7 +408,7 @@
                 </div>
             </div>
             
-            <button class="upload-button" id="uploadButton" data-action="upload-file">
+            <button class="upload-button" id="uploadButton">
                 <i class="fas fa-upload"></i>
                 Upload File
             </button>
@@ -60,15 +450,14 @@
                         id="messageInput"
                         class="message-input" 
                         placeholder="Type your message here... Press Enter to send!"
-                        rows="1"
-                        data-action="chat-input"></textarea>
+                        rows="1"></textarea>
                     
                     <div class="input-bottom">
                         <div class="model-tag" id="modelIndicator">
                             <i class="fas fa-brain"></i>
-                            <span id="modelName">GPT-4</span>
+                            <span id="modelName">Ready</span>
                         </div>
-                        <button class="send-btn" id="sendButton" data-action="send-message">
+                        <button class="send-btn" id="sendButton">
                             <i class="fas fa-paper-plane"></i>
                         </button>
                     </div>
@@ -77,6 +466,357 @@
         </div>
     </div>
 
-    <script src="../static/easylesson.js"></script>
+    <script>
+        // ===== EASYLESSON APP - CLEANED VERSION (NO API) =====
+
+        // ===== APP INITIALIZATION =====
+        class EasyLessonApp {
+            constructor() {
+                this.elements = this.initializeElements();
+                this.resizer = new ColumnResizer(this.elements.container);
+                this.chatInterface = new ChatInterface(this.elements.chat);
+                
+                this.init();
+            }
+
+            initializeElements() {
+                return {
+                    container: document.getElementById('mainContainer'),
+                    leftColumn: document.getElementById('leftColumn'),
+                    middleColumn: document.getElementById('middleColumn'),
+                    rightColumn: document.getElementById('rightColumn'),
+                    chat: {
+                        container: document.getElementById('chatContainer'),
+                        messagesArea: document.getElementById('messagesArea'),
+                        messageInput: document.getElementById('messageInput'),
+                        sendButton: document.getElementById('sendButton'),
+                        inputArea: document.getElementById('inputArea')
+                    },
+                    uploadButton: document.getElementById('uploadButton'),
+                    fileDisplayArea: document.getElementById('fileDisplayArea'),
+                    modelIndicator: document.getElementById('modelIndicator'),
+                    modelName: document.getElementById('modelName')
+                };
+            }
+
+            init() {
+                console.log('EasyLesson App Initialized (Clean Version)');
+                
+                // Setup upload button
+                this.elements.uploadButton.addEventListener('click', () => {
+                    this.handleFileUpload();
+                });
+                
+                // Handle window resize
+                window.addEventListener('resize', () => {
+                    this.chatInterface.adjustLayout();
+                });
+            }
+
+            handleFileUpload() {
+                // Placeholder for file upload functionality
+                console.log('File upload clicked - ready for API integration');
+                Utils.showNotification('File upload ready for API integration', 'info');
+            }
+        }
+
+        // ===== CHAT INTERFACE MODULE =====
+        class ChatInterface {
+            constructor(elements) {
+                this.elements = elements;
+                this.messageCount = 0;
+                
+                this.init();
+            }
+
+            init() {
+                // Auto-expanding textarea
+                this.elements.messageInput.addEventListener('input', () => this.autoResize());
+                
+                // Send message handlers
+                this.elements.messageInput.addEventListener('keydown', (e) => this.handleKeydown(e));
+                this.elements.sendButton.addEventListener('click', () => this.sendMessage());
+
+                // Initial setup
+                this.autoResize();
+            }
+
+            autoResize() {
+                const input = this.elements.messageInput;
+                
+                // Reset height to calculate scroll height
+                input.style.height = 'auto';
+                
+                const scrollHeight = input.scrollHeight;
+                const maxHeight = 120; // Max height (about 6 lines)
+                const minHeight = 20;  // Min height (1 line)
+                
+                // Set new height within limits
+                const newHeight = Math.min(Math.max(scrollHeight, minHeight), maxHeight);
+                input.style.height = newHeight + 'px';
+                
+                // Enable/disable scrolling based on content
+                if (scrollHeight > maxHeight) {
+                    input.style.overflowY = 'auto';
+                } else {
+                    input.style.overflowY = 'hidden';
+                }
+            }
+
+            handleKeydown(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    this.sendMessage();
+                }
+                
+                // Adjust height after key events
+                setTimeout(() => this.autoResize(), 0);
+            }
+
+            sendMessage() {
+                const text = this.elements.messageInput.value.trim();
+                if (!text) return;
+
+                // Add user message
+                this.addMessage(text, 'user');
+
+                // Clear input and reset height
+                this.elements.messageInput.value = '';
+                this.autoResize();
+
+                // Placeholder response
+                setTimeout(() => {
+                    this.addMessage('API integration ready - this is where your new API will respond!', 'ai');
+                }, 500);
+            }
+
+            addMessage(content, type) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message ${type}-message`;
+                messageDiv.setAttribute('data-message-type', type);
+                messageDiv.setAttribute('data-message-id', ++this.messageCount);
+
+                const icon = type === 'user' ? 'fas fa-user' : 'fas fa-robot';
+                
+                messageDiv.innerHTML = `
+                    <i class="${icon}"></i>
+                    <span class="message-content">${this.escapeHtml(content)}</span>
+                `;
+
+                this.elements.messagesArea.appendChild(messageDiv);
+                this.scrollToBottom();
+
+                return messageDiv;
+            }
+
+            scrollToBottom() {
+                const messagesArea = this.elements.messagesArea;
+                messagesArea.scrollTop = messagesArea.scrollHeight;
+            }
+
+            escapeHtml(text) {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+
+            adjustLayout() {
+                // Called when window resizes or layout changes
+                this.autoResize();
+            }
+        }
+
+        // ===== COLUMN RESIZER MODULE =====
+        class ColumnResizer {
+            constructor(container) {
+                this.container = container;
+                this.isResizing = false;
+                this.currentResizer = null;
+                this.startX = 0;
+                this.startWidths = [];
+                
+                this.init();
+            }
+
+            init() {
+                const resizers = this.container.querySelectorAll('.resizer');
+                
+                resizers.forEach((resizer) => {
+                    resizer.addEventListener('mousedown', (e) => this.startResize(e, resizer));
+                });
+            }
+
+            startResize(e, resizer) {
+                e.preventDefault();
+                this.isResizing = true;
+                this.currentResizer = resizer;
+                this.startX = e.clientX;
+
+                // Store initial widths
+                const columns = Array.from(this.container.children);
+                this.startWidths = columns.map(col => col.offsetWidth);
+
+                // Add visual feedback
+                document.body.classList.add('resizing');
+                
+                // Bind events
+                document.addEventListener('mousemove', this.handleMouseMove.bind(this));
+                document.addEventListener('mouseup', this.stopResize.bind(this));
+            }
+
+            handleMouseMove(e) {
+                if (!this.isResizing || !this.currentResizer) return;
+
+                const deltaX = e.clientX - this.startX;
+                const columns = Array.from(this.container.children);
+                const resizers = Array.from(this.container.querySelectorAll('.resizer'));
+                const resizerIndex = resizers.indexOf(this.currentResizer);
+                
+                const leftColumn = columns[resizerIndex];
+                const rightColumn = columns[resizerIndex + 1];
+                
+                if (!leftColumn || !rightColumn) return;
+
+                const containerWidth = this.container.offsetWidth;
+                const newLeftWidth = this.startWidths[resizerIndex] + deltaX;
+                const newRightWidth = this.startWidths[resizerIndex + 1] - deltaX;
+
+                // Smart limits based on column position
+                const limits = this.getResizeLimits(resizerIndex, containerWidth);
+                
+                // Check limits
+                if (newLeftWidth < limits.minLeft || newLeftWidth > limits.maxLeft) return;
+                if (newRightWidth < limits.minRight || newRightWidth > limits.maxRight) return;
+
+                // Apply new widths
+                leftColumn.style.width = newLeftWidth + 'px';
+                rightColumn.style.width = newRightWidth + 'px';
+            }
+
+            getResizeLimits(resizerIndex, containerWidth) {
+                const minWidth = 250;
+                
+                if (resizerIndex === 0) {
+                    // Left edge: left column vs middle column
+                    return {
+                        minLeft: minWidth,
+                        maxLeft: containerWidth * 0.4, // Max 40% of screen
+                        minRight: minWidth,
+                        maxRight: containerWidth * 0.8  // Middle can be max 80%
+                    };
+                } else {
+                    // Right edge: middle column vs right column  
+                    return {
+                        minLeft: minWidth,
+                        maxLeft: containerWidth * 0.7, // Middle can be max 70%
+                        minRight: minWidth,
+                        maxRight: containerWidth * 0.45 // Right max 45% of screen
+                    };
+                }
+            }
+
+            stopResize() {
+                if (!this.isResizing) return;
+
+                this.isResizing = false;
+                this.currentResizer = null;
+                document.body.classList.remove('resizing');
+                
+                // Remove event listeners
+                document.removeEventListener('mousemove', this.handleMouseMove.bind(this));
+                document.removeEventListener('mouseup', this.stopResize.bind(this));
+            }
+        }
+
+        // ===== UTILITY FUNCTIONS =====
+        const Utils = {
+            // Debounce function for performance
+            debounce(func, wait) {
+                let timeout;
+                return function executedFunction(...args) {
+                    const later = () => {
+                        clearTimeout(timeout);
+                        func(...args);
+                    };
+                    clearTimeout(timeout);
+                    timeout = setTimeout(later, wait);
+                };
+            },
+
+            // Format timestamp
+            formatTime(date = new Date()) {
+                return date.toLocaleTimeString('en-US', { 
+                    hour: '2-digit', 
+                    minute: '2-digit' 
+                });
+            },
+
+            // Show notification
+            showNotification(message, type = 'info') {
+                console.log(`[${type.toUpperCase()}] ${message}`);
+                
+                // Create notification element
+                const notification = document.createElement('div');
+                notification.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    padding: 12px 16px;
+                    border-radius: 8px;
+                    color: white;
+                    font-weight: 500;
+                    z-index: 9999;
+                    animation: slideInRight 0.3s ease;
+                    ${type === 'success' ? 'background-color: #10b981;' : ''}
+                    ${type === 'error' ? 'background-color: #ef4444;' : ''}
+                    ${type === 'info' ? 'background-color: #3b82f6;' : ''}
+                `;
+                
+                notification.textContent = message;
+                document.body.appendChild(notification);
+                
+                // Auto remove after 3 seconds
+                setTimeout(() => {
+                    notification.style.animation = 'slideOutRight 0.3s ease';
+                    setTimeout(() => notification.remove(), 300);
+                }, 3000);
+            }
+        };
+
+        // ===== APP STARTUP =====
+        document.addEventListener('DOMContentLoaded', () => {
+            // Add notification animations
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes slideInRight {
+                    from {
+                        opacity: 0;
+                        transform: translateX(100px);
+                    }
+                    to {
+                        opacity: 1;
+                        transform: translateX(0);
+                    }
+                }
+                
+                @keyframes slideOutRight {
+                    from {
+                        opacity: 1;
+                        transform: translateX(0);
+                    }
+                    to {
+                        opacity: 0;
+                        transform: translateX(100px);
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+            
+            // Initialize the main application
+            window.easyLessonApp = new EasyLessonApp();
+            
+            console.log('EasyLesson loaded successfully! (Clean Version - Ready for new API)');
+        });
+    </script>
 </body>
 </html>
