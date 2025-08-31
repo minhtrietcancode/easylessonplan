@@ -5,7 +5,364 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EasyLesson - AI-Powered Lesson Planning</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="../static/index.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.5;
+            color: #000000;
+            background: #f8f9fc;
+            min-height: 100vh;
+            font-size: 15px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        /* Header */
+        header {
+            background: rgba(255, 255, 255, 0);
+            position: relative;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem 0;
+        }
+
+        .nav-section {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: black;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            font-size: 0.95rem;
+        }
+
+        .nav-links a:hover {
+            color: #4C50CC;
+        }
+
+        .auth-section {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #4C50CC;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+            color: #4247B0;
+        }
+
+        .cta-button {
+            background: #4C50CC;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .cta-button:hover {
+            background: #4247B0;
+            transform: translateY(-1px);
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: justify;
+            padding: 80px 0 100px 0;
+            background: #f8f9fc;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: #000000;
+            line-height: 1.1;
+            max-width: 750px;
+            margin-left: auto;
+            margin-right: auto;
+            text-align: center;
+        }
+
+        .hero-description {
+            font-size: 1.1rem;
+            color: #6b7280;
+            margin-bottom: 2.5rem;
+            line-height: 1.6;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .primary-button {
+            background: #4C50CC;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .primary-button:hover {
+            background: #4247B0;
+            transform: translateY(-1px);
+        }
+
+        /* Features Section */
+        .features {
+            padding: 70px 0;
+            background: #4C50CC;
+            color: white;
+        }
+
+        .features .section-title {
+            color: white;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 2.5rem;
+            color: #000000;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2.5rem;
+        }
+
+        .feature-card {
+            padding: 2rem 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .feature-card h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 0.8rem;
+            color: white;
+        }
+
+        .feature-card p {
+            font-size: 15px;
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.6;
+        }
+
+        /* About Section */
+        .about {
+            background: #f1f5f9;
+            padding: 70px 0;
+        }
+
+        .about-content {
+            display: grid;
+            grid-template-columns: 180px 1fr;
+            gap: 2.5rem;
+            align-items: center;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .avatar {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            object-fit: cover;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            border: 4px solid white;
+        }
+
+        .about-text {
+            font-size: 17px;
+            line-height: 1.7;
+            color: #000000;
+        }
+
+        /* Footer */
+        footer {
+            background: #1f2937;
+            color: white;
+            padding: 2.5rem 0;
+            text-align: center;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .social-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border-radius: 50%;
+            font-size: 1.1rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .social-icon:hover {
+            background: #4C50CC;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3);
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .feature-card {
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        .feature-card:nth-child(1) { animation-delay: 0.1s; }
+        .feature-card:nth-child(2) { animation-delay: 0.2s; }
+        .feature-card:nth-child(3) { animation-delay: 0.3s; }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .about-content {
+                grid-template-columns: 1fr;
+                text-align: left;
+                gap: 2rem;
+            }
+
+            .avatar {
+                width: 150px;
+                height: 150px;
+                margin: 0 auto;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .social-links {
+                gap: 1rem;
+            }
+
+            .header-content {
+                flex-direction: row;
+                gap: 1rem;
+            }
+
+            .nav-section {
+                display: none;
+            }
+
+            .logo {
+                font-size: 1.8rem;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero-description {
+                font-size: 1.1rem;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
 </head>
 <body>
     <!-- Header -->
@@ -24,7 +381,7 @@
                 </div>
 
                 <div class="auth-section">
-                    <a href="#" id="google-auth-button-header" class="cta-button">
+                    <a href="#" class="cta-button" id="auth-button">
                         <i class="fab fa-google"></i> Continue with Google
                     </a>
                 </div>
@@ -42,7 +399,7 @@
                 and auto-generated documents, EasyLesson makes teaching preparation a breeze.
             </p>
             <div class="hero-buttons">
-                <a href="#" id="google-auth-button-hero" class="primary-button">
+                <a href="#" class="primary-button" id="hero-auth-button">
                     <i class="fab fa-google"></i> Continue with Google
                 </a>
             </div>
@@ -78,7 +435,7 @@
         <div class="container">
             <h2 class="section-title">About Us</h2>
             <div class="about-content">
-                <img src="{{ url_for('static', filename='images/triet chan dung.jpg') }}" alt="Minh Triet Pham" class="avatar">
+                <img src="../static/images/triet chan dung.jpg" alt="Minh Triet Pham" class="avatar">
                 <div class="about-text">
                     <p>Hi, I am Minh Triet Pham - 2nd year Data Science student at UniMelb. Having always been in love with teaching and inspired by my teachers throughout my life, I have developed this tool to make lesson planning easier for educators everywhere.</p>
                 </div>
@@ -104,6 +461,199 @@
         </div>
     </footer>
 
-    <script src="../static/index.js"></script>
+    <script>
+        /**
+         * EasyLesson Frontend JavaScript - Cleaned Version
+         * Handles UI interactions and visual effects for the home page
+         * All API-related code has been removed for clean integration with new API
+         */
+
+        class UIAnimations {
+            /**
+             * Handles visual animations and effects
+             */
+            
+            static initializeScrollAnimations() {
+                const observerOptions = {
+                    threshold: 0.1,
+                    rootMargin: '0px 0px -50px 0px'
+                };
+
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.style.opacity = '1';
+                            entry.target.style.transform = 'translateY(0)';
+                        }
+                    });
+                }, observerOptions);
+
+                // Apply fade-in animation to feature cards
+                document.querySelectorAll('.feature-card').forEach(card => {
+                    card.style.opacity = '0';
+                    card.style.transform = 'translateY(30px)';
+                    card.style.transition = 'all 0.6s ease';
+                    observer.observe(card);
+                });
+            }
+            
+            static initializeParallaxEffect() {
+                const hero = document.querySelector('.hero');
+                if (!hero) return;
+                
+                let ticking = false;
+                
+                const updateParallax = () => {
+                    const scrolled = window.pageYOffset;
+                    hero.style.transform = `translateY(${scrolled * 0.1}px)`;
+                    ticking = false;
+                };
+                
+                const requestParallaxUpdate = () => {
+                    if (!ticking) {
+                        requestAnimationFrame(updateParallax);
+                        ticking = true;
+                    }
+                };
+                
+                window.addEventListener('scroll', requestParallaxUpdate, { passive: true });
+            }
+            
+            static initializeSmoothScrolling() {
+                document.querySelectorAll('.nav-links a[href^="#"]').forEach(anchor => {
+                    anchor.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        const targetId = anchor.getAttribute('href');
+                        const targetElement = document.querySelector(targetId);
+                        
+                        if (targetElement) {
+                            targetElement.scrollIntoView({
+                                behavior: 'smooth',
+                                block: 'start'
+                            });
+                        }
+                    });
+                });
+            }
+            
+            static initialize() {
+                this.initializeScrollAnimations();
+                this.initializeParallaxEffect();
+                this.initializeSmoothScrolling();
+            }
+        }
+
+        class EventHandlers {
+            /**
+             * Manages event listeners and user interactions
+             */
+            
+            static initializeAuthButtons() {
+                // Simple placeholder functionality - ready for new API integration
+                const authButtons = document.querySelectorAll('#auth-button, #hero-auth-button');
+                
+                authButtons.forEach(button => {
+                    // Add keyboard accessibility
+                    button.addEventListener('keydown', (e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            button.click();
+                        }
+                    });
+                    
+                    // Placeholder click handler - ready for new API
+                    button.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        // TODO: Integrate with new API authentication
+                        console.log('Auth button clicked - ready for new API integration');
+                    });
+                });
+            }
+            
+            static handleNavigationInteractions() {
+                // Add active state handling for navigation
+                const navLinks = document.querySelectorAll('.nav-links a');
+                
+                navLinks.forEach(link => {
+                    link.addEventListener('focus', () => {
+                        link.style.outline = '2px solid #4C50CC';
+                        link.style.outlineOffset = '2px';
+                    });
+                    
+                    link.addEventListener('blur', () => {
+                        link.style.outline = 'none';
+                    });
+                });
+            }
+            
+            static initialize() {
+                this.initializeAuthButtons();
+                this.handleNavigationInteractions();
+            }
+        }
+
+        class AppInitializer {
+            /**
+             * Main application initializer that coordinates all modules
+             */
+            
+            static initialize() {
+                try {
+                    console.log('🚀 Initializing EasyLesson frontend...');
+                    
+                    // Initialize UI animations and effects
+                    UIAnimations.initialize();
+                    
+                    // Initialize event handlers
+                    EventHandlers.initialize();
+                    
+                    console.log('✅ Frontend initialization complete - Ready for new API integration');
+                    
+                } catch (error) {
+                    console.error('❌ Frontend initialization failed:', error);
+                    this.showInitializationError();
+                }
+            }
+            
+            static showInitializationError() {
+                // Create a simple error notification
+                const errorDiv = document.createElement('div');
+                errorDiv.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: #ef4444;
+                    color: white;
+                    padding: 12px 16px;
+                    border-radius: 8px;
+                    font-size: 14px;
+                    z-index: 1000;
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                `;
+                errorDiv.textContent = 'Some features may not work properly. Please refresh the page.';
+                
+                document.body.appendChild(errorDiv);
+                
+                // Auto-remove after 5 seconds
+                setTimeout(() => {
+                    if (errorDiv.parentNode) {
+                        errorDiv.parentNode.removeChild(errorDiv);
+                    }
+                }, 5000);
+            }
+        }
+
+        // Initialize the application when DOM is ready
+        document.addEventListener('DOMContentLoaded', () => {
+            AppInitializer.initialize();
+        });
+
+        // Export modules for potential use by other scripts or new API integration
+        window.EasyLessonApp = {
+            UIAnimations,
+            EventHandlers,
+            AppInitializer
+        };
+    </script>
 </body>
 </html>
