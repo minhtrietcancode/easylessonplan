@@ -49,7 +49,7 @@ class EasyLessonApp {
     }
 }
 
-// ===== MODEL SELECTOR MODULE =====
+// ===== MODEL SELECTOR MODULE - UPDATED FOR DROP-UP =====
 class ModelSelector {
     constructor(elements) {
         this.elements = elements;
@@ -102,24 +102,30 @@ class ModelSelector {
         
         // Create dropdown element
         const dropdown = document.createElement('div');
-        dropdown.className = 'model-dropdown';
+        dropdown.className = 'model-dropdown drop-up';
+        
+        // Calculate dropdown height to position it properly
+        const estimatedHeight = Math.min(this.availableModels.length * 45 + 10, 200); // 45px per item + padding, max 200px
+        
         dropdown.style.cssText = `
             position: absolute;
-            top: 100%;
+            bottom: 100%;
             left: 0;
             right: 0;
             background: white;
             border: 1px solid #e2e8f0;
             border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.15);
             z-index: 1000;
-            margin-top: 4px;
+            margin-bottom: 4px;
             max-height: 200px;
             overflow-y: auto;
+            animation: dropUpSlideIn 0.2s ease;
         `;
 
-        // Add model options
-        this.availableModels.forEach(modelName => {
+        // Add model options (reverse order so current selection appears at bottom)
+        const modelsToShow = [...this.availableModels].reverse();
+        modelsToShow.forEach(modelName => {
             const option = document.createElement('div');
             option.className = 'model-option';
             option.style.cssText = `
@@ -129,8 +135,14 @@ class ModelSelector {
                 align-items: center;
                 gap: 8px;
                 transition: background-color 0.2s ease;
+                border-bottom: 1px solid #f1f5f9;
                 ${modelName === this.currentModel ? 'background-color: #f1f5f9; font-weight: 600;' : ''}
             `;
+            
+            // Remove border from last item (which is actually first due to reverse)
+            if (modelName === modelsToShow[modelsToShow.length - 1]) {
+                option.style.borderBottom = 'none';
+            }
             
             option.innerHTML = `
                 <i class="fas fa-brain" style="color: #4C50CC;"></i>
@@ -158,13 +170,23 @@ class ModelSelector {
         // Position dropdown relative to indicator
         this.elements.indicator.style.position = 'relative';
         this.elements.indicator.appendChild(dropdown);
+        
+        // Scroll to current model if it exists in the dropdown
+        setTimeout(() => {
+            const currentOption = dropdown.querySelector('.model-option[style*="font-weight: 600"]');
+            if (currentOption) {
+                currentOption.scrollIntoView({ block: 'nearest' });
+            }
+        }, 50);
     }
 
     closeDropdown() {
         this.isDropdownOpen = false;
         const dropdown = this.elements.indicator.querySelector('.model-dropdown');
         if (dropdown) {
-            dropdown.remove();
+            // Add slide out animation
+            dropdown.style.animation = 'dropUpSlideOut 0.2s ease';
+            setTimeout(() => dropdown.remove(), 200);
         }
     }
 
