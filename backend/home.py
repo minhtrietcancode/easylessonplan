@@ -1,49 +1,128 @@
+"""
+EasyLesson Web Application - Home Module
+Main application factory and route definitions for the home page functionality.
+"""
+
 import os
-from flask import Flask, render_template, session, redirect, url_for
+from flask import Flask, render_template, session, jsonify
 from loginauth import auth_bp, login_required, AuthConfig
 
-def create_app():
-    """Application factory pattern"""
-    app = Flask(__name__, 
-                template_folder='../frontend/templates',
-                static_folder='../frontend/static')
+
+class HomeConfig:
+    """Configuration specific to the home application"""
     
-    # Load configuration
+    # Server settings
+    HOST = '0.0.0.0'
+    PORT = 5000
+    
+    # Template and static folders
+    TEMPLATE_FOLDER = '../frontend/templates'
+    STATIC_FOLDER = '../frontend/static'
+    
+    # Application info
+    APP_NAME = 'EasyLesson'
+    VERSION = '1.0.0'
+
+
+class HomeRoutes:
+    """Route handlers for the home application"""
+    
+    @staticmethod
+    def index():
+        """Home page route"""
+        return render_template('index.html')
+    
+    @staticmethod
+    @login_required
+    def dashboard():
+        """Protected dashboard page - only accessible after login"""
+        user = session.get('user')
+        if not user:
+            # This shouldn't happen with @login_required, but safety check
+            return jsonify({'error': 'User session not found'}), 401
+        
+        return render_template('dashboard.html', user=user)
+    
+    @staticmethod
+    def health():
+        """Health check endpoint for monitoring"""
+        return {
+            'status': 'healthy',
+            'service': f'{HomeConfig.APP_NAME} API',
+            'version': HomeConfig.VERSION
+        }, 200
+
+
+def create_app():
+    """
+    Application factory pattern for creating Flask app instances.
+    This makes it easier to configure different environments and testing.
+    """
+    app = Flask(__name__, 
+                template_folder=HomeConfig.TEMPLATE_FOLDER,
+                static_folder=HomeConfig.STATIC_FOLDER)
+    
+    # Load configuration from AuthConfig
     app.config.from_object(AuthConfig)
     
-    # Register blueprints
+    # Register authentication blueprint
     app.register_blueprint(auth_bp)
+    
+    # Register home routes
+    _register_home_routes(app)
     
     return app
 
-app = create_app()
 
-@app.route('/')
-def index():
-    """Home page"""
-    return render_template('index.html')
+def _register_home_routes(app):
+    """Register home-specific routes to the Flask app"""
+    app.add_url_rule('/', 'index', HomeRoutes.index)
+    app.add_url_rule('/dashboard', 'dashboard', HomeRoutes.dashboard)
+    app.add_url_rule('/health', 'health', HomeRoutes.health)
 
-@app.route('/dashboard')
-@login_required
-def dashboard():
-    """Protected dashboard page - only accessible after login"""
-    user = session.get('user')
-    return render_template('dashboard.html', user=user)
 
-@app.route('/health')
-def health():
-    """Health check endpoint"""
-    return {'status': 'healthy', 'service': 'EasyLesson API'}, 200
-
-if __name__ == '__main__':
-    # Check if required environment variables are set
-    if not AuthConfig.GOOGLE_CLIENT_ID or not AuthConfig.GOOGLE_CLIENT_SECRET:
-        print("⚠️  Warning: Google OAuth credentials not found!")
-        print("Please set GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET environment variables.")
-        print("See setup instructions below.")
+def validate_environment():
+    """Validate that required environment variables are set"""
+    missing_vars = []
     
+    if not AuthConfig.GOOGLE_CLIENT_ID:
+        missing_vars.append('GOOGLE_CLIENT_ID')
+    
+    if not AuthConfig.GOOGLE_CLIENT_SECRET:
+        missing_vars.append('GOOGLE_CLIENT_SECRET')
+    
+    return missing_vars
+
+
+def print_startup_info():
+    """Print helpful startup information"""
     print("🚀 Starting EasyLesson server...")
-    print("📝 Access your app at: http://localhost:5000")
-    print("🔐 Dashboard at: http://localhost:5000/dashboard (requires login)")
+    print(f"📝 Access your app at: http://localhost:{HomeConfig.PORT}")
+    print(f"🔐 Dashboard at: http://localhost:{HomeConfig.PORT}/dashboard (requires login)")
+    print(f"❤️  Health check at: http://localhost:{HomeConfig.PORT}/health")
+
+
+def main():
+    """Main application entry point"""
+    # Validate environment
+    missing_vars = validate_environment()
+    if missing_vars:
+        print("⚠️  Warning: Missing required environment variables!")
+        print(f"Please set: {', '.join(missing_vars)}")
+        print("Check your .env file or environment configuration.")
+        print("The app may not work correctly without these variables.\n")
     
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    # Create and run the app
+    app = create_app()
+    print_startup_info()
+    
+    app.run(
+        debug=True,
+        host=HomeConfig.HOST,
+        port=HomeConfig.PORT
+    )
+
+
+# Entry point
+if __name__ == '__main__':
+    main()
