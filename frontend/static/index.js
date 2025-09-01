@@ -5,18 +5,13 @@
 
 class AuthManager {
     /**
-     * Manages authentication-related functionality
+     * Manages authentication-related functionality using the new API structure
      */
     
     static async checkAuthStatus() {
         try {
-            const response = await fetch('/auth/user');
-            if (!response.ok) {
-                throw new Error(`HTTP ${response.status}`);
-            }
-            
-            const data = await response.json();
-            return data;
+            const response = await window.authAPI.getUserInfo();
+            return response.success ? response.data : { user: null, authenticated: false };
         } catch (error) {
             console.warn('Auth status check failed:', error.message);
             return { user: null, authenticated: false };
@@ -57,7 +52,7 @@ class AuthManager {
             // Update click behavior to start login
             button.onclick = (e) => {
                 e.preventDefault();
-                window.location.href = '/auth/login';
+                window.authAPI.initiateLogin();
             };
             
             // Update accessibility
@@ -70,6 +65,12 @@ class AuthManager {
     }
     
     static async initialize() {
+        // Wait for API client to be available
+        if (!window.authAPI) {
+            console.error('AuthAPI not available. Make sure api scripts are loaded.');
+            return { user: null, authenticated: false };
+        }
+        
         const authData = await this.checkAuthStatus();
         
         if (authData.user) {
@@ -217,6 +218,9 @@ class AppInitializer {
         try {
             console.log('🚀 Initializing EasyLesson frontend...');
             
+            // Wait for API modules to be loaded
+            await this.waitForAPIModules();
+            
             // Initialize UI animations and effects
             UIAnimations.initialize();
             
@@ -226,6 +230,9 @@ class AppInitializer {
             // Initialize authentication and update UI
             const authData = await AuthManager.initialize();
             
+            // Set up auth state listeners
+            this.setupAuthStateListeners();
+            
             console.log('✅ Frontend initialization complete');
             console.log('👤 Auth status:', authData.authenticated ? 'Logged in' : 'Guest');
             
@@ -233,6 +240,48 @@ class AppInitializer {
             console.error('❌ Frontend initialization failed:', error);
             // Show user-friendly error message
             this.showInitializationError();
+        }
+    }
+    
+    static async waitForAPIModules() {
+        /**
+         * Wait for API modules to be loaded
+         */
+        const maxWaitTime = 5000; // 5 seconds
+        const checkInterval = 100; // 100ms
+        let elapsed = 0;
+        
+        return new Promise((resolve, reject) => {
+            const checkAPI = () => {
+                if (window.authAPI && window.userAPI && window.apiClient) {
+                    resolve();
+                } else if (elapsed >= maxWaitTime) {
+                    reject(new Error('API modules failed to load within timeout'));
+                } else {
+                    elapsed += checkInterval;
+                    setTimeout(checkAPI, checkInterval);
+                }
+            };
+            
+            checkAPI();
+        });
+    }
+    
+    static setupAuthStateListeners() {
+        /**
+         * Set up authentication state change listeners
+         */
+        if (window.authStateManager) {
+            window.authStateManager.addAuthStateListener((authState) => {
+                console.log('Auth state changed:', authState);
+                
+                // Update UI based on auth state
+                if (authState.authenticated && authState.user) {
+                    AuthManager.updateUIForLoggedInUser(authState.user);
+                } else {
+                    AuthManager.updateUIForGuestUser();
+                }
+            });
         }
     }
     
@@ -250,6 +299,7 @@ class AppInitializer {
             font-size: 14px;
             z-index: 1000;
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            max-width: 300px;
         `;
         errorDiv.textContent = 'Some features may not work properly. Please refresh the page.';
         
@@ -272,9 +322,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Handle page visibility changes (for auth status refresh)
 document.addEventListener('visibilitychange', () => {
-    if (!document.hidden) {
+    if (!document.hidden && window.authStateManager) {
         // Page became visible, refresh auth status
-        AuthManager.initialize();
+        window.authStateManager.refresh();
     }
 });
 

@@ -6,6 +6,7 @@ Main application factory and route definitions for the home page functionality.
 import os
 from flask import Flask, render_template, session, jsonify
 from loginauth import auth_bp, login_required, AuthConfig
+from api_routes import api_bp
 
 
 class HomeConfig:
@@ -49,7 +50,12 @@ class HomeRoutes:
         return {
             'status': 'healthy',
             'service': f'{HomeConfig.APP_NAME} API',
-            'version': HomeConfig.VERSION
+            'version': HomeConfig.VERSION,
+            'endpoints': {
+                'auth': '/auth/*',
+                'api': '/api/*',
+                'frontend': '/'
+            }
         }, 200
 
 
@@ -65,8 +71,9 @@ def create_app():
     # Load configuration from AuthConfig
     app.config.from_object(AuthConfig)
     
-    # Register authentication blueprint
-    app.register_blueprint(auth_bp)
+    # Register blueprints
+    app.register_blueprint(auth_bp)    # Authentication routes (/auth/*)
+    app.register_blueprint(api_bp)     # API routes (/api/*)
     
     # Register home routes
     _register_home_routes(app)
@@ -99,6 +106,8 @@ def print_startup_info():
     print("🚀 Starting EasyLesson server...")
     print(f"📝 Access your app at: http://localhost:{HomeConfig.PORT}")
     print(f"🔐 Dashboard at: http://localhost:{HomeConfig.PORT}/dashboard (requires login)")
+    print(f"🔗 API endpoints at: http://localhost:{HomeConfig.PORT}/api/*")
+    print(f"🔑 Auth endpoints at: http://localhost:{HomeConfig.PORT}/auth/*")
     print(f"❤️  Health check at: http://localhost:{HomeConfig.PORT}/health")
 
 

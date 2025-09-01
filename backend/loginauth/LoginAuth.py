@@ -199,24 +199,6 @@ class AuthRoutes:
         
         AuthService.clear_user_session()
         return redirect(url_for('index'))
-    
-    @staticmethod
-    def get_user_info():
-        """API endpoint to get current user information"""
-        user = AuthService.get_current_user()
-        return jsonify({
-            'user': user,
-            'authenticated': user is not None
-        }), 200
-    
-    @staticmethod
-    def check_auth_status():
-        """API endpoint to check if user is authenticated"""
-        user = AuthService.get_current_user()
-        return jsonify({
-            'authenticated': user is not None,
-            'user_id': user.get('id') if user else None
-        }), 200
 
 
 def register_auth_routes():
@@ -224,8 +206,6 @@ def register_auth_routes():
     auth_bp.add_url_rule('/login', 'login', AuthRoutes.login, methods=['GET'])
     auth_bp.add_url_rule('/callback', 'callback', AuthRoutes.callback, methods=['GET'])
     auth_bp.add_url_rule('/logout', 'logout', AuthRoutes.logout, methods=['GET', 'POST'])
-    auth_bp.add_url_rule('/user', 'user_info', AuthRoutes.get_user_info, methods=['GET'])
-    auth_bp.add_url_rule('/status', 'auth_status', AuthRoutes.check_auth_status, methods=['GET'])
 
 
 # Register routes when module is imported
