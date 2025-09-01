@@ -1,10 +1,5 @@
 // ===== EASYLESSON APP - FLASK INTEGRATED =====
 
-// Initialize API components
-const apiClient = new APIClient('');
-const lessonAPI = new LessonAPI(apiClient);
-const apiManager = new APIManager();
-
 // ===== APP INITIALIZATION =====
 class EasyLessonApp {
     constructor() {
@@ -38,9 +33,6 @@ class EasyLessonApp {
 
     async init() {
         console.log('EasyLesson App Initializing...');
-        
-        // Initialize API manager
-        await apiManager.initialize();
         
         // Load available models
         await this.modelSelector.loadAvailableModels();
@@ -80,16 +72,27 @@ class ModelSelector {
 
     async loadAvailableModels() {
         try {
-            const response = await lessonAPI.getAvailableModels();
-            this.availableModels = response.data.models;
-            this.currentModel = response.data.current_model;
+            console.log('📡 Fetching available models...');
+            const response = await window.lessonAPI.getAvailableModels();
+            
+            if (!response || !response.data) {
+                throw new Error('Invalid response format');
+            }
+            
+            this.availableModels = response.data.models || [];
+            this.currentModel = response.data.current_model || 'Default';
             
             // Update UI
             this.elements.modelName.textContent = this.currentModel;
             
-            console.log('Available models loaded:', this.availableModels);
+            console.log('✅ Models loaded:', this.availableModels);
+            console.log('✅ Current model:', this.currentModel);
         } catch (error) {
-            console.error('Error loading models:', error);
+            console.error('❌ Error loading models:', error);
+            // Set default values
+            this.availableModels = ['Default'];
+            this.currentModel = 'Default';
+            this.elements.modelName.textContent = 'Default';
             Utils.showNotification('Failed to load available models', 'error');
         }
     }
@@ -207,8 +210,13 @@ class ModelSelector {
             this.elements.modelName.textContent = 'Switching...';
             this.elements.indicator.style.opacity = '0.6';
             
+            console.log('🔄 Switching to model:', modelName);
             // Call backend to switch model
-            const response = await lessonAPI.switchModel(modelName);
+            const response = await window.lessonAPI.switchModel(modelName);
+            
+            if (!response || !response.data) {
+                throw new Error('Invalid response format');
+            }
             
             // Update UI
             this.currentModel = response.data.current_model;
@@ -220,9 +228,10 @@ class ModelSelector {
             
             // Show success message
             Utils.showNotification(response.data.message || `Switched to ${modelName}`, 'success');
+            console.log('✅ Model switched successfully:', this.currentModel);
             
         } catch (error) {
-            console.error('Error switching model:', error);
+            console.error('❌ Error switching model:', error);
             this.elements.modelName.textContent = this.currentModel;
             this.elements.indicator.style.opacity = '1';
             Utils.showNotification('Failed to switch model', 'error');

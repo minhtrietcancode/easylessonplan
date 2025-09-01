@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EasyLesson - AI-Powered Lesson Planning</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="../static/easylesson.css">
+    <link rel="stylesheet" href="/static/easylesson.css">
 </head>
 <body>
     <div class="easylesson-container" id="mainContainer">
@@ -77,14 +77,32 @@
         </div>
     </div>
 
+    <!-- Base Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js"></script>
+    
     <!-- API Client Libraries -->
-    <script src="../static/api/api_client.js"></script>
-    <script src="../static/api/auth_api.js"></script>
-    <script src="../static/api/user_api.js"></script>
-    <script src="../static/api/lesson_api.js"></script>
-    <script src="../static/api/index.js"></script>
+    <script src="/static/api/api_client.js"></script>
+    <script src="/static/api/lesson_api.js"></script>
+    <script src="/static/api/index.js"></script>
     
     <!-- Main Application -->
-    <script src="../static/easylesson.js"></script>
+    <script src="/static/easylesson.js"></script>
+    
+    <script>
+        // Initialize global API client
+        document.addEventListener('DOMContentLoaded', async () => {
+            console.log('🚀 Initializing API clients...');
+            
+            try {
+                // Create API clients
+                window.apiClient = new APIClient('');
+                window.lessonAPI = new LessonAPI(window.apiClient);
+                
+                console.log('✅ API clients initialized');
+            } catch (error) {
+                console.error('❌ Failed to initialize API clients:', error);
+            }
+        });
+    </script>
 </body>
 </html>

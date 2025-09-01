@@ -102,12 +102,33 @@ class LessonAPI(BaseAPI):
             return self.error_response(f'Failed to get conversation history: {str(e)}', 500)
 
 
-# Create API instance
-lesson_api = LessonAPI()
+# Create API instance and register routes
+def init_api():
+    """Initialize API and register routes"""
+    lesson_api = LessonAPI()
+    
+    # Create route handler functions that call the API methods
+    def handle_chat():
+        return lesson_api.chat()
+    
+    def handle_models():
+        return lesson_api.get_available_models()
+        
+    def handle_switch_model():
+        return lesson_api.switch_model()
+        
+    def handle_clear_conversation():
+        return lesson_api.clear_conversation()
+        
+    def handle_conversation_history():
+        return lesson_api.get_conversation_history()
+    
+    # Register routes with handler functions
+    lesson_bp.add_url_rule('/chat', 'chat', handle_chat, methods=['POST'])
+    lesson_bp.add_url_rule('/models', 'models', handle_models, methods=['GET'])
+    lesson_bp.add_url_rule('/models/switch', 'switch_model', handle_switch_model, methods=['POST'])
+    lesson_bp.add_url_rule('/conversation/clear', 'clear_conversation', handle_clear_conversation, methods=['POST'])
+    lesson_bp.add_url_rule('/conversation/history', 'conversation_history', handle_conversation_history, methods=['GET'])
 
-# Register routes
-lesson_bp.add_url_rule('/chat', 'chat', lesson_api.chat, methods=['POST'])
-lesson_bp.add_url_rule('/models', 'models', lesson_api.get_available_models, methods=['GET'])
-lesson_bp.add_url_rule('/models/switch', 'switch_model', lesson_api.switch_model, methods=['POST'])
-lesson_bp.add_url_rule('/conversation/clear', 'clear_conversation', lesson_api.clear_conversation, methods=['POST'])
-lesson_bp.add_url_rule('/conversation/history', 'conversation_history', lesson_api.get_conversation_history, methods=['GET'])
+# Initialize when module is imported
+init_api()

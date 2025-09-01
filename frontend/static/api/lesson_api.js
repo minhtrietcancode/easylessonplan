@@ -7,6 +7,23 @@ class LessonAPI {
     constructor(client) {
         this.client = client;
         this.baseEndpoint = '/api/lesson';
+        console.log('🔧 LessonAPI initialized with base endpoint:', this.baseEndpoint);
+        
+        // Test the connection
+        this.testConnection();
+    }
+
+    /**
+     * Test the API connection
+     * @private
+     */
+    async testConnection() {
+        try {
+            await this.getAvailableModels();
+            console.log('✅ LessonAPI connection test successful');
+        } catch (error) {
+            console.error('❌ LessonAPI connection test failed:', error);
+        }
     }
 
     /**
@@ -15,7 +32,15 @@ class LessonAPI {
      * @returns {Promise<object>} - API response with LLM reply
      */
     async sendMessage(message) {
-        return this.client.post(`${this.baseEndpoint}/chat`, { message });
+        console.log('🚀 Sending chat message:', message);
+        try {
+            const response = await this.client.post(`${this.baseEndpoint}/chat`, { message });
+            console.log('✅ Chat response:', response);
+            return response;
+        } catch (error) {
+            console.error('❌ Chat error:', error);
+            throw error;
+        }
     }
 
     /**
@@ -23,7 +48,15 @@ class LessonAPI {
      * @returns {Promise<object>} - List of available models and current model
      */
     async getAvailableModels() {
-        return this.client.get(`${this.baseEndpoint}/models`);
+        console.log('🔍 Getting available models...');
+        try {
+            const response = await this.client.get(`${this.baseEndpoint}/models`);
+            console.log('✅ Models response:', response);
+            return response;
+        } catch (error) {
+            console.error('❌ Models error:', error);
+            throw error;
+        }
     }
 
     /**
@@ -32,7 +65,15 @@ class LessonAPI {
      * @returns {Promise<object>} - Response with new model info
      */
     async switchModel(modelName) {
-        return this.client.post(`${this.baseEndpoint}/models/switch`, { model_name: modelName });
+        console.log('🔄 Switching to model:', modelName);
+        try {
+            const response = await this.client.post(`${this.baseEndpoint}/models/switch`, { model_name: modelName });
+            console.log('✅ Switch response:', response);
+            return response;
+        } catch (error) {
+            console.error('❌ Switch error:', error);
+            throw error;
+        }
     }
 
     /**
@@ -52,7 +93,5 @@ class LessonAPI {
     }
 }
 
-// Export for use in index.js
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = { LessonAPI };
-}
+// Export to window object
+window.LessonAPI = LessonAPI;
