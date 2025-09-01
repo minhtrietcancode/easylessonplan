@@ -73,12 +73,15 @@ class ModelSelector {
     async loadAvailableModels() {
         try {
             console.log('📡 Fetching available models...');
-            const response = await window.lessonAPI.getAvailableModels();
-            
-            if (!response || !response.data) {
-                throw new Error('Invalid response format');
-            }
-            
+            // Use local mock data (no backend integration)
+            const response = {
+                success: true,
+                data: {
+                    models: ['GPT-4', 'GPT-4o', 'Local-Assistant'],
+                    current_model: 'GPT-4'
+                }
+            };
+
             this.availableModels = response.data.models || [];
             this.currentModel = response.data.current_model || 'Default';
             
@@ -210,16 +213,10 @@ class ModelSelector {
             this.elements.modelName.textContent = 'Switching...';
             this.elements.indicator.style.opacity = '0.6';
             
-            console.log('🔄 Switching to model:', modelName);
-            // Call backend to switch model
-            const response = await window.lessonAPI.switchModel(modelName);
-            
-            if (!response || !response.data) {
-                throw new Error('Invalid response format');
-            }
-            
-            // Update UI
-            this.currentModel = response.data.current_model;
+            console.log('� (mock) Switching to model:', modelName);
+            // Mock switching behavior locally
+            await new Promise(res => setTimeout(res, 200));
+            this.currentModel = modelName;
             this.elements.modelName.textContent = this.currentModel;
             this.elements.indicator.style.opacity = '1';
             
@@ -227,7 +224,7 @@ class ModelSelector {
             this.closeDropdown();
             
             // Show success message
-            Utils.showNotification(response.data.message || `Switched to ${modelName}`, 'success');
+            Utils.showNotification(`Switched to ${modelName}`, 'success');
             console.log('✅ Model switched successfully:', this.currentModel);
             
         } catch (error) {
@@ -312,22 +309,16 @@ class ChatInterface {
         const loadingMsg = this.addMessage('Thinking...', 'ai', true);
 
         try {
-            // Send to backend
-            const response = await lessonAPI.sendMessage(text);
-            
+            // Mocked AI reply (no backend)
+            await new Promise(res => setTimeout(res, 600));
+
             // Remove loading message
             loadingMsg.remove();
-            
-            // Add AI response
-            this.addMessage(response.data.response, 'ai');
-            
-        } catch (error) {
-            // Remove loading message
-            loadingMsg.remove();
-            
-            // Show error message
-            this.addMessage('Sorry, there was an error processing your message. Please try again.', 'ai');
-            console.error('Chat error:', error);
+
+            // Create a simple mock response
+            const mockReply = `I heard: "${text}" — try asking me to generate a lesson outline or learning objectives.`;
+            this.addMessage(mockReply, 'ai');
+
         } finally {
             // Re-enable send button
             this.toggleSendButton(true);

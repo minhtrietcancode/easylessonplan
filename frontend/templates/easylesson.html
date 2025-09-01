@@ -80,29 +80,7 @@
     <!-- Base Libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js"></script>
     
-    <!-- API Client Libraries -->
-    <script src="/static/api/api_client.js"></script>
-    <script src="/static/api/lesson_api.js"></script>
-    <script src="/static/api/index.js"></script>
-    
-    <!-- Main Application -->
+    <!-- Main Application (no backend API integration) -->
     <script src="/static/easylesson.js"></script>
-    
-    <script>
-        // Initialize global API client
-        document.addEventListener('DOMContentLoaded', async () => {
-            console.log('🚀 Initializing API clients...');
-            
-            try {
-                // Create API clients
-                window.apiClient = new APIClient('');
-                window.lessonAPI = new LessonAPI(window.apiClient);
-                
-                console.log('✅ API clients initialized');
-            } catch (error) {
-                console.error('❌ Failed to initialize API clients:', error);
-            }
-        });
-    </script>
 </body>
 </html>

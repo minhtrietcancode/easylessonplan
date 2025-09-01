@@ -8,8 +8,6 @@ from flask import Flask, render_template, session, jsonify, url_for, redirect
 from backend.loginauth.AuthConfig import AuthConfig
 from backend.loginauth.LoginAuth import auth_bp, login_required
 from backend.api_routes import api_bp
-from backend.api.lesson_api import lesson_bp
-
 
 class HomeConfig:
     """Configuration specific to the home application"""
@@ -81,7 +79,6 @@ def create_app():
     
     # Register blueprints
     app.register_blueprint(auth_bp)     # Authentication routes (/auth/*)
-    app.register_blueprint(lesson_bp)    # Lesson planning routes (/api/lesson/*)
     app.register_blueprint(api_bp)      # Additional API routes (/api/*)
     
     # Register home routes
