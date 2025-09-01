@@ -1,13 +1,14 @@
 """
 EasyLesson Web Application - Home Module
-Main application factory and route definitions for the home page functionality.
+Main application factory and route definitions for the integrated application.
 """
 
 import os
-from flask import Flask, render_template, session, jsonify
+from flask import Flask, render_template, session, jsonify, url_for, redirect
 from backend.loginauth.AuthConfig import AuthConfig
 from backend.loginauth.LoginAuth import auth_bp, login_required
 from backend.api_routes import api_bp
+from backend.api.lesson_api import lesson_bp
 
 
 class HomeConfig:
@@ -31,19 +32,25 @@ class HomeRoutes:
     
     @staticmethod
     def index():
-        """Home page route"""
+        """Home page route - Shows login page if not authenticated"""
         return render_template('index.html')
     
     @staticmethod
     @login_required
-    def dashboard():
-        """Protected dashboard page - only accessible after login"""
+    def easylesson():
+        """Main lesson planning interface - requires authentication"""
         user = session.get('user')
         if not user:
             # This shouldn't happen with @login_required, but safety check
             return jsonify({'error': 'User session not found'}), 401
         
-        return render_template('dashboard.html', user=user)
+        return render_template('easylesson.html', user=user)
+    
+    @staticmethod
+    @login_required
+    def dashboard():
+        """Legacy dashboard route - redirects to EasyLesson"""
+        return redirect(url_for('easylesson'))
     
     @staticmethod
     def health():
@@ -54,7 +61,7 @@ class HomeRoutes:
             'version': HomeConfig.VERSION,
             'endpoints': {
                 'auth': '/auth/*',
-                'api': '/api/*',
+                'lesson': '/api/lesson/*',
                 'frontend': '/'
             }
         }, 200
@@ -73,8 +80,9 @@ def create_app():
     app.config.from_object(AuthConfig)
     
     # Register blueprints
-    app.register_blueprint(auth_bp)    # Authentication routes (/auth/*)
-    app.register_blueprint(api_bp)     # API routes (/api/*)
+    app.register_blueprint(auth_bp)     # Authentication routes (/auth/*)
+    app.register_blueprint(lesson_bp)    # Lesson planning routes (/api/lesson/*)
+    app.register_blueprint(api_bp)      # Additional API routes (/api/*)
     
     # Register home routes
     _register_home_routes(app)
@@ -85,6 +93,7 @@ def create_app():
 def _register_home_routes(app):
     """Register home-specific routes to the Flask app"""
     app.add_url_rule('/', 'index', HomeRoutes.index)
+    app.add_url_rule('/easylesson', 'easylesson', HomeRoutes.easylesson)
     app.add_url_rule('/dashboard', 'dashboard', HomeRoutes.dashboard)
     app.add_url_rule('/health', 'health', HomeRoutes.health)
 

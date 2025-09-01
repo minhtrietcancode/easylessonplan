@@ -173,8 +173,8 @@ class AuthRoutes:
             # Clean up OAuth state
             session.pop('oauth_state', None)
             
-            # Redirect to dashboard
-            return redirect(url_for('dashboard'))
+            # Redirect to EasyLesson page
+            return redirect(url_for('easylesson'))
             
         except google.auth.exceptions.GoogleAuthError as e:
             current_app.logger.error(f"Google authentication error: {e}")

@@ -22,7 +22,7 @@ class APIManager {
             console.log('🔗 Initializing API modules...');
             
             // Check if all required modules are loaded
-            if (!window.APIClient || !window.AuthAPI || !window.UserAPI) {
+            if (!window.APIClient || !window.AuthAPI || !window.UserAPI || !window.LessonAPI) {
                 throw new Error('Required API modules not loaded');
             }
             
@@ -31,6 +31,7 @@ class APIManager {
                 client: window.apiClient,
                 auth: window.authAPI,
                 user: window.userAPI,
+                lesson: window.lessonAPI,
                 authState: window.authStateManager,
                 userPreferences: window.userPreferencesManager,
                 userData: window.userDataManager

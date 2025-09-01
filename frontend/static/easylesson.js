@@ -1,5 +1,10 @@
 // ===== EASYLESSON APP - FLASK INTEGRATED =====
 
+// Initialize API components
+const apiClient = new APIClient('');
+const lessonAPI = new LessonAPI(apiClient);
+const apiManager = new APIManager();
+
 // ===== APP INITIALIZATION =====
 class EasyLessonApp {
     constructor() {
@@ -32,7 +37,10 @@ class EasyLessonApp {
     }
 
     async init() {
-        console.log('EasyLesson App Initialized');
+        console.log('EasyLesson App Initializing...');
+        
+        // Initialize API manager
+        await apiManager.initialize();
         
         // Load available models
         await this.modelSelector.loadAvailableModels();
@@ -41,6 +49,8 @@ class EasyLessonApp {
         window.addEventListener('resize', () => {
             this.chatInterface.adjustLayout();
         });
+        
+        console.log('EasyLesson App Initialized');
     }
 }
 
@@ -70,9 +80,9 @@ class ModelSelector {
 
     async loadAvailableModels() {
         try {
-            const response = await API.models.getAvailable();
-            this.availableModels = response.models;
-            this.currentModel = response.current_model;
+            const response = await lessonAPI.getAvailableModels();
+            this.availableModels = response.data.models;
+            this.currentModel = response.data.current_model;
             
             // Update UI
             this.elements.modelName.textContent = this.currentModel;
@@ -198,18 +208,18 @@ class ModelSelector {
             this.elements.indicator.style.opacity = '0.6';
             
             // Call backend to switch model
-            await API.models.switch(modelName);
+            const response = await lessonAPI.switchModel(modelName);
             
             // Update UI
-            this.currentModel = modelName;
-            this.elements.modelName.textContent = modelName;
+            this.currentModel = response.data.current_model;
+            this.elements.modelName.textContent = this.currentModel;
             this.elements.indicator.style.opacity = '1';
             
             // Close dropdown
             this.closeDropdown();
             
             // Show success message
-            Utils.showNotification(`Switched to ${modelName}`, 'success');
+            Utils.showNotification(response.data.message || `Switched to ${modelName}`, 'success');
             
         } catch (error) {
             console.error('Error switching model:', error);
@@ -294,13 +304,13 @@ class ChatInterface {
 
         try {
             // Send to backend
-            const response = await API.chat.send(text);
+            const response = await lessonAPI.sendMessage(text);
             
             // Remove loading message
             loadingMsg.remove();
             
             // Add AI response
-            this.addMessage(response.response, 'ai');
+            this.addMessage(response.data.response, 'ai');
             
         } catch (error) {
             // Remove loading message
@@ -514,73 +524,7 @@ const Utils = {
     }
 };
 
-// ===== BACKEND API INTEGRATION =====
-const API = {
-    // Base configuration
-    baseURL: '/api',
-    
-    // Generic API call helper
-    async call(endpoint, options = {}) {
-        const url = `${this.baseURL}${endpoint}`;
-        const config = {
-            headers: {
-                'Content-Type': 'application/json',
-                ...options.headers
-            },
-            ...options
-        };
-
-        try {
-            const response = await fetch(url, config);
-            
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            
-            return await response.json();
-        } catch (error) {
-            console.error('API Error:', error);
-            throw error;
-        }
-    },
-
-    // Chat endpoints
-    chat: {
-        send: async (message) => {
-            return await API.call('/chat', {
-                method: 'POST',
-                body: JSON.stringify({ message })
-            });
-        }
-    },
-
-    // Model management endpoints
-    models: {
-        getAvailable: async () => {
-            return await API.call('/models');
-        },
-        
-        switch: async (modelName) => {
-            return await API.call('/models/switch', {
-                method: 'POST',
-                body: JSON.stringify({ model_name: modelName })
-            });
-        }
-    },
-
-    // Conversation management
-    conversation: {
-        clear: async () => {
-            return await API.call('/conversation/clear', {
-                method: 'POST'
-            });
-        },
-        
-        getHistory: async () => {
-            return await API.call('/conversation/history');
-        }
-    }
-};
+// No backend API integration needed here - Using API client modules
 
 // ===== APP STARTUP =====
 document.addEventListener('DOMContentLoaded', () => {
