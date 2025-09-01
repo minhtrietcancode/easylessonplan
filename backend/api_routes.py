@@ -4,7 +4,8 @@ Centralizes all API route definitions and connects them to the Flask app.
 """
 
 from flask import Blueprint, jsonify
-from .api import AuthAPI, UserAPI
+from backend.api.auth_api import AuthAPI
+from backend.api.user_api import UserAPI
 
 # Create API blueprint
 api_bp = Blueprint('api', __name__, url_prefix='/api')

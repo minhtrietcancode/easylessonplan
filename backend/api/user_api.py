@@ -10,7 +10,7 @@ import os
 
 # Add the parent directory to the path to import loginauth
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from loginauth import AuthService
+from backend.loginauth.LoginAuth import AuthService
 
 from typing import Dict, Any, Tuple
 import datetime

@@ -5,8 +5,9 @@ Main application factory and route definitions for the home page functionality.
 
 import os
 from flask import Flask, render_template, session, jsonify
-from loginauth import auth_bp, login_required, AuthConfig
-from api_routes import api_bp
+from backend.loginauth.AuthConfig import AuthConfig
+from backend.loginauth.LoginAuth import auth_bp, login_required
+from backend.api_routes import api_bp
 
 
 class HomeConfig:
