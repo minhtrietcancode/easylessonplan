@@ -17,8 +17,8 @@ class HomeConfig:
     PORT = 5000
     
     # Template and static folders
-    TEMPLATE_FOLDER = '../frontend/templates'
-    STATIC_FOLDER = '../frontend/static'
+    TEMPLATE_FOLDER = 'frontend/templates'
+    STATIC_FOLDER = 'frontend/static'
     
     # Application info
     APP_NAME = 'EasyLesson'
