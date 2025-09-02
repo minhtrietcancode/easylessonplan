@@ -11,12 +11,11 @@ from backend.api.llm_api import LlmAPI # New import
 # Create API blueprint
 api_bp = Blueprint('api', __name__, url_prefix='/api')
 
-
-class APIRoutes:
-    """Route handlers that connect API classes to Flask routes"""
-    
-    # === Authentication API Routes ===
-    
+"""Route handlers that connect API classes to Flask routes"""
+class APIRoutes:    
+    ########################################################################################### 
+                            # Authentication API Routes # 
+    ###########################################################################################
     @staticmethod
     def auth_user_info():
         """GET /api/auth/user - Get current user information"""
@@ -54,8 +53,9 @@ class APIRoutes:
             response_data, status_code = AuthAPI.handle_exception(e, "Invalid request data")
             return jsonify(response_data), status_code
     
-    # === User API Routes ===
-    
+    ########################################################################################### 
+                            # User API Routes # 
+    ###########################################################################################
     @staticmethod
     def user_profile():
         """GET /api/user/profile - Get user profile"""
@@ -128,8 +128,9 @@ class APIRoutes:
             response_data, status_code = UserAPI.handle_exception(e, "Failed to get user statistics")
             return jsonify(response_data), status_code
 
-    # === LLM API Routes ===
-
+    ########################################################################################### 
+                            # LLm Functionality API Routes # 
+    ###########################################################################################
     @staticmethod
     def llm_get_models():
         """GET /api/llm/models - Get available LLM models and current model"""
