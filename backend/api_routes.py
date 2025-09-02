@@ -6,6 +6,7 @@ Centralizes all API route definitions and connects them to the Flask app.
 from flask import Blueprint, jsonify
 from backend.api.auth_api import AuthAPI
 from backend.api.user_api import UserAPI
+from backend.api.llm_api import LlmAPI # New import
 
 # Create API blueprint
 api_bp = Blueprint('api', __name__, url_prefix='/api')
@@ -127,6 +128,35 @@ class APIRoutes:
             response_data, status_code = UserAPI.handle_exception(e, "Failed to get user statistics")
             return jsonify(response_data), status_code
 
+    # === LLM API Routes ===
+
+    @staticmethod
+    def llm_get_models():
+        """GET /api/llm/models - Get available LLM models and current model"""
+        response_data, status_code = LlmAPI.get_available_models()
+        return jsonify(response_data), status_code
+
+    @staticmethod
+    def llm_set_model():
+        """PUT /api/llm/models - Set the current LLM model"""
+        from flask import request
+        try:
+            data = request.get_json() or {}
+            model_name = data.get('model_name')
+            if not model_name:
+                return jsonify(UserAPI.error_response("Model name is required", 400)), 400
+            response_data, status_code = LlmAPI.set_current_model(model_name)
+            return jsonify(response_data), status_code
+        except Exception as e:
+            response_data, status_code = LlmAPI.handle_exception(e, "Invalid request data")
+            return jsonify(response_data), status_code
+            
+    @staticmethod
+    def llm_chat():
+        """POST /api/llm/chat - Send message to LLM and get response"""
+        response_data, status_code = LlmAPI.send_chat_message()
+        return jsonify(response_data), status_code
+
 
 def register_api_routes():
     """Register all API routes to the blueprint"""
@@ -144,6 +174,11 @@ def register_api_routes():
     api_bp.add_url_rule('/user/dashboard', 'user_dashboard', APIRoutes.user_dashboard, methods=['GET'])
     api_bp.add_url_rule('/user/activity', 'user_activity', APIRoutes.user_activity, methods=['GET'])
     api_bp.add_url_rule('/user/stats', 'user_stats', APIRoutes.user_stats, methods=['GET'])
+
+    # LLM API routes
+    api_bp.add_url_rule('/llm/models', 'llm_get_models', APIRoutes.llm_get_models, methods=['GET'])
+    api_bp.add_url_rule('/llm/models', 'llm_set_model', APIRoutes.llm_set_model, methods=['PUT'])
+    api_bp.add_url_rule('/llm/chat', 'llm_chat', APIRoutes.llm_chat, methods=['POST'])
 
 
 # Register routes when module is imported

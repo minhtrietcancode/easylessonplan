@@ -74,16 +74,17 @@ class ModelSelector {
         try {
             console.log('📡 Fetching available models...');
             // Use local mock data (no backend integration)
-            const response = {
-                success: true,
-                data: {
-                    models: ['GPT-4', 'GPT-4o', 'Local-Assistant'],
-                    current_model: 'GPT-4'
-                }
-            };
+            const response = await window.llmAPI.getAvailableModels();
 
-            this.availableModels = response.data.models || [];
-            this.currentModel = response.data.current_model || 'Default';
+            if (response.success) {
+                this.availableModels = response.data.models || [];
+                this.currentModel = response.data.current_model || 'Default';
+            } else {
+                console.error('❌ Backend error loading models:', response.message);
+                this.availableModels = ['Default']; // Fallback
+                this.currentModel = 'Default'; // Fallback
+                Utils.showNotification(response.message || 'Failed to load models from backend', 'error');
+            }
             
             // Update UI
             this.elements.modelName.textContent = this.currentModel;
@@ -96,7 +97,7 @@ class ModelSelector {
             this.availableModels = ['Default'];
             this.currentModel = 'Default';
             this.elements.modelName.textContent = 'Default';
-            Utils.showNotification('Failed to load available models', 'error');
+            Utils.showNotification('Failed to load available models due to network error', 'error');
         }
     }
 
@@ -213,25 +214,32 @@ class ModelSelector {
             this.elements.modelName.textContent = 'Switching...';
             this.elements.indicator.style.opacity = '0.6';
             
-            console.log('� (mock) Switching to model:', modelName);
-            // Mock switching behavior locally
-            await new Promise(res => setTimeout(res, 200));
-            this.currentModel = modelName;
-            this.elements.modelName.textContent = this.currentModel;
-            this.elements.indicator.style.opacity = '1';
-            
-            // Close dropdown
-            this.closeDropdown();
-            
-            // Show success message
-            Utils.showNotification(`Switched to ${modelName}`, 'success');
-            console.log('✅ Model switched successfully:', this.currentModel);
+            console.log('🔄 Switching to model:', modelName);
+            const response = await window.llmAPI.switchModel(modelName);
+
+            if (response.success) {
+                this.currentModel = modelName;
+                this.elements.modelName.textContent = this.currentModel;
+                this.elements.indicator.style.opacity = '1';
+                
+                // Close dropdown
+                this.closeDropdown();
+                
+                // Show success message
+                Utils.showNotification(`Switched to ${modelName}`, 'success');
+                console.log('✅ Model switched successfully:', this.currentModel);
+            } else {
+                console.error('❌ Backend error switching model:', response.message);
+                this.elements.modelName.textContent = originalText; // Revert on error
+                this.elements.indicator.style.opacity = '1';
+                Utils.showNotification(response.message || 'Failed to switch model', 'error');
+            }
             
         } catch (error) {
             console.error('❌ Error switching model:', error);
             this.elements.modelName.textContent = this.currentModel;
             this.elements.indicator.style.opacity = '1';
-            Utils.showNotification('Failed to switch model', 'error');
+            Utils.showNotification('Failed to switch model due to network error', 'error');
         }
     }
 }
@@ -310,14 +318,20 @@ class ChatInterface {
 
         try {
             // Mocked AI reply (no backend)
-            await new Promise(res => setTimeout(res, 600));
+            // await new Promise(res => setTimeout(res, 600));
+            const response = await window.llmAPI.sendMessageToLLM(text);
 
             // Remove loading message
             loadingMsg.remove();
 
-            // Create a simple mock response
-            const mockReply = `I heard: "${text}" — try asking me to generate a lesson outline or learning objectives.`;
-            this.addMessage(mockReply, 'ai');
+            if (response.success) {
+                // Display the actual LLM response
+                this.addMessage(response.data.reply, 'ai');
+            } else {
+                console.error('❌ Backend error getting LLM response:', response.message);
+                this.addMessage(response.message || 'Error: Failed to get response from AI.', 'ai');
+                Utils.showNotification(response.message || 'Failed to get LLM response', 'error');
+            }
 
         } finally {
             // Re-enable send button

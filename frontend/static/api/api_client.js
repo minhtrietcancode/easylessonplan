@@ -229,7 +229,7 @@ class ResponseHandler {
 
 
 // Create singleton instance
-const apiClient = new APIClient();
+const apiClient = new APIClient('/api');
 
 // Export for use in other modules
 window.APIClient = APIClient;
