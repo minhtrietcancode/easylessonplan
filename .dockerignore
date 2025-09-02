@@ -1,0 +1,11 @@
+# Ignore Git related files
+.git
+.gitignore
+
+# Ignore Python cache and virtual environment files
+__pycache__/
+*.pyc
+*.log
+.venv/
+venv/
+.env
