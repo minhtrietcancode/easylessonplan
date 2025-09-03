@@ -78,21 +78,13 @@ body {
 /* Adjust main container to account for navbar height */
 .easylesson-container {
     display: flex;
-    height: calc(100vh - var(--navbar-height, 60px)); /* Use CSS variable for height */
+    height: calc(100vh - var(--navbar-height)); /* Use CSS variable for height */
     width: 100vw;
     gap: 0;
     overflow: hidden;
 }
 
 /* ===== MAIN CONTAINER ===== */
-.easylesson-container {
-    display: flex;
-    height: 100vh;
-    width: 100vw;
-    gap: 0;
-    overflow: hidden;
-}
-
 /* ===== COLUMN BASE STYLES ===== */
 .column {
     display: flex;
