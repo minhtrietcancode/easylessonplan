@@ -24,13 +24,12 @@ class LlmConfig:
             "api_key": os.getenv("OPENROUTER_OPENAI_API"),
             "class_name": "OpenAI"
         },
-        # Add new models here - example:
-        # "Claude": {
-        #     "base_url": "https://openrouter.ai/api/v1",
-        #     "model_name": "anthropic/claude-3.5-sonnet",
-        #     "api_key": os.getenv("OPENROUTER_CLAUDE_API"),
-        #     "class_name": "Claude"
-        # }
+        "DeepSeek": {
+            "base_url": "https://openrouter.ai/api/v1",
+            "model_name": "deepseek/deepseek-r1-0528:free",
+            "api_key": os.getenv("OPENROUTER_DEEPSEEK_API"),
+            "class_name": "DeepSeek"
+        },
     }
     
     @classmethod
