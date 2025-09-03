@@ -31,7 +31,8 @@ class HomeRoutes:
     @staticmethod
     def index():
         """Home page route - Shows login page if not authenticated"""
-        return render_template('home.html')
+        user = session.get('user')
+        return render_template('home.html', user=user)
     
     @staticmethod
     @login_required

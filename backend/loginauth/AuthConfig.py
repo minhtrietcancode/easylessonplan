@@ -28,7 +28,7 @@ class AuthConfig:
     OAUTHLIB_INSECURE_TRANSPORT = os.environ.get('OAUTHLIB_INSECURE_TRANSPORT', '0') == '1'
     
     # Session settings
-    SESSION_PERMANENT = False
+    SESSION_PERMANENT = True
     SESSION_TYPE = 'filesystem'  # Can be changed to 'redis' for production
     
     @classmethod

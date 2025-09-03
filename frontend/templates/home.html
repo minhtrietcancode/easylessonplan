@@ -24,9 +24,18 @@
                 </div>
 
                 <div class="auth-section">
-                    <a href="#" id="google-auth-button-header" class="cta-button">
-                        <i class="fab fa-google"></i> Continue with Google
-                    </a>
+                    {% if user %}
+                        <a href="{{ url_for('easylesson') }}" class="welcome-message-box">
+                            Welcome, {{ user.name.split(' ')[0] }}!
+                        </a>
+                        <a href="{{ url_for('auth.logout') }}" class="logout-button">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </a>
+                    {% else %}
+                        <a href="{{ url_for('auth.login') }}" id="google-auth-button-header" class="cta-button">
+                            <i class="fab fa-google"></i> Continue with Google
+                        </a>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -42,9 +51,13 @@
                 and auto-generated documents, EasyLesson makes teaching preparation a breeze.
             </p>
             <div class="hero-buttons">
-                <a href="#" id="google-auth-button-hero" class="primary-button">
-                    <i class="fab fa-google"></i> Continue with Google
-                </a>
+                {% if user %}
+                <!-- No button here if logged in -->
+                {% else %}
+                    <a href="{{ url_for('auth.login') }}" id="google-auth-button-hero" class="primary-button">
+                        <i class="fab fa-google"></i> Continue with Google
+                    </a>
+                {% endif %}
             </div>
         </div>
     </section>

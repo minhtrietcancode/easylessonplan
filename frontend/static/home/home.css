@@ -66,6 +66,40 @@ header {
     gap: 0.8rem; /* Reduced gap */
 }
 
+.welcome-message-box {
+    background: #4C50CC;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+}
+
+.logout-button {
+    color: #4C50CC;
+    padding: 10px 20px;
+    border: 1px solid #4C50CC;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+}
+
+.logout-button:hover {
+    background: #e0e7ff;
+    color: #3b3eaf;
+    transform: translateY(-1px);
+}
+
 .login-link {
     color: #4b5563;
     text-decoration: none;
