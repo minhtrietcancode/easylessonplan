@@ -309,25 +309,25 @@ header {
 
 .about-content {
     display: grid;
-    grid-template-columns: 180px 1fr; /* Reduced avatar column size */
-    gap: 2.5rem; /* Reduced gap */
+    grid-template-columns: 220px 1fr; /* Increased avatar column size */
+    gap: 3rem; /* Increased gap */
     align-items: center;
-    max-width: 800px;
+    max-width: 900px; /* Increased max-width for a wider layout */
     margin: 0 auto;
 }
 
 .avatar {
-    width: 180px; /* Reduced avatar size */
-    height: 180px; /* Reduced avatar size */
+    width: 200px; /* Increased avatar size */
+    height: 200px; /* Increased avatar size */
     border-radius: 50%;
     object-fit: cover;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-    border: 4px solid white;
+    border: 2px solid black; /* Thinner black border */
 }
 
 .avatar-placeholder {
-    width: 180px; /* Reduced avatar size */
-    height: 180px; /* Reduced avatar size */
+    width: 200px; /* Increased avatar size */
+    height: 200px; /* Increased avatar size */
     border-radius: 50%;
     background: #4C50CC;
     display: flex;
@@ -336,13 +336,17 @@ header {
     color: white;
     font-size: 4rem;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-    border: 4px solid white;
+    border: 2px solid black; /* Thinner black border */
 }
 
 .about-text {
     font-size: 17px; /* Reduced font size */
     line-height: 1.7;
     color: #000000;
+}
+
+.about-text p {
+    margin-bottom: 0.75rem; /* Increased margin between paragraphs */
 }
 
 /* Footer */
