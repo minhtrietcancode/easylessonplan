@@ -223,14 +223,17 @@ body {
     flex: none;
     background-color: #ffffff;
     padding: 20px;
-    overflow: hidden;
+    overflow: hidden; /* Prevent column from expanding */
     box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
 }
 
 /* ===== CHAT INTERFACE STYLES ===== */
 .chat-header {
     text-align: center;
     margin-bottom: 20px;
+    flex-shrink: 0; /* Prevent header from shrinking */
 }
 
 .chat-title {
@@ -246,18 +249,21 @@ body {
     display: flex;
     flex-direction: column;
     gap: 16px;
+    overflow: hidden; /* Prevent container from expanding */
 }
 
 /* ===== MESSAGES AREA ===== */
 .messages-area {
-    flex: 1;
+    flex: 1; /* Take remaining space */
     background: #f8fafc;
     border: 1px solid #e2e8f0;
     border-radius: 12px;
     padding: 16px;
-    overflow-y: auto;
-    min-height: 0;
-    transition: height 0.2s ease;
+    overflow-y: auto; /* Always scrollable */
+    min-height: 0; /* Allow flex item to shrink below content size */
+    max-height: none; /* Remove any max-height restrictions */
+    display: flex;
+    flex-direction: column;
 }
 
 .message {
@@ -327,6 +333,8 @@ body {
     box-sizing: border-box;
     width: 100%;
     min-width: 0;
+    flex-shrink: 0; /* Prevent input area from shrinking */
+    position: relative; /* Ensure it stays in place */
 }
 
 .input-area:focus-within {
@@ -623,7 +631,9 @@ body {
     }
 
     .chat-container {
-        height: 400px;
+        height: 400px; /* Fixed height for mobile */
+        min-height: 400px;
+        max-height: 400px;
     }
 
     .left-column {
