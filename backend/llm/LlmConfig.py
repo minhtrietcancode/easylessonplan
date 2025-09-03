@@ -30,6 +30,12 @@ class LlmConfig:
             "api_key": os.getenv("OPENROUTER_DEEPSEEK_API"),
             "class_name": "DeepSeek"
         },
+        "Gemma": {
+            "base_url": "https://openrouter.ai/api/v1",
+            "model_name": "google/gemma-3-27b-it:free",
+            "api_key": os.getenv("OPENROUTER_GEMMA_API"),
+            "class_name": "Gemma"
+        }
     }
     
     @classmethod
