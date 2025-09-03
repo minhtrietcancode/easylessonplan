@@ -8,11 +8,24 @@
     <link rel="stylesheet" href="/static/easylesson/easylesson.css">
 </head>
 <body>
+    <nav class="easylesson-navbar">
+        <div class="navbar-content">
+            <a href="/" class="navbar-logo">EasyLesson</a>
+            <div class="navbar-user-info">
+                {% if user %}
+                    <span class="navbar-welcome-message">Signed in as {{ user.name.split(' ')[0] }}</span>
+                    <a href="{{ url_for('auth.logout') }}" class="navbar-logout-button">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
     <div class="easylesson-container" id="mainContainer">
         <!-- Left Column - File Upload Section -->
         <div class="column left-column" id="leftColumn">
             <div class="column-content">
-                <h2 class="column-header">EasyLesson</h2>
+                <!-- <h2 class="column-header">EasyLesson</h2> -->
                 <div class="upload-section">
                     <!-- File upload area can be expanded here -->
                 </div>
@@ -88,5 +101,14 @@
     
     <!-- Main Application (no backend API integration) -->
     <script src="/static/easylesson/easylesson.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const navbar = document.querySelector('.easylesson-navbar');
+            if (navbar) {
+                const navbarHeight = navbar.offsetHeight;
+                document.documentElement.style.setProperty('--navbar-height', `${navbarHeight}px`);
+            }
+        });
+    </script>
 </body>
 </html>

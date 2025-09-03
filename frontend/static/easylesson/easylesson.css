@@ -9,6 +9,81 @@ body {
     overflow: hidden;
 }
 
+/* ===== EASYLESSON NAVBAR ===== */
+.easylesson-navbar {
+    width: 100%;
+    background-color: #ffffff;
+    padding: 10px 24px; /* Shorter padding */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* Subtle shadow */
+    border-bottom: 1px solid #e0e0e0; /* Non-white border for separation */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+    flex-shrink: 0;
+}
+
+.easylesson-navbar .navbar-content {
+    width: 100%;
+    max-width: 1200px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.easylesson-navbar .navbar-logo {
+    font-size: 1.5rem; /* Slightly smaller logo */
+    font-weight: 700;
+    color: #4C50CC;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.easylesson-navbar .navbar-logo:hover {
+    color: #4247B0;
+    transform: scale(1.02);
+}
+
+.easylesson-navbar .navbar-user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Reduced gap */
+}
+
+.easylesson-navbar .navbar-welcome-message {
+    font-size: 0.9rem; /* Slightly smaller text */
+    font-weight: 500;
+    color: #333;
+}
+
+.easylesson-navbar .navbar-logout-button {
+    background-color: #4C50CC;
+    color: white;
+    padding: 6px 12px; /* Adjusted padding */
+    border: none;
+    border-radius: 6px; /* Slightly smaller radius */
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px; /* Adjusted gap */
+}
+
+.easylesson-navbar .navbar-logout-button:hover {
+    background-color: #4247B0;
+    transform: translateY(-1px);
+}
+
+/* Adjust main container to account for navbar height */
+.easylesson-container {
+    display: flex;
+    height: calc(100vh - var(--navbar-height, 60px)); /* Use CSS variable for height */
+    width: 100vw;
+    gap: 0;
+    overflow: hidden;
+}
+
 /* ===== MAIN CONTAINER ===== */
 .easylesson-container {
     display: flex;
