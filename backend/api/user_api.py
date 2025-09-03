@@ -3,7 +3,7 @@ User API Module
 Handles user-related API endpoints and operations.
 """
 
-from flask import session, current_app
+from flask import session, request, current_app, jsonify
 from .base_api import BaseAPI
 import sys
 import os
@@ -20,22 +20,23 @@ class UserAPI(BaseAPI):
     """API handler for user operations"""
     
     @classmethod
-    def get_profile(cls) -> Tuple[Dict, int]:
+    def get_profile(cls):
         """
-        Get detailed user profile information
+        GET /api/user/profile - Get detailed user profile information
         
         Returns:
-            API response with user profile data
+            Flask response with user profile data
         """
         try:
             user = AuthService.get_current_user()
             
             if not user:
-                return cls.error_response(
+                response_data, status_code = cls.error_response(
                     message="Authentication required",
                     status_code=401,
                     error_code="AUTH_REQUIRED"
                 )
+                return jsonify(response_data), status_code
             
             # Enhanced profile data
             profile_data = {
@@ -46,45 +47,50 @@ class UserAPI(BaseAPI):
                 'account_status': 'active'
             }
             
-            return cls.success_response(
+            response_data, status_code = cls.success_response(
                 data=profile_data,
                 message="Profile retrieved successfully"
             )
             
+            return jsonify(response_data), status_code
+            
         except Exception as e:
-            return cls.handle_exception(e, "Failed to retrieve user profile")
+            response_data, status_code = cls.handle_exception(e, "Failed to retrieve user profile")
+            return jsonify(response_data), status_code
     
     @classmethod
-    def update_profile(cls, profile_data: Dict[str, Any]) -> Tuple[Dict, int]:
+    def update_profile(cls):
         """
-        Update user profile information
+        PUT /api/user/profile - Update user profile information
         
-        Args:
-            profile_data: Dictionary containing profile updates
-            
         Returns:
-            API response confirming update
+            Flask response confirming update
         """
         try:
             user = AuthService.get_current_user()
             
             if not user:
-                return cls.error_response(
+                response_data, status_code = cls.error_response(
                     message="Authentication required",
                     status_code=401,
                     error_code="AUTH_REQUIRED"
                 )
+                return jsonify(response_data), status_code
+            
+            # Get profile data from request
+            profile_data = request.get_json() or {}
             
             # Validate updatable fields
             updatable_fields = ['name', 'picture']  # Only allow certain fields to be updated
             invalid_fields = [field for field in profile_data.keys() if field not in updatable_fields]
             
             if invalid_fields:
-                return cls.error_response(
+                response_data, status_code = cls.error_response(
                     message=f"Cannot update fields: {', '.join(invalid_fields)}",
                     status_code=400,
                     error_code="INVALID_FIELDS"
                 )
+                return jsonify(response_data), status_code
             
             # Update session data
             for field, value in profile_data.items():
@@ -96,31 +102,35 @@ class UserAPI(BaseAPI):
             
             current_app.logger.info(f"User {user.get('id')} updated profile")
             
-            return cls.success_response(
+            response_data, status_code = cls.success_response(
                 data=cls.sanitize_user_data(user),
                 message="Profile updated successfully"
             )
             
+            return jsonify(response_data), status_code
+            
         except Exception as e:
-            return cls.handle_exception(e, "Failed to update user profile")
+            response_data, status_code = cls.handle_exception(e, "Failed to update user profile")
+            return jsonify(response_data), status_code
     
     @classmethod
-    def get_dashboard_data(cls) -> Tuple[Dict, int]:
+    def get_dashboard_data(cls):
         """
-        Get dashboard data for authenticated user
+        GET /api/user/dashboard - Get dashboard data for authenticated user
         
         Returns:
-            API response with dashboard information
+            Flask response with dashboard information
         """
         try:
             user = AuthService.get_current_user()
             
             if not user:
-                return cls.error_response(
+                response_data, status_code = cls.error_response(
                     message="Authentication required",
                     status_code=401,
                     error_code="AUTH_REQUIRED"
                 )
+                return jsonify(response_data), status_code
             
             # Placeholder dashboard data
             dashboard_data = {
@@ -140,34 +150,46 @@ class UserAPI(BaseAPI):
                 'last_login': datetime.datetime.utcnow().isoformat()
             }
             
-            return cls.success_response(
+            response_data, status_code = cls.success_response(
                 data=dashboard_data,
                 message="Dashboard data retrieved successfully"
             )
             
+            return jsonify(response_data), status_code
+            
         except Exception as e:
-            return cls.handle_exception(e, "Failed to retrieve dashboard data")
+            response_data, status_code = cls.handle_exception(e, "Failed to retrieve dashboard data")
+            return jsonify(response_data), status_code
     
     @classmethod
-    def get_activity_log(cls, limit: int = 10) -> Tuple[Dict, int]:
+    def get_activity_log(cls):
         """
-        Get user activity log
+        GET /api/user/activity - Get user activity log
         
-        Args:
-            limit: Maximum number of activities to return
-            
         Returns:
-            API response with activity data
+            Flask response with activity data
         """
         try:
             user = AuthService.get_current_user()
             
             if not user:
-                return cls.error_response(
+                response_data, status_code = cls.error_response(
                     message="Authentication required",
                     status_code=401,
                     error_code="AUTH_REQUIRED"
                 )
+                return jsonify(response_data), status_code
+            
+            # Get limit from query parameters
+            try:
+                limit = int(request.args.get('limit', 10))
+            except ValueError:
+                response_data, status_code = cls.error_response(
+                    message="Invalid limit parameter", 
+                    status_code=400,
+                    error_code="INVALID_LIMIT"
+                )
+                return jsonify(response_data), status_code
             
             # Placeholder activity data
             # In future, this would fetch from database
@@ -181,7 +203,7 @@ class UserAPI(BaseAPI):
                 }
             ]
             
-            return cls.success_response(
+            response_data, status_code = cls.success_response(
                 data={
                     'activities': activities[:limit],
                     'total_count': len(activities),
@@ -190,8 +212,49 @@ class UserAPI(BaseAPI):
                 message="Activity log retrieved successfully"
             )
             
+            return jsonify(response_data), status_code
+            
         except Exception as e:
-            return cls.handle_exception(e, "Failed to retrieve activity log")
+            response_data, status_code = cls.handle_exception(e, "Failed to retrieve activity log")
+            return jsonify(response_data), status_code
+    
+    @classmethod
+    def get_user_stats(cls):
+        """
+        GET /api/user/stats - Get user statistics
+        
+        Returns:
+            Flask response with user statistics
+        """
+        try:
+            user = AuthService.get_current_user()
+            
+            if not user:
+                response_data, status_code = cls.error_response(
+                    message="Authentication required", 
+                    status_code=401, 
+                    error_code="AUTH_REQUIRED"
+                )
+                return jsonify(response_data), status_code
+            
+            # Placeholder stats
+            stats = {
+                'lessons_created': 0,
+                'templates_used': 0,
+                'total_time_saved': '0 hours',
+                'subjects_covered': []
+            }
+            
+            response_data, status_code = cls.success_response(
+                data=stats,
+                message="User statistics retrieved"
+            )
+            
+            return jsonify(response_data), status_code
+            
+        except Exception as e:
+            response_data, status_code = cls.handle_exception(e, "Failed to get user statistics")
+            return jsonify(response_data), status_code
     
     @staticmethod
     def _check_profile_completeness(user: Dict) -> bool:
