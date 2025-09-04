@@ -4,7 +4,7 @@ Handles LLM-related API endpoints and operations.
 """
 
 from flask import session, request, current_app, jsonify
-from .base_api import BaseAPI
+from .BaseAPI import BaseAPI
 import sys
 import os
 

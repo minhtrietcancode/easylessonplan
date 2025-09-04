@@ -4,9 +4,9 @@ Centralizes all API route definitions and connects them directly to API classes.
 """
 
 from flask import Blueprint
-from backend.api.auth_api import AuthAPI
-from backend.api.user_api import UserAPI
-from backend.api.llm_api import LlmAPI
+from backend.api.AuthAPI import AuthAPI
+from backend.api.UserAPI import UserAPI
+from backend.api.LlmAPI import LlmAPI
 
 # Create API blueprint
 api_bp = Blueprint('api', __name__, url_prefix='/api')
