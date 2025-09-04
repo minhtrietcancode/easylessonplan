@@ -7,7 +7,7 @@ import os
 from flask import Flask, render_template, session, jsonify, url_for, redirect
 from backend.auth.AuthConfig import AuthConfig
 from backend.auth.AuthRoutes import auth_bp
-from backend.auth.AuthDecorators import login_required  # UPDATED: Import from decorators
+from backend.auth.AuthDecorators import AuthDecorators # UPDATED: Import AuthDecorators class
 from backend.api_routes import api_bp
 
 class HomeConfig:
@@ -36,7 +36,7 @@ class HomeRoutes:
         return render_template('home.html', user=user)
     
     @staticmethod
-    @login_required
+    @AuthDecorators.login_required # UPDATED: Use AuthDecorators.login_required
     def easylesson():
         """Main lesson planning interface - requires authentication"""
         user = session.get('user')
@@ -47,7 +47,7 @@ class HomeRoutes:
         return render_template('easylesson.html', user=user)
     
     @staticmethod
-    @login_required
+    @AuthDecorators.login_required # UPDATED: Use AuthDecorators.login_required
     def dashboard():
         """Legacy dashboard route - redirects to EasyLesson"""
         return redirect(url_for('easylesson'))
