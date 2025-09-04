@@ -10,7 +10,7 @@ class UserAPI {
     
     constructor() {
         this.client = window.apiClient;
-        this.baseEndpoint = '/api/user';
+        this.baseEndpoint = '/user';
     }
     
     /**
