@@ -11,8 +11,8 @@ import os
 
 # Add the parent directory to the path to import loginauth
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from backend.loginauth.auth_service import AuthService
-from backend.loginauth.AuthConfig import AuthConfig
+from backend.auth.AuthService import AuthService
+from backend.auth.AuthConfig import AuthConfig
 
 from typing import Dict, Any, Tuple
 

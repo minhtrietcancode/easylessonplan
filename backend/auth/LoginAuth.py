@@ -5,7 +5,7 @@ This module only handles the OAuth flow - API endpoints are in backend/api/
 """
 
 from flask import Blueprint, request, redirect, session, url_for, jsonify, current_app
-from .auth_service import AuthService
+from .AuthService import AuthService
 from .AuthConfig import AuthConfig
 import google.auth.exceptions
 

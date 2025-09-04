@@ -6,7 +6,7 @@ Provides authentication functionality for the EasyLesson application.
 from .LoginAuth import auth_bp
 from .decorators import login_required
 from .AuthConfig import AuthConfig
-from .auth_service import AuthService
+from .AuthService import AuthService
 
 __all__ = [
     'auth_bp',           # OAuth routes blueprint
