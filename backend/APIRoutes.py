@@ -11,46 +11,64 @@ from backend.api.LlmAPI import LlmAPI
 # Create API blueprint
 api_bp = Blueprint('api', __name__, url_prefix='/api')
 
-
-def register_api_routes():
-    """
-    Register all API routes to the blueprint.
-    Routes are organized by functionality with clear comments for easy maintenance.
-    """
-    
+# Route configuration dictionary
+ROUTES = {
     ###########################################################################################
     #                           AUTHENTICATION API ROUTES                                    #
     ###########################################################################################
-    # User information and session management
-    api_bp.add_url_rule('/auth/user', 'auth_user_info', AuthAPI.get_user_info, methods=['GET'])  
-    api_bp.add_url_rule('/auth/status', 'auth_status', AuthAPI.check_auth_status, methods=['GET'])
-    api_bp.add_url_rule('/auth/validate', 'auth_validate', AuthAPI.validate_session, methods=['GET'])
-
-    # User preferences
-    api_bp.add_url_rule('/auth/preferences', 'auth_get_preferences', AuthAPI.get_user_preferences, methods=['GET'])
-    api_bp.add_url_rule('/auth/preferences', 'auth_update_preferences', AuthAPI.update_user_preferences, methods=['PUT'])
+    AuthAPI: [
+        # User information and session management
+        {'path': '/auth/user', 'endpoint': 'auth_user_info', 'method': 'get_user_info', 'methods': ['GET']},
+        {'path': '/auth/status', 'endpoint': 'auth_status', 'method': 'check_auth_status', 'methods': ['GET']},
+        {'path': '/auth/validate', 'endpoint': 'auth_validate', 'method': 'validate_session', 'methods': ['GET']},
+        
+        # User preferences
+        {'path': '/auth/preferences', 'endpoint': 'auth_get_preferences', 'method': 'get_user_preferences', 'methods': ['GET']},
+        {'path': '/auth/preferences', 'endpoint': 'auth_update_preferences', 'method': 'update_user_preferences', 'methods': ['PUT']},
+    ],
     
     ###########################################################################################
     #                              USER API ROUTES                                           #
     ###########################################################################################
-    # User profile management
-    api_bp.add_url_rule('/user/profile', 'user_profile', UserAPI.get_profile, methods=['GET'])
-    api_bp.add_url_rule('/user/profile', 'user_update_profile', UserAPI.update_profile, methods=['PUT'])
-    
-    # Dashboard and statistics
-    api_bp.add_url_rule('/user/dashboard', 'user_dashboard', UserAPI.get_dashboard_data, methods=['GET'])
-    api_bp.add_url_rule('/user/activity', 'user_activity', UserAPI.get_activity_log, methods=['GET'])
-    api_bp.add_url_rule('/user/stats', 'user_stats', UserAPI.get_user_stats, methods=['GET'])
+    UserAPI: [
+        # User profile management
+        {'path': '/user/profile', 'endpoint': 'user_profile', 'method': 'get_profile', 'methods': ['GET']},
+        {'path': '/user/profile', 'endpoint': 'user_update_profile', 'method': 'update_profile', 'methods': ['PUT']},
+        
+        # Dashboard and statistics
+        {'path': '/user/dashboard', 'endpoint': 'user_dashboard', 'method': 'get_dashboard_data', 'methods': ['GET']},
+        {'path': '/user/activity', 'endpoint': 'user_activity', 'method': 'get_activity_log', 'methods': ['GET']},
+        {'path': '/user/stats', 'endpoint': 'user_stats', 'method': 'get_user_stats', 'methods': ['GET']},
+    ],
     
     ###########################################################################################
     #                             LLM FUNCTIONALITY API ROUTES                               #
     ###########################################################################################
-    # Model management
-    api_bp.add_url_rule('/llm/models', 'llm_get_models', LlmAPI.get_available_models, methods=['GET'])
-    api_bp.add_url_rule('/llm/models', 'llm_set_model', LlmAPI.set_current_model, methods=['PUT'])
-    
-    # Chat functionality
-    api_bp.add_url_rule('/llm/chat', 'llm_chat', LlmAPI.send_chat_message, methods=['POST'])
+    LlmAPI: [
+        # Model management
+        {'path': '/llm/models', 'endpoint': 'llm_get_models', 'method': 'get_available_models', 'methods': ['GET']},
+        {'path': '/llm/models', 'endpoint': 'llm_set_model', 'method': 'set_current_model', 'methods': ['PUT']},
+        
+        # Chat functionality
+        {'path': '/llm/chat', 'endpoint': 'llm_chat', 'method': 'send_chat_message', 'methods': ['POST']},
+    ],
+}
+
+
+def register_api_routes():
+    """
+    Register all API routes to the blueprint using the ROUTES configuration.
+    This approach eliminates repetitive add_url_rule calls and makes route management cleaner.
+    """
+    for api_class, routes in ROUTES.items():
+        for route_config in routes:
+            api_bp.add_url_rule(
+                rule=route_config['path'],
+                endpoint=route_config['endpoint'],
+                view_func=getattr(api_class, route_config['method']),
+                methods=route_config['methods']
+            )
+
 
 # Register routes when module is imported
 register_api_routes()
