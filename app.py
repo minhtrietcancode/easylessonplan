@@ -6,7 +6,8 @@ Main application factory and route definitions for the integrated application.
 import os
 from flask import Flask, render_template, session, jsonify, url_for, redirect
 from backend.loginauth.AuthConfig import AuthConfig
-from backend.loginauth.LoginAuth import auth_bp, login_required
+from backend.loginauth.LoginAuth import auth_bp
+from backend.loginauth.decorators import login_required  # UPDATED: Import from decorators
 from backend.api_routes import api_bp
 
 class HomeConfig:
@@ -79,8 +80,8 @@ def create_app():
     app.config.from_object(AuthConfig)
     
     # Register blueprints
-    app.register_blueprint(auth_bp)     # Authentication routes (/auth/*)
-    app.register_blueprint(api_bp)      # Additional API routes (/api/*)
+    app.register_blueprint(auth_bp)     # OAuth routes (/auth/*)
+    app.register_blueprint(api_bp)      # API routes (/api/*)
     
     # Register home routes
     _register_home_routes(app)

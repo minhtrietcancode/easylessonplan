@@ -1,6 +1,7 @@
 """
 Authentication API Module
-Handles all authentication-related API endpoints and logic.
+Handles authentication status and user info API endpoints (JSON responses).
+This is separate from OAuth routes which handle redirects.
 """
 
 from flask import session, request, current_app, jsonify
@@ -10,13 +11,17 @@ import os
 
 # Add the parent directory to the path to import loginauth
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from backend.loginauth.LoginAuth import AuthService
+from backend.loginauth.auth_service import AuthService
+from backend.loginauth.AuthConfig import AuthConfig
 
 from typing import Dict, Any, Tuple
 
+# Initialize auth service
+auth_service = AuthService(AuthConfig)
+
 
 class AuthAPI(BaseAPI):
-    """API handler for authentication operations"""
+    """API handler for authentication status operations (JSON responses only)"""
     
     @classmethod
     def get_user_info(cls):
@@ -24,10 +29,10 @@ class AuthAPI(BaseAPI):
         GET /api/auth/user - Get current user information from session
         
         Returns:
-            Flask response with user data
+            Flask JSON response with user data
         """
         try:
-            user = AuthService.get_current_user()
+            user = auth_service.get_current_user(session)
             
             if user:
                 sanitized_user = cls.sanitize_user_data(user)
@@ -59,10 +64,10 @@ class AuthAPI(BaseAPI):
         GET /api/auth/status - Check if user is currently authenticated
         
         Returns:
-            Flask response with authentication status
+            Flask JSON response with authentication status
         """
         try:
-            user = AuthService.get_current_user()
+            user = auth_service.get_current_user(session)
             
             response_data, status_code = cls.success_response(
                 data={
@@ -85,10 +90,10 @@ class AuthAPI(BaseAPI):
         GET /api/auth/validate - Validate current user session
         
         Returns:
-            Flask response with session validation result
+            Flask JSON response with session validation result
         """
         try:
-            user = AuthService.get_current_user()
+            user = auth_service.get_current_user(session)
             
             if not user:
                 response_data, status_code = cls.error_response(
@@ -122,10 +127,10 @@ class AuthAPI(BaseAPI):
         GET /api/auth/preferences - Get user preferences
         
         Returns:
-            Flask response with user preferences
+            Flask JSON response with user preferences
         """
         try:
-            user = AuthService.get_current_user()
+            user = auth_service.get_current_user(session)
             
             if not user:
                 response_data, status_code = cls.error_response(
@@ -161,10 +166,10 @@ class AuthAPI(BaseAPI):
         PUT /api/auth/preferences - Update user preferences
         
         Returns:
-            Flask response confirming update
+            Flask JSON response confirming update
         """
         try:
-            user = AuthService.get_current_user()
+            user = auth_service.get_current_user(session)
             
             if not user:
                 response_data, status_code = cls.error_response(

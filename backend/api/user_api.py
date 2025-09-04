@@ -10,10 +10,14 @@ import os
 
 # Add the parent directory to the path to import loginauth
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from backend.loginauth.LoginAuth import AuthService
+from backend.loginauth.auth_service import AuthService
+from backend.loginauth.AuthConfig import AuthConfig
 
 from typing import Dict, Any, Tuple
 import datetime
+
+# Initialize auth service
+auth_service = AuthService(AuthConfig)
 
 
 class UserAPI(BaseAPI):
@@ -28,7 +32,7 @@ class UserAPI(BaseAPI):
             Flask response with user profile data
         """
         try:
-            user = AuthService.get_current_user()
+            user = auth_service.get_current_user(session)
             
             if not user:
                 response_data, status_code = cls.error_response(
@@ -67,7 +71,7 @@ class UserAPI(BaseAPI):
             Flask response confirming update
         """
         try:
-            user = AuthService.get_current_user()
+            user = auth_service.get_current_user(session)
             
             if not user:
                 response_data, status_code = cls.error_response(
@@ -122,7 +126,7 @@ class UserAPI(BaseAPI):
             Flask response with dashboard information
         """
         try:
-            user = AuthService.get_current_user()
+            user = auth_service.get_current_user(session)
             
             if not user:
                 response_data, status_code = cls.error_response(
@@ -170,7 +174,7 @@ class UserAPI(BaseAPI):
             Flask response with activity data
         """
         try:
-            user = AuthService.get_current_user()
+            user = auth_service.get_current_user(session)
             
             if not user:
                 response_data, status_code = cls.error_response(
@@ -227,7 +231,7 @@ class UserAPI(BaseAPI):
             Flask response with user statistics
         """
         try:
-            user = AuthService.get_current_user()
+            user = auth_service.get_current_user(session)
             
             if not user:
                 response_data, status_code = cls.error_response(
