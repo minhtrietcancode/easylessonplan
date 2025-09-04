@@ -3,7 +3,7 @@ LoginAuth Package
 Provides authentication functionality for the EasyLesson application.
 """
 
-from .LoginAuth import auth_bp
+from .AuthRoutes import auth_bp
 from .decorators import login_required
 from .AuthConfig import AuthConfig
 from .AuthService import AuthService
