@@ -8,7 +8,7 @@ from flask import Flask, render_template, session, jsonify, url_for, redirect
 from backend.auth.AuthConfig import AuthConfig
 from backend.auth.AuthRoutes import auth_bp
 from backend.auth.AuthDecorators import AuthDecorators # UPDATED: Import AuthDecorators class
-from backend.api_routes import api_bp
+from backend.APIRoutes import api_bp
 
 class HomeConfig:
     """Configuration specific to the home application"""
