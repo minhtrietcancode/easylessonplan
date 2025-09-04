@@ -4,7 +4,7 @@ Provides authentication functionality for the EasyLesson application.
 """
 
 from .AuthRoutes import auth_bp
-from .decorators import login_required
+from .AuthDecorators import login_required
 from .AuthConfig import AuthConfig
 from .AuthService import AuthService
 

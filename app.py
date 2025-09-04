@@ -7,7 +7,7 @@ import os
 from flask import Flask, render_template, session, jsonify, url_for, redirect
 from backend.auth.AuthConfig import AuthConfig
 from backend.auth.AuthRoutes import auth_bp
-from backend.auth.decorators import login_required  # UPDATED: Import from decorators
+from backend.auth.AuthDecorators import login_required  # UPDATED: Import from decorators
 from backend.api_routes import api_bp
 
 class HomeConfig:
