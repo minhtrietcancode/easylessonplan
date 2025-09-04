@@ -109,8 +109,3 @@ def logout():
     
     auth_service.clear_session(session)
     return redirect(url_for('index'))
-
-
-# Legacy compatibility - export AuthService for backwards compatibility
-# In the refactored structure, other modules should import from auth_service directly
-AuthService = auth_service
