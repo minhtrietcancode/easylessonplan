@@ -1,4 +1,4 @@
-export const API_ROUTES = {
+window.API_ROUTES = {
   AUTH: {
     STATUS: '/api/auth/status',
     USER: '/api/auth/user',
@@ -13,8 +13,10 @@ export const API_ROUTES = {
     ACTIVITY: '/api/user/activity',
     STATISTICS: '/api/user/stats',
   },
-  LLM: {
-    MODELS: '/api/llm/models',
+  LLM_API: {
+    GET_MODELS_LIST: '/api/llm/models',
     CHAT: '/api/llm/chat',
+    SWITCH_MODEL: '/api/llm/models',
+    SEND_MESSAGE: '/api/llm/chat',
   },
 };
