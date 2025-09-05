@@ -5,29 +5,8 @@
  */
 
 class AuthAPI {
-    /**
-     * Authentication API client
-     */
-    
     constructor() {
         this.client = new window.APIClient();
-    }
-    
-    /**
-     * Check current authentication status
-     * @returns {Promise<object>} - Auth status response
-     */
-    async checkAuthStatus() {
-        try {
-            return await this.client.get(window.API_ROUTES.AUTH.GET_STATUS);
-        } catch (error) {
-            console.warn('Auth status check failed:', error.message);
-            return { 
-                success: false, 
-                data: { authenticated: false, user: null },
-                message: 'Auth check failed'
-            };
-        }
     }
     
     /**
@@ -48,78 +27,18 @@ class AuthAPI {
     }
     
     /**
-     * Validate current session
-     * @returns {Promise<object>} - Session validation response
-     */
-    async validateSession() {
-        return await this.client.get(window.API_ROUTES.AUTH.GET_VALIDATE_SESSION);
-    }
-    
-    /**
-     * Get user preferences
-     * @returns {Promise<object>} - User preferences response
-     */
-    async getUserPreferences() {
-        return await this.client.get(window.API_ROUTES.AUTH.GET_USER_PREFERENCES);
-    }
-    
-    /**
-     * Update user preferences
-     * @param {object} preferences - Preferences to update
-     * @returns {Promise<object>} - Update response
-     */
-    async updateUserPreferences(preferences) {
-        return await this.client.put(window.API_ROUTES.AUTH.PUT_UPDATE_USER_PREFERENCES, preferences);
-    }
-    
-    /**
      * Initiate login process
      * @returns {void} - Redirects to OAuth flow
      */
     initiateLogin() {
         window.location.href = window.OAUTH_ROUTES.GET_LOGIN;
     }
-    
-    /**
-     * Logout user
-     * @returns {void} - Redirects to home page
-     */
-    logout() {
-        window.location.href = window.OAUTH_ROUTES.GET_LOGOUT;
-    }
-    
-    /**
-     * Handle authentication errors with user-friendly messages
-     * @param {APIError} error - API error object
-     */
-    handleAuthError(error) {
-        const userMessages = {
-            'AUTH_REQUIRED': 'Please log in to continue',
-            'INVALID_SESSION': 'Your session has expired. Please log in again',
-            'NETWORK_ERROR': 'Connection issue. Please check your internet and try again'
-        };
-        
-        const message = userMessages[error.errorCode] || error.message || 'Authentication error occurred';
-        window.ResponseHandler.showErrorMessage({ message });
-        
-        // If auth error, might need to redirect to login
-        if (error.status === 401) {
-            setTimeout(() => {
-                this.initiateLogin();
-            }, 2000);
-        }
-    }
 }
-
 
 /**
  * Authentication state manager
  */
 class AuthStateManager {
-    /**
-     * Manages authentication state and UI updates
-     */
-    
     constructor() {
         this.authAPI = new AuthAPI();
         this.currentUser = null;
@@ -133,14 +52,6 @@ class AuthStateManager {
      */
     addAuthStateListener(callback) {
         this.listeners.push(callback);
-    }
-    
-    /**
-     * Remove auth state listener
-     * @param {function} callback - Callback function to remove
-     */
-    removeAuthStateListener(callback) {
-        this.listeners = this.listeners.filter(listener => listener !== callback);
     }
     
     /**
@@ -194,30 +105,7 @@ class AuthStateManager {
     async refresh() {
         await this.initialize();
     }
-    
-    /**
-     * Get current authentication state
-     * @returns {object} - Current auth state
-     */
-    getState() {
-        return {
-            user: this.currentUser,
-            authenticated: this.isAuthenticated
-        };
-    }
-    
-    /**
-     * Check if user has specific permission
-     * @param {string} permission - Permission to check
-     * @returns {boolean} - True if user has permission
-     */
-    hasPermission(permission) {
-        // Placeholder for permission checking
-        // Can be expanded based on user roles/permissions
-        return this.isAuthenticated;
-    }
 }
-
 
 // Create singleton instances
 const authAPI = new AuthAPI();
@@ -226,5 +114,5 @@ const authStateManager = new AuthStateManager();
 // Export for global use
 window.AuthAPI = AuthAPI;
 window.AuthStateManager = AuthStateManager;
-window.authAPI = authAPI; // Export the instance
-window.authStateManager = authStateManager; // Export the instance
+window.authAPI = authAPI;
+window.authStateManager = authStateManager;
