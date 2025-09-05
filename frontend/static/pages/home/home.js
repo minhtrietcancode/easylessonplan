@@ -255,7 +255,7 @@ class AppInitializer {
         
         return new Promise((resolve, reject) => {
             const checkAPI = () => {
-                if (window.authAPI && window.userAPI && window.apiClient) {
+                if (window.authAPI && window.apiClient) {
                     resolve();
                 } else if (elapsed >= maxWaitTime) {
                     reject(new Error('API modules failed to load within timeout'));
