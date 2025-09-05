@@ -225,3 +225,5 @@ const authStateManager = new AuthStateManager();
 // Export for global use
 window.AuthAPI = AuthAPI;
 window.AuthStateManager = AuthStateManager;
+window.authAPI = authAPI; // Export the instance
+window.authStateManager = authStateManager; // Export the instance

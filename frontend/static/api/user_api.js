@@ -278,3 +278,6 @@ const userPreferencesManager = new UserPreferencesManager();
 window.UserAPI = UserAPI;
 window.UserDataManager = UserDataManager;
 window.UserPreferencesManager = UserPreferencesManager;
+window.userAPI = userAPI; // Export the instance
+window.userDataManager = userDataManager; // Export the instance
+window.userPreferencesManager = userPreferencesManager; // Export the instance

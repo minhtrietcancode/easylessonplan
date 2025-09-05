@@ -238,8 +238,9 @@ class AppInitializer {
             
         } catch (error) {
             console.error('❌ Frontend initialization failed:', error);
+            console.error('Detailed Error Object:', error); // Add this line for detailed debug info
             // Show user-friendly error message
-            this.showInitializationError();
+            this.showInitializationError(error);
         }
     }
     
@@ -285,7 +286,8 @@ class AppInitializer {
         }
     }
     
-    static showInitializationError() {
+    static showInitializationError(error = null) {
+        console.error('❌ App initialization error displayed to user.', error); // Added this line
         // Create a simple error notification
         const errorDiv = document.createElement('div');
         errorDiv.style.cssText = `

@@ -234,3 +234,4 @@ const apiClient = new APIClient();
 window.APIClient = APIClient;
 window.APIError = APIError;
 window.ResponseHandler = ResponseHandler;
+window.apiClient = apiClient; // Export the instance
