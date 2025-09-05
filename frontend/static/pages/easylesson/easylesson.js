@@ -550,7 +550,6 @@ const Utils = {
     }
 };
 
-// No backend API integration needed here - Using API client modules
 
 // ===== APP STARTUP =====
 document.addEventListener('DOMContentLoaded', () => {

@@ -328,11 +328,3 @@ document.addEventListener('visibilitychange', () => {
         window.authStateManager.refresh();
     }
 });
-
-// Export modules for potential use by other scripts
-window.EasyLessonApp = {
-    AuthManager,
-    UIAnimations,
-    EventHandlers,
-    AppInitializer
-};
