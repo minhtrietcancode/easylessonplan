@@ -1,3 +1,4 @@
+// FIle: frontend\static\api\service\llm_api.js
 export const llmAPI = {
     /**
      * Fetches the list of available LLM models and the current active model.

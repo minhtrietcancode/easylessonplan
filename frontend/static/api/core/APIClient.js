@@ -1,3 +1,4 @@
+// File: frontend\static\api\core\APIClient.js
 import { APIError } from './APIError.js';
 
 /**

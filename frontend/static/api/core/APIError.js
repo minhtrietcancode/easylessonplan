@@ -1,3 +1,4 @@
+// File: frontend\static\api\core\APIError.js
 /**
  * Custom API Error class
  */
