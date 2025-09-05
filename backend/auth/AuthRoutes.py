@@ -9,8 +9,8 @@ from .AuthService import AuthService
 from .AuthConfig import AuthConfig
 import google.auth.exceptions
 
-# Create Blueprint for OAuth routes
-auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
+# Create Blueprint for OAuth routes without url_prefix
+auth_bp = Blueprint('auth', __name__)
 
 # Initialize auth service
 auth_service = AuthService(AuthConfig)
@@ -112,9 +112,9 @@ class AuthRoutes:
         return redirect(url_for('index'))
 
     def register_routes(self):
-        self.auth_bp.add_url_rule('/login', view_func=self.login, methods=['GET'])
-        self.auth_bp.add_url_rule('/callback', view_func=self.callback, methods=['GET'])
-        self.auth_bp.add_url_rule('/logout', view_func=self.logout, methods=['GET', 'POST'])
+        self.auth_bp.add_url_rule('/auth/login', view_func=self.login, methods=['GET'])
+        self.auth_bp.add_url_rule('/auth/callback', view_func=self.callback, methods=['GET'])
+        self.auth_bp.add_url_rule('/auth/logout', view_func=self.logout, methods=['GET', 'POST'])
 
 
 # Initialize and register AuthRoutes
