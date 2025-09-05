@@ -1,3 +1,4 @@
+// File: frontend/static/api/auth_api.js
 /**
  * Authentication API Module
  * Handles all authentication-related API calls

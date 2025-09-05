@@ -1,3 +1,4 @@
+// File: frontend/static/api/api_client.js
 /**
  * API Client Module
  * Centralized HTTP client for all API communication

@@ -1,3 +1,4 @@
+// File: frontend/static/pages/easylesson/easylesson.js
 // ===== EASYLESSON APP - FLASK INTEGRATED =====
 
 // ===== APP INITIALIZATION =====

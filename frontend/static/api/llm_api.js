@@ -1,3 +1,4 @@
+// File: frontend/static/api/llm_api.js
 window.llmAPI = {
     /**
      * Fetches the list of available LLM models and the current active model.

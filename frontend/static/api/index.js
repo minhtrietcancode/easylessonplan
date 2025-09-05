@@ -1,3 +1,4 @@
+// File: frontend/static/api/index.js
 /**
  * API Module Index
  * Coordinates all API modules and provides a unified interface

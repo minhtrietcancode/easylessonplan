@@ -1,3 +1,4 @@
+// File: frontend/static/api/config/routes.js
 window.API_ROUTES = {
   AUTH: {
     GET_STATUS: '/api/auth/status',

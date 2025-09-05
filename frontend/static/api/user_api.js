@@ -1,3 +1,4 @@
+// File: frontend/static/api/user_api.js
 /**
  * User API Module
  * Handles user-related API calls and operations

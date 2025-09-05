@@ -1,3 +1,4 @@
+// File: frontend/static/pages/home/home.js
 /**
  * EasyLesson Frontend JavaScript
  * Handles UI interactions, authentication, and visual effects for the home page
