@@ -8,8 +8,8 @@ from backend.api.AuthAPI import AuthAPI
 from backend.api.UserAPI import UserAPI
 from backend.api.LlmAPI import LlmAPI
 
-# Create API blueprint
-api_bp = Blueprint('api', __name__, url_prefix='/api')
+# Create API blueprint without url_prefix
+api_bp = Blueprint('api', __name__)
 
 # Route configuration dictionary
 ROUTES = {
@@ -18,13 +18,13 @@ ROUTES = {
     ###########################################################################################
     AuthAPI: [
         # User information and session management
-        {'path': '/auth/user', 'endpoint': 'auth_user_info', 'method': 'get_user_info', 'methods': ['GET']},
-        {'path': '/auth/status', 'endpoint': 'auth_status', 'method': 'check_auth_status', 'methods': ['GET']},
-        {'path': '/auth/validate', 'endpoint': 'auth_validate', 'method': 'validate_session', 'methods': ['GET']},
+        {'path': '/api/auth/user', 'endpoint': 'auth_user_info', 'method': 'get_user_info', 'methods': ['GET']},
+        {'path': '/api/auth/status', 'endpoint': 'auth_status', 'method': 'check_auth_status', 'methods': ['GET']},
+        {'path': '/api/auth/validate', 'endpoint': 'auth_validate', 'method': 'validate_session', 'methods': ['GET']},
         
         # User preferences
-        {'path': '/auth/preferences', 'endpoint': 'auth_get_preferences', 'method': 'get_user_preferences', 'methods': ['GET']},
-        {'path': '/auth/preferences', 'endpoint': 'auth_update_preferences', 'method': 'update_user_preferences', 'methods': ['PUT']},
+        {'path': '/api/auth/preferences', 'endpoint': 'auth_get_preferences', 'method': 'get_user_preferences', 'methods': ['GET']},
+        {'path': '/api/auth/preferences', 'endpoint': 'auth_update_preferences', 'method': 'update_user_preferences', 'methods': ['PUT']},
     ],
     
     ###########################################################################################
@@ -32,13 +32,13 @@ ROUTES = {
     ###########################################################################################
     UserAPI: [
         # User profile management
-        {'path': '/user/profile', 'endpoint': 'user_profile', 'method': 'get_profile', 'methods': ['GET']},
-        {'path': '/user/profile', 'endpoint': 'user_update_profile', 'method': 'update_profile', 'methods': ['PUT']},
+        {'path': '/api/user/profile', 'endpoint': 'user_profile', 'method': 'get_profile', 'methods': ['GET']},
+        {'path': '/api/user/profile', 'endpoint': 'user_update_profile', 'method': 'update_profile', 'methods': ['PUT']},
         
         # Dashboard and statistics
-        {'path': '/user/dashboard', 'endpoint': 'user_dashboard', 'method': 'get_dashboard_data', 'methods': ['GET']},
-        {'path': '/user/activity', 'endpoint': 'user_activity', 'method': 'get_activity_log', 'methods': ['GET']},
-        {'path': '/user/stats', 'endpoint': 'user_stats', 'method': 'get_user_stats', 'methods': ['GET']},
+        {'path': '/api/user/dashboard', 'endpoint': 'user_dashboard', 'method': 'get_dashboard_data', 'methods': ['GET']},
+        {'path': '/api/user/activity', 'endpoint': 'user_activity', 'method': 'get_activity_log', 'methods': ['GET']},
+        {'path': '/api/user/stats', 'endpoint': 'user_stats', 'method': 'get_user_stats', 'methods': ['GET']},
     ],
     
     ###########################################################################################
@@ -46,11 +46,11 @@ ROUTES = {
     ###########################################################################################
     LlmAPI: [
         # Model management
-        {'path': '/llm/models', 'endpoint': 'llm_get_models', 'method': 'get_available_models', 'methods': ['GET']},
-        {'path': '/llm/models', 'endpoint': 'llm_set_model', 'method': 'set_current_model', 'methods': ['PUT']},
+        {'path': '/api/llm/models', 'endpoint': 'llm_get_models', 'method': 'get_available_models', 'methods': ['GET']},
+        {'path': '/api/llm/models', 'endpoint': 'llm_set_model', 'method': 'set_current_model', 'methods': ['PUT']},
         
         # Chat functionality
-        {'path': '/llm/chat', 'endpoint': 'llm_chat', 'method': 'send_chat_message', 'methods': ['POST']},
+        {'path': '/api/llm/chat', 'endpoint': 'llm_chat', 'method': 'send_chat_message', 'methods': ['POST']},
     ],
 }
 
