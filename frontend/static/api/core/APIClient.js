@@ -1,10 +1,11 @@
-// File: frontend/static/api/api_client.js
+import { APIError } from './APIError.js';
+
 /**
  * API Client Module
  * Centralized HTTP client for all API communication
  */
 
-class APIClient {
+export class APIClient {
     constructor() {
         this.defaultHeaders = {
             'Content-Type': 'application/json'
@@ -103,23 +104,5 @@ class APIClient {
     }
 }
 
-/**
- * Custom API Error class
- */
-class APIError extends Error {
-    constructor(message, status, errorCode, details) {
-        super(message);
-        this.name = 'APIError';
-        this.status = status;
-        this.errorCode = errorCode;
-        this.details = details;
-    }
-}
-
 // Create singleton instance
-const apiClient = new APIClient();
-
-// Export for use in other modules
-window.APIClient = APIClient;
-window.APIError = APIError;
-window.apiClient = apiClient;
+export const apiClient = new APIClient();

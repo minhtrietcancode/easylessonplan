@@ -1,5 +1,4 @@
-// File: frontend/static/api/llm_api.js
-window.llmAPI = {
+export const llmAPI = {
     /**
      * Fetches the list of available LLM models and the current active model.
      * @returns {Promise<Object>} A promise that resolves to an object containing models and current_model.
