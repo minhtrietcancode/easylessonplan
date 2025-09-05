@@ -1,22 +1,26 @@
 window.API_ROUTES = {
   AUTH: {
-    STATUS: '/api/auth/status',
-    USER: '/api/auth/user',
-    VALIDATE: '/api/auth/validate',
-    PREFERENCES: '/api/auth/preferences',
-    LOGIN: '/api/auth/login',
-    LOGOUT: '/api/auth/logout',
+    GET_STATUS: '/api/auth/status',
+    GET_USER_INFO: '/api/auth/user',
+    GET_VALIDATE_SESSION: '/api/auth/validate',
+    GET_USER_PREFERENCES: '/api/auth/preferences',
+    PUT_UPDATE_USER_PREFERENCES: '/api/auth/preferences',
   },
   USER: {
-    PROFILE: '/api/user/profile',
-    DASHBOARD: '/api/user/dashboard',
-    ACTIVITY: '/api/user/activity',
-    STATISTICS: '/api/user/stats',
+    GET_PROFILE: '/api/user/profile',
+    PUT_UPDATE_PROFILE: '/api/user/profile',
+    GET_DASHBOARD_DATA: '/api/user/dashboard',
+    GET_ACTIVITY_LOG: '/api/user/activity',
+    GET_STATISTICS: '/api/user/stats',
   },
-  LLM_API: {
+  LLM: {
     GET_MODELS_LIST: '/api/llm/models',
-    CHAT: '/api/llm/chat',
-    SWITCH_MODEL: '/api/llm/models',
-    SEND_MESSAGE: '/api/llm/chat',
+    PUT_SWITCH_MODEL: '/api/llm/models',
+    POST_SEND_MESSAGE: '/api/llm/chat',
   },
+};
+
+window.OAUTH_ROUTES = {
+  GET_LOGIN: '/auth/login',
+  GET_LOGOUT: '/auth/logout',
 };

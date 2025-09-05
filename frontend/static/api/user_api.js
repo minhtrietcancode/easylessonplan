@@ -17,7 +17,7 @@ class UserAPI {
      * @returns {Promise<object>} - User profile response
      */
     async getProfile() {
-        return await this.client.get('/api/user/profile');
+        return await this.client.get(window.API_ROUTES.USER.GET_PROFILE);
     }
     
     /**
@@ -26,7 +26,7 @@ class UserAPI {
      * @returns {Promise<object>} - Update response
      */
     async updateProfile(profileData) {
-        return await this.client.put('/api/user/profile', profileData);
+        return await this.client.put(window.API_ROUTES.USER.PUT_UPDATE_PROFILE, profileData);
     }
     
     /**
@@ -34,7 +34,7 @@ class UserAPI {
      * @returns {Promise<object>} - Dashboard data response
      */
     async getDashboardData() {
-        return await this.client.get('/api/user/dashboard');
+        return await this.client.get(window.API_ROUTES.USER.GET_DASHBOARD_DATA);
     }
     
     /**
@@ -43,7 +43,7 @@ class UserAPI {
      * @returns {Promise<object>} - Activity log response
      */
     async getActivityLog(limit = 10) {
-        return await this.client.get('/api/user/activity', { limit });
+        return await this.client.get(window.API_ROUTES.USER.GET_ACTIVITY_LOG, { limit });
     }
     
     /**
@@ -51,7 +51,7 @@ class UserAPI {
      * @returns {Promise<object>} - User statistics response
      */
     async getStatistics() {
-        return await this.client.get('/api/user/stats');
+        return await this.client.get(window.API_ROUTES.USER.GET_STATISTICS);
     }
     
     /**

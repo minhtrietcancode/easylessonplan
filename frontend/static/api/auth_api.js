@@ -18,7 +18,7 @@ class AuthAPI {
      */
     async checkAuthStatus() {
         try {
-            return await this.client.get('/api/auth/status');
+            return await this.client.get(window.API_ROUTES.AUTH.GET_STATUS);
         } catch (error) {
             console.warn('Auth status check failed:', error.message);
             return { 
@@ -35,7 +35,7 @@ class AuthAPI {
      */
     async getUserInfo() {
         try {
-            return await this.client.get('/api/auth/user');
+            return await this.client.get(window.API_ROUTES.AUTH.GET_USER_INFO);
         } catch (error) {
             console.warn('User info fetch failed:', error.message);
             return { 
@@ -51,7 +51,7 @@ class AuthAPI {
      * @returns {Promise<object>} - Session validation response
      */
     async validateSession() {
-        return await this.client.get('/api/auth/validate');
+        return await this.client.get(window.API_ROUTES.AUTH.GET_VALIDATE_SESSION);
     }
     
     /**
@@ -59,7 +59,7 @@ class AuthAPI {
      * @returns {Promise<object>} - User preferences response
      */
     async getUserPreferences() {
-        return await this.client.get('/api/auth/preferences');
+        return await this.client.get(window.API_ROUTES.AUTH.GET_USER_PREFERENCES);
     }
     
     /**
@@ -68,7 +68,7 @@ class AuthAPI {
      * @returns {Promise<object>} - Update response
      */
     async updateUserPreferences(preferences) {
-        return await this.client.put('/api/auth/preferences', preferences);
+        return await this.client.put(window.API_ROUTES.AUTH.PUT_UPDATE_USER_PREFERENCES, preferences);
     }
     
     /**
@@ -76,7 +76,7 @@ class AuthAPI {
      * @returns {void} - Redirects to OAuth flow
      */
     initiateLogin() {
-        window.location.href = '/auth/login';
+        window.location.href = window.OAUTH_ROUTES.GET_LOGIN;
     }
     
     /**
@@ -84,7 +84,7 @@ class AuthAPI {
      * @returns {void} - Redirects to home page
      */
     logout() {
-        window.location.href = '/auth/logout';
+        window.location.href = window.OAUTH_ROUTES.GET_LOGOUT;
     }
     
     /**
