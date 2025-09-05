@@ -11,7 +11,7 @@ class AuthManager {
     
     static async checkAuthStatus() {
         try {
-            const response = await window.authAPI.getUserInfo();
+            const response = await window.API.auth.getUserInfo();
             return response.success ? response.data : { user: null, authenticated: false };
         } catch (error) {
             console.warn('Auth status check failed:', error.message);
@@ -66,12 +66,17 @@ class AuthManager {
     }
     
     static async initialize() {
-        // Wait for API client to be available
-        if (!window.authAPI) {
-            console.error('AuthAPI not available. Make sure api scripts are loaded.');
-            return { user: null, authenticated: false };
+        // Wait for APIs to be ready
+        if (!window.API) {
+            await new Promise((resolve) => {
+                if (window.API) {
+                    resolve();
+                } else {
+                    window.addEventListener('apisReady', resolve, { once: true });
+                }
+            });
         }
-        
+    
         const authData = await this.checkAuthStatus();
         
         if (authData.user) {

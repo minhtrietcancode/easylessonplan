@@ -1,17 +1,14 @@
-// File: frontend/static/api/auth_api.js
 /**
- * Authentication API Module
- * Handles all authentication-related API calls
+ * Authentication API Service
+ * Clean, dependency-free auth API
  */
-
-class AuthAPI {
-    constructor() {
-        this.client = new window.APIClient();
+export class AuthAPI {
+    constructor(client) {
+        this.client = client;
     }
     
     /**
      * Get current user information
-     * @returns {Promise<object>} - User info response
      */
     async getUserInfo() {
         try {
@@ -28,16 +25,8 @@ class AuthAPI {
     
     /**
      * Initiate login process
-     * @returns {void} - Redirects to OAuth flow
      */
     initiateLogin() {
         window.location.href = window.OAUTH_ROUTES.GET_LOGIN;
     }
 }
-
-// Create singleton instance
-const authAPI = new AuthAPI();
-
-// Export for global use
-window.AuthAPI = AuthAPI;
-window.authAPI = authAPI;

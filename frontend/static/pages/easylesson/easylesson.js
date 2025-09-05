@@ -35,6 +35,17 @@ class EasyLessonApp {
     async init() {
         console.log('EasyLesson App Initializing...');
         
+        // Wait for APIs to be ready
+        if (!window.API) {
+            await new Promise((resolve) => {
+                if (window.API) {
+                    resolve();
+                } else {
+                    window.addEventListener('apisReady', resolve, { once: true });
+                }
+            });
+        }
+        
         // Load available models
         await this.modelSelector.loadAvailableModels();
         

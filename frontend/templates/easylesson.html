@@ -94,10 +94,9 @@
     <!-- Base Libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js"></script>
     
-    <!-- API Client Modules -->
+    <!-- API Scripts - Load in correct order -->
     <script src="/static/api/config/routes.js"></script>
-    <script src="/static/api/auth_api.js"></script>
-    <script type="module" src="/static/api/config/export_module.js"></script>
+    <script type="module" src="/static/api/init.js"></script>
     
     <!-- Main Application (no backend API integration) -->
     <script src="/static/pages/easylesson/easylesson.js"></script>
