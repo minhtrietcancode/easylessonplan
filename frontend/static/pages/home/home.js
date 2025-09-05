@@ -218,10 +218,6 @@ class AppInitializer {
     static async initialize() {
         try {
             console.log('🚀 Initializing EasyLesson frontend...');
-            
-            // Wait for API modules to be loaded
-            await this.waitForAPIModules();
-            
             // Initialize UI animations and effects
             UIAnimations.initialize();
             
@@ -230,9 +226,6 @@ class AppInitializer {
             
             // Initialize authentication and update UI
             const authData = await AuthManager.initialize();
-            
-            // Set up auth state listeners
-            this.setupAuthStateListeners();
             
             console.log('✅ Frontend initialization complete');
             console.log('👤 Auth status:', authData.authenticated ? 'Logged in' : 'Guest');
@@ -255,7 +248,7 @@ class AppInitializer {
         
         return new Promise((resolve, reject) => {
             const checkAPI = () => {
-                if (window.authAPI && window.apiClient) {
+                if (window.authAPI) {
                     resolve();
                 } else if (elapsed >= maxWaitTime) {
                     reject(new Error('API modules failed to load within timeout'));

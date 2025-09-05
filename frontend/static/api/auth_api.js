@@ -35,84 +35,9 @@ class AuthAPI {
     }
 }
 
-/**
- * Authentication state manager
- */
-class AuthStateManager {
-    constructor() {
-        this.authAPI = new AuthAPI();
-        this.currentUser = null;
-        this.isAuthenticated = false;
-        this.listeners = [];
-    }
-    
-    /**
-     * Add listener for auth state changes
-     * @param {function} callback - Callback function
-     */
-    addAuthStateListener(callback) {
-        this.listeners.push(callback);
-    }
-    
-    /**
-     * Notify all listeners of auth state change
-     */
-    notifyListeners() {
-        this.listeners.forEach(callback => {
-            try {
-                callback({
-                    user: this.currentUser,
-                    authenticated: this.isAuthenticated
-                });
-            } catch (error) {
-                console.error('Auth state listener error:', error);
-            }
-        });
-    }
-    
-    /**
-     * Initialize authentication state
-     * @returns {Promise<object>} - Auth state
-     */
-    async initialize() {
-        try {
-            const response = await this.authAPI.getUserInfo();
-            
-            if (response.success && response.data) {
-                this.currentUser = response.data.user;
-                this.isAuthenticated = response.data.authenticated;
-            } else {
-                this.currentUser = null;
-                this.isAuthenticated = false;
-            }
-            
-            this.notifyListeners();
-            return { user: this.currentUser, authenticated: this.isAuthenticated };
-            
-        } catch (error) {
-            console.error('Auth initialization failed:', error);
-            this.currentUser = null;
-            this.isAuthenticated = false;
-            this.notifyListeners();
-            return { user: null, authenticated: false };
-        }
-    }
-    
-    /**
-     * Refresh authentication state
-     * @returns {Promise<void>}
-     */
-    async refresh() {
-        await this.initialize();
-    }
-}
-
-// Create singleton instances
+// Create singleton instance
 const authAPI = new AuthAPI();
-const authStateManager = new AuthStateManager();
 
 // Export for global use
 window.AuthAPI = AuthAPI;
-window.AuthStateManager = AuthStateManager;
 window.authAPI = authAPI;
-window.authStateManager = authStateManager;
