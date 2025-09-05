@@ -9,8 +9,7 @@ class UserAPI {
      */
     
     constructor() {
-        this.client = window.apiClient;
-        this.baseEndpoint = '/user';
+        this.client = new window.APIClient();
     }
     
     /**
@@ -18,7 +17,7 @@ class UserAPI {
      * @returns {Promise<object>} - User profile response
      */
     async getProfile() {
-        return await this.client.get(`${this.baseEndpoint}/profile`);
+        return await this.client.get('/api/user/profile');
     }
     
     /**
@@ -27,7 +26,7 @@ class UserAPI {
      * @returns {Promise<object>} - Update response
      */
     async updateProfile(profileData) {
-        return await this.client.put(`${this.baseEndpoint}/profile`, profileData);
+        return await this.client.put('/api/user/profile', profileData);
     }
     
     /**
@@ -35,7 +34,7 @@ class UserAPI {
      * @returns {Promise<object>} - Dashboard data response
      */
     async getDashboardData() {
-        return await this.client.get(`${this.baseEndpoint}/dashboard`);
+        return await this.client.get('/api/user/dashboard');
     }
     
     /**
@@ -44,7 +43,7 @@ class UserAPI {
      * @returns {Promise<object>} - Activity log response
      */
     async getActivityLog(limit = 10) {
-        return await this.client.get(`${this.baseEndpoint}/activity`, { limit });
+        return await this.client.get('/api/user/activity', { limit });
     }
     
     /**
@@ -52,7 +51,7 @@ class UserAPI {
      * @returns {Promise<object>} - User statistics response
      */
     async getStatistics() {
-        return await this.client.get(`${this.baseEndpoint}/stats`);
+        return await this.client.get('/api/user/stats');
     }
     
     /**
@@ -182,7 +181,7 @@ class UserPreferencesManager {
      */
     
     constructor() {
-        this.authAPI = window.authAPI;
+        this.authAPI = new window.AuthAPI();
         this.preferences = {};
         this.defaultPreferences = {
             theme: 'light',
@@ -279,6 +278,3 @@ const userPreferencesManager = new UserPreferencesManager();
 window.UserAPI = UserAPI;
 window.UserDataManager = UserDataManager;
 window.UserPreferencesManager = UserPreferencesManager;
-window.userAPI = userAPI;
-window.userDataManager = userDataManager;
-window.userPreferencesManager = userPreferencesManager;

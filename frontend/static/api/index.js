@@ -28,13 +28,13 @@ class APIManager {
             
             // Initialize modules
             this.modules = {
-                client: window.apiClient,
-                auth: window.authAPI,
-                user: window.userAPI,
-                lesson: window.lessonAPI,
-                authState: window.authStateManager,
-                userPreferences: window.userPreferencesManager,
-                userData: window.userDataManager
+                client: new window.APIClient(),
+                auth: new window.AuthAPI(),
+                user: new window.UserAPI(),
+                lesson: window.lessonAPI, // Assuming LessonAPI still uses a global instance or will be updated similarly
+                authState: new window.AuthStateManager(),
+                userPreferences: new window.UserPreferencesManager(),
+                userData: new window.UserDataManager()
             };
             
             // Initialize auth state manager

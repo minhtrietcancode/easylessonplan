@@ -4,7 +4,7 @@ window.llmAPI = {
      * @returns {Promise<Object>} A promise that resolves to an object containing models and current_model.
      */
     getAvailableModels: async function() {
-        return await window.apiClient.get('/llm/models');
+        return await new window.APIClient().get('/api/llm/models');
     },
 
     /**
@@ -13,7 +13,7 @@ window.llmAPI = {
      * @returns {Promise<Object>} A promise that resolves to the API response.
      */
     switchModel: async function(modelName) {
-        return await window.apiClient.put('/llm/models', { model_name: modelName });
+        return await new window.APIClient().put('/api/llm/models', { model_name: modelName });
     },
 
     /**
@@ -22,6 +22,6 @@ window.llmAPI = {
      * @returns {Promise<Object>} A promise that resolves to an object containing the LLM's reply.
      */
     sendMessageToLLM: async function(message) {
-        return await window.apiClient.post('/llm/chat', { message: message });
+        return await new window.APIClient().post('/api/llm/chat', { message: message });
     }
 };

@@ -9,8 +9,7 @@ class AuthAPI {
      */
     
     constructor() {
-        this.client = window.apiClient;
-        this.baseEndpoint = '/auth';
+        this.client = new window.APIClient();
     }
     
     /**
@@ -19,7 +18,7 @@ class AuthAPI {
      */
     async checkAuthStatus() {
         try {
-            return await this.client.get(`${this.baseEndpoint}/status`);
+            return await this.client.get('/api/auth/status');
         } catch (error) {
             console.warn('Auth status check failed:', error.message);
             return { 
@@ -36,7 +35,7 @@ class AuthAPI {
      */
     async getUserInfo() {
         try {
-            return await this.client.get(`${this.baseEndpoint}/user`);
+            return await this.client.get('/api/auth/user');
         } catch (error) {
             console.warn('User info fetch failed:', error.message);
             return { 
@@ -52,7 +51,7 @@ class AuthAPI {
      * @returns {Promise<object>} - Session validation response
      */
     async validateSession() {
-        return await this.client.get(`${this.baseEndpoint}/validate`);
+        return await this.client.get('/api/auth/validate');
     }
     
     /**
@@ -60,7 +59,7 @@ class AuthAPI {
      * @returns {Promise<object>} - User preferences response
      */
     async getUserPreferences() {
-        return await this.client.get(`${this.baseEndpoint}/preferences`);
+        return await this.client.get('/api/auth/preferences');
     }
     
     /**
@@ -69,7 +68,7 @@ class AuthAPI {
      * @returns {Promise<object>} - Update response
      */
     async updateUserPreferences(preferences) {
-        return await this.client.put(`${this.baseEndpoint}/preferences`, preferences);
+        return await this.client.put('/api/auth/preferences', preferences);
     }
     
     /**
@@ -226,5 +225,3 @@ const authStateManager = new AuthStateManager();
 // Export for global use
 window.AuthAPI = AuthAPI;
 window.AuthStateManager = AuthStateManager;
-window.authAPI = authAPI;
-window.authStateManager = authStateManager;

@@ -8,8 +8,7 @@ class APIClient {
      * Base API client with common functionality
      */
     
-    constructor(baseURL = '') {
-        this.baseURL = baseURL;
+    constructor() {
         this.defaultHeaders = {
             'Content-Type': 'application/json'
         };
@@ -22,7 +21,7 @@ class APIClient {
      * @returns {Promise<object>} - API response
      */
     async request(endpoint, options = {}) {
-        const url = `${this.baseURL}${endpoint}`;
+        const url = endpoint;
         
         const config = {
             headers: { ...this.defaultHeaders, ...options.headers },
@@ -229,10 +228,9 @@ class ResponseHandler {
 
 
 // Create singleton instance
-const apiClient = new APIClient('/api');
+const apiClient = new APIClient();
 
 // Export for use in other modules
 window.APIClient = APIClient;
 window.APIError = APIError;
 window.ResponseHandler = ResponseHandler;
-window.apiClient = apiClient;
