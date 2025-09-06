@@ -60,6 +60,12 @@ Below is the directory structure of the EasyLesson project, with a brief descrip
 └── README.md                   # This README file.
 ```
 
+> **Visual Overview:**  
+> To see the big picture of the workflow, view this diagram:  
+>  
+> ![Easy Lesson Plan Workflow](Easy%20Lesson%20Plan.png)
+
+
 ## Workflow: How the Web App Works
 
 This section provides a high-level overview of the application's flow, highlighting the interaction between different components.
