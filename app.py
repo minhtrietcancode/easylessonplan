@@ -7,9 +7,8 @@ Main application factory and route definitions for the integrated application.
 import os
 from flask import Flask, render_template, session, jsonify, url_for, redirect
 from backend.auth.AuthConfig import AuthConfig
-from backend.auth.AuthRoutes import auth_bp
-from backend.auth.AuthDecorators import AuthDecorators # UPDATED: Import AuthDecorators class
-from backend.APIRoutes import api_bp
+from backend.APIRoutes import auth_bp, llm_bp
+from backend.auth.AuthDecorators import AuthDecorators
 
 class HomeConfig:
     """Configuration specific to the home application"""
@@ -37,7 +36,7 @@ class HomeRoutes:
         return render_template('home.html', user=user)
     
     @staticmethod
-    @AuthDecorators.login_required # UPDATED: Use AuthDecorators.login_required
+    @AuthDecorators.login_required
     def easylesson():
         """Main lesson planning interface - requires authentication"""
         user = session.get('user')
@@ -48,7 +47,7 @@ class HomeRoutes:
         return render_template('easylesson.html', user=user)
     
     @staticmethod
-    @AuthDecorators.login_required # UPDATED: Use AuthDecorators.login_required
+    @AuthDecorators.login_required
     def dashboard():
         """Legacy dashboard route - redirects to EasyLesson"""
         return redirect(url_for('easylesson'))
@@ -62,7 +61,7 @@ class HomeRoutes:
             'version': HomeConfig.VERSION,
             'endpoints': {
                 'auth': '/auth/*',
-                'lesson': '/api/lesson/*',
+                'llm': '/llm/*',
                 'frontend': '/'
             }
         }, 200
@@ -81,8 +80,8 @@ def create_app():
     app.config.from_object(AuthConfig)
     
     # Register blueprints
-    app.register_blueprint(auth_bp)     # OAuth routes (/auth/*)
-    app.register_blueprint(api_bp)      # API routes (/api/*)
+    app.register_blueprint(auth_bp)     # Auth routes (/auth/*)
+    app.register_blueprint(llm_bp)      # LLM routes (/llm/*)
     
     # Register home routes
     _register_home_routes(app)
@@ -116,7 +115,7 @@ def print_startup_info():
     print("🚀 Starting EasyLesson server...")
     print(f"📝 Access your app at: http://localhost:{HomeConfig.PORT}")
     print(f"🔐 Dashboard at: http://localhost:{HomeConfig.PORT}/dashboard (requires login)")
-    print(f"🔗 API endpoints at: http://localhost:{HomeConfig.PORT}/api/*")
+    print(f"🤖 LLM endpoints at: http://localhost:{HomeConfig.PORT}/llm/*")
     print(f"🔑 Auth endpoints at: http://localhost:{HomeConfig.PORT}/auth/*")
     print(f"❤️  Health check at: http://localhost:{HomeConfig.PORT}/health")
 

@@ -1,54 +1,38 @@
 # File: backend/APIRoutes.py
 """
 API Routes Module
-Centralizes all API route definitions and connects them directly to API classes.
+Centralizes all route registration for both auth and LLM functionality.
+Makes it easy to see and manage all routes in one place.
 """
 
 from flask import Blueprint
 from backend.api.AuthAPI import AuthAPI
 from backend.api.LlmAPI import LlmAPI
 
-# Create API blueprint without url_prefix
-api_bp = Blueprint('api', __name__)
+# Create blueprints
+auth_bp = Blueprint('auth', __name__)
+llm_bp = Blueprint('llm', __name__)
 
-# Route configuration dictionary
-ROUTES = {
-    ###########################################################################################
-    #                           AUTHENTICATION API ROUTES                                    #
-    ###########################################################################################
-    AuthAPI: [
-        # User information and session management
-        {'path': '/api/auth/user', 'endpoint': 'auth_user_info', 'method': 'get_user_info', 'methods': ['GET']},
-    ],
-    
-    ###########################################################################################
-    #                             LLM FUNCTIONALITY API ROUTES                               #
-    ###########################################################################################
-    LlmAPI: [
-        # Model management
-        {'path': '/api/llm/models', 'endpoint': 'llm_get_models', 'method': 'get_available_models', 'methods': ['GET']},
-        {'path': '/api/llm/models', 'endpoint': 'llm_set_model', 'method': 'set_current_model', 'methods': ['PUT']},
-        
-        # Chat functionality
-        {'path': '/api/llm/chat', 'endpoint': 'llm_chat', 'method': 'send_chat_message', 'methods': ['POST']},
-    ],
-}
+###########################################################################################
+#                           AUTHENTICATION ROUTES                                        #
+###########################################################################################
 
+# OAuth flow routes
+auth_bp.add_url_rule('/auth/login', view_func=AuthAPI.login, methods=['GET'])
+auth_bp.add_url_rule('/auth/callback', view_func=AuthAPI.callback, methods=['GET'])
+auth_bp.add_url_rule('/auth/logout', view_func=AuthAPI.logout, methods=['GET', 'POST'])
 
-def register_api_routes():
-    """
-    Register all API routes to the blueprint using the ROUTES configuration.
-    This approach eliminates repetitive add_url_rule calls and makes route management cleaner.
-    """
-    for api_class, routes in ROUTES.items():
-        for route_config in routes:
-            api_bp.add_url_rule(
-                rule=route_config['path'],
-                endpoint=route_config['endpoint'],
-                view_func=getattr(api_class, route_config['method']),
-                methods=route_config['methods']
-            )
+# User info route (moved from /api/auth/user to /auth/user)
+auth_bp.add_url_rule('/auth/user', view_func=AuthAPI.get_user_info, methods=['GET'])
 
+###########################################################################################
+#                             LLM ROUTES                                                 #
+###########################################################################################
 
-# Register routes when module is imported
-register_api_routes()
+# Model management routes
+llm_bp.add_url_rule('/llm/models', view_func=LlmAPI.get_available_models, methods=['GET'])
+llm_bp.add_url_rule('/llm/models', view_func=LlmAPI.set_current_model, methods=['PUT'])
+llm_bp.add_url_rule('/llm/current', view_func=LlmAPI.get_current_model, methods=['GET'])
+
+# Chat functionality route
+llm_bp.add_url_rule('/llm/chat', view_func=LlmAPI.send_chat_message, methods=['POST'])

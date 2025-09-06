@@ -1,12 +1,12 @@
 // File: frontend/static/api/config/routes.js
 window.API_ROUTES = {
   AUTH: {
-    GET_USER_INFO: '/api/auth/user',
+    GET_USER_INFO: '/auth/user',
   },
   LLM: {
-    GET_MODELS_LIST: '/api/llm/models',
-    PUT_SWITCH_MODEL: '/api/llm/models',
-    POST_SEND_MESSAGE: '/api/llm/chat',
+    GET_MODELS_LIST: '/llm/models',
+    PUT_SWITCH_MODEL: '/llm/models',
+    POST_SEND_MESSAGE: '/llm/chat',
   },
 };
 
