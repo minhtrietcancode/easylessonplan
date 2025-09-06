@@ -1,3 +1,4 @@
+# File: backend\api\BaseAPI.py
 """
 Base API Module
 Provides common functionality and utilities for all API endpoints.

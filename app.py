@@ -1,3 +1,4 @@
+# File: app.py at root level
 """
 EasyLesson Web Application - Home Module
 Main application factory and route definitions for the integrated application.

@@ -1,3 +1,4 @@
+# File: backend\auth\AuthService.py
 """
 Authentication Service Module
 Pure authentication service logic with no Flask dependencies.

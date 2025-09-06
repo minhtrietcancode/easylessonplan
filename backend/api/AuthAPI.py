@@ -1,3 +1,4 @@
+# File: backend\api\AuthAPI.py
 """
 Authentication API Module
 Handles authentication status and user info API endpoints (JSON responses).
