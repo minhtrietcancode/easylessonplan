@@ -27,6 +27,6 @@ export class AuthAPI {
      * Initiate login process
      */
     initiateLogin() {
-        window.location.href = window.OAUTH_ROUTES.GET_LOGIN;
+        window.location.href = window.API_ROUTES.GET_LOGIN;
     }
 }

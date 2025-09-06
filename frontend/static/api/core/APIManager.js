@@ -3,7 +3,6 @@
  * Handles initialization and provides clean access to all APIs
  */
 import { APIClient } from './APIClient.js';
-import { APIError } from './APIError.js';
 
 export class APIManager {
     constructor() {
