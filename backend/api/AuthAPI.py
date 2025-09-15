@@ -11,8 +11,8 @@ import google.auth.exceptions
 import sys
 import os
 
-from backend.auth.AuthService import AuthService
-from backend.auth.AuthConfig import AuthConfig
+from backend.service.auth.AuthService import AuthService
+from backend.service.auth.AuthConfig import AuthConfig
 
 # Initialize auth service
 auth_service = AuthService(AuthConfig)
