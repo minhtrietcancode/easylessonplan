@@ -285,3 +285,36 @@ Extending the API with new functionality is straightforward due to the modular d
       }
     });
     ```
+
+## How to Run the Application
+
+To get the EasyLesson application up and running, follow the instructions below based on whether you prefer to use Docker or run it directly.
+
+### Running Without Docker (Raw Python)
+
+1.  **Install Dependencies**: Ensure you have Python installed. Then, navigate to the project root and install the required Python packages:
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+2.  **Start the Application**: Run the Flask application using the Python interpreter:
+    ```bash
+    python app.py
+    ```
+
+### Running With Docker
+
+1.  **Open Docker Desktop**: Make sure Docker Desktop is running on your machine.
+2.  **Build Docker Images**: Navigate to the project root and build the Docker images using Docker Compose:
+    ```bash
+    docker-compose build
+    ```
+3.  **Start Services**: Launch the application services defined in `docker-compose.yml`:
+    ```bash
+    docker-compose up
+    ```
+
+### Important Notes for Both Methods
+
+*   **OAuth Callback URL**: Regardless of the method you choose to run the application, please ensure that you access it via `localhost:5000`. The Google OAuth callback URL is registered with this address.
+*   **`.env` File**: A `.env` file containing necessary environment variables (such as API keys and OAuth client secrets) is required for the application to function correctly. Please contact me to obtain this file.
