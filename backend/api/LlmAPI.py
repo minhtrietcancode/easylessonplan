@@ -9,8 +9,6 @@ from .BaseAPI import BaseAPI
 import sys
 import os
 
-# Add the parent directory to the path to import llm
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from backend.llm.LlmManager import LlmManager
 
 from typing import Dict, Any, Tuple
