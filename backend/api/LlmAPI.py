@@ -9,7 +9,7 @@ from .BaseAPI import BaseAPI
 import sys
 import os
 
-from backend.llm.LlmManager import LlmManager
+from backend.service.llm.LlmManager import LlmManager
 
 from typing import Dict, Any, Tuple
 
