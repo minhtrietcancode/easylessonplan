@@ -6,9 +6,9 @@ Main application factory and route definitions for the integrated application.
 
 import os
 from flask import Flask, render_template, session, jsonify, url_for, redirect
-from backend.auth.AuthConfig import AuthConfig
+from backend.service.auth.AuthConfig import AuthConfig
 from backend.APIRoutes import auth_bp, llm_bp
-from backend.auth.AuthDecorators import AuthDecorators
+from backend.service.auth.AuthDecorators import AuthDecorators
 
 class HomeConfig:
     """Configuration specific to the home application"""

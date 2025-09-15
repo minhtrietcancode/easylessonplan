@@ -35,12 +35,12 @@ export class APIManager {
     }
 
     async _initAuthAPI() {
-        const { AuthAPI } = await import('../service/auth_api.js');
+        const { AuthAPI } = await import('../service/AuthAPI.js');
         return new AuthAPI(this.client);
     }
 
     async _initLLMAPI() {
-        const { LLMAPI } = await import('../service/llm_api.js');
+        const { LLMAPI } = await import('../service/LLMAPI.js');
         return new LLMAPI(this.client);
     }
 
