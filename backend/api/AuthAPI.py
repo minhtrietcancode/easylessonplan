@@ -13,6 +13,7 @@ import os
 
 from backend.service.auth.AuthService import AuthService
 from backend.service.auth.AuthConfig import AuthConfig
+from backend.service.database.DatabaseHandler import DatabaseHandler # Import DatabaseHandler
 
 # Initialize auth service
 auth_service = AuthService(AuthConfig)
@@ -53,6 +54,7 @@ class AuthAPI(BaseAPI):
         GET /auth/callback - Handle Google OAuth callback
         Google redirects back to this endpoint after user authentication
         """
+        db_handler = DatabaseHandler() # Initialize DatabaseHandler
         try:
             # Verify state parameter for CSRF protection
             received_state = request.args.get('state')
@@ -75,6 +77,21 @@ class AuthAPI(BaseAPI):
             # Verify token and get user info
             user_info = auth_service.verify_token_and_get_user(flow.credentials)
             
+            # Check if user exists in the database, if not, create them
+            email = user_info.get('email')
+            full_name = user_info.get('name') # Get the full name
+            first_name = full_name.split(' ')[0] if full_name else None # Extract first name
+            
+            if email and first_name:
+                user_exists = db_handler.check_exist_user(email, first_name)
+                if not user_exists:
+                    db_handler.insert_user(email, first_name)
+                    current_app.logger.info(f"New user created in DB: {email}")
+                else:
+                    current_app.logger.info(f"User already exists in DB: {email}")
+            else:
+                current_app.logger.warning(f"Could not get email or first name from user_info: {user_info}")
+
             # Store user in session
             auth_service.store_user_in_session(session, user_info)
             
@@ -97,6 +114,8 @@ class AuthAPI(BaseAPI):
                 'error': 'Authentication process failed',
                 'details': str(e) if current_app.debug else None
             }), 500
+        finally:
+            db_handler.close() # Close database connection
 
     @classmethod
     def logout(cls):
