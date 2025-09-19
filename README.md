@@ -21,6 +21,8 @@ Below is the directory structure of the EasyLesson project, with a brief descrip
 │   │   │   ├── AuthConfig.py       # Configuration settings for Google OAuth and Flask session.
 │   │   │   ├── AuthDecorators.py   # Decorators for protecting routes (e.g., login_required).
 │   │   │   └── AuthService.py      # Core authentication logic (OAuth flow, token verification, session management).
+│   │   └── database/               # Manages database connections and operations.
+│   │       └── DatabaseHandler.py  # Handles PostgreSQL database connections and CRUD operations for users.
 │   │   └── llm/                    # Manages Large Language Model integrations.
 │   │       ├── all_llm_models/     # Directory containing individual LLM model implementations.
 │   │       │   ├── DeepSeek.py     # Implementation for DeepSeek LLM.
