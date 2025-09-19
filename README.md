@@ -94,6 +94,11 @@ When the user clicks "Continue with Google" (or a similar login trigger on `home
     *   It uses `AuthService.create_oauth_flow()` and `flow.fetch_token()` to exchange the authorization code for an access token.
     *   `AuthService.verify_token_and_get_user()` (in `backend/service/auth/AuthService.py`) verifies the token and extracts user details (email, name, etc.).
     *   `AuthService.store_user_in_session()` (in `backend/service/auth/AuthService.py`) stores this user data in the Flask `session`.
+    *   **Database Integration**:
+        *   A `DatabaseHandler` instance (from `backend/service/database/DatabaseHandler.py`) is initialized.
+        *   The system checks if the authenticated user's email and first name already exist in the database using `db_handler.check_exist_user()`.
+        *   If the user does not exist, their `email` and `first_name` are inserted into the `users` table via `db_handler.insert_user()`.
+        *   The database connection is properly closed after these operations.
 *   Upon successful authentication, `AuthAPI.callback` redirects the user's browser to the `/easylesson` route.
 *   The `app.add_url_rule('/easylesson', 'easylesson', HomeRoutes.easylesson)` in `app.py` maps this URL to `HomeRoutes.easylesson`.
 *   Crucially, `HomeRoutes.easylesson` is protected by `@AuthDecorators.login_required` (from `backend/service/auth/AuthDecorators.py`), which ensures that only authenticated users can access this page.
